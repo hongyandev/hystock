@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css"/>
+	<link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+	<link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+	<link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+	<link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+	<link rel="stylesheet" href="../../css/default.css">
+	<script src="../../js/common/jquery-1.8.0.min.js"></script>
+	<script src="../../js/jquery.easyui.min.js"></script>
+	<script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+	<script src="../../js/common/jquery.cookie.js"></script>
+	<script src="../../js/common/ajax-object.js"></script>
+	<script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+	<script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+	<script src="../../js/common/ztree-object.js"></script>
+	<script src="../../config.js"></script>
+	<script src="../../js/system/role.js"></script>
+	<style>
+		.datagrid-toolbar{
+			padding:5px;
+		}
+		.datagrid-toolbar a{
+			background: #1ab394;
+			color:#fff;
+		}
+	</style>
+</head>
+<body>
+<div class="easyui-layout" data-options="region:'center',fit:true" style="height:100%">
+	<table id="roleTable"></table>
+</div>
+<div id="treeTable">
+	<ul id="rolezTree" class="ztree tree-box" style="width: 250px !important;"></ul>
+</div>
+
+</body>
+</html>

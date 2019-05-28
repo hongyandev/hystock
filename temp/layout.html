@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>jQuery EasyUI</title>
+    <link rel="stylesheet" type="text/css" href="../easyui/1.6.7/themes/bootstrap/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../easyui/1.6.7/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/wu.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon.css" />
+    <link rel="stylesheet" href="../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../css/default.css">
+    <script src="../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../easyui/1.6.7/jquery.easyui.min.js"></script>
+    <script src="../easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+    <table id="datagrid" class="easyui-datagrid"></table>
+</body>
+
+<script>
+    $(function () {
+
+
+        $('#datagrid').datagrid({
+            url:'datagrid.json',
+            method:'get',
+            columns:[[
+                { checkbox:true},
+                { field:'productid',title:'productid',width:100},
+                { field:'productname',title:'productname',width:100},
+                { field:'unitcost',title:'unitcost',width:100},
+                { field:'listprice',title:'listprice',width:100},
+                { field:'attr1',title:'attr1',width:100},
+                { field:'itemid',title:'itemid',width:100},
+                { field:'status',title:'status',width:100}
+            ]],
+            toolbar:[{
+                text:'新增',
+                iconCls:'icon-add',
+                handler:function(){
+                    $('#data').datagrid('endEdit', lastIndex);
+                    $('#data').datagrid('appendRow',{
+                        productid:'',
+                        productname:'',
+                        unitcost:'',
+                        listprice:'',
+                        attr1:'',
+                        itemid:'',
+                        status:'P'
+                    });
+                    lastIndex = $('#data').datagrid('getRows').length-1;
+                    $('#data').datagrid('selectRow', lastIndex);
+                    $('#data').datagrid('beginEdit', lastIndex);
+                }
+            },'-',{
+                text:'删除',
+                iconCls:'icon-remove',
+                handler:function(){
+                    var row = $('#data').datagrid('getSelected');
+                    if (row){
+                        var index = $('#data').datagrid('getRowIndex', row);
+                        $('#data').datagrid('deleteRow', index);
+                    }
+                }
+            },'-',{
+                text:'保存',
+                iconCls:'icon-save',
+                handler:function(){
+                    $('#data').datagrid('acceptChanges');
+                }
+            },'-',{
+                text:'撤销',
+                iconCls:'icon-undo',
+                handler:function(){
+                    $('#data').datagrid('rejectChanges');
+                }
+            },'-',{
+                text:'查找',
+                iconCls:'icon-search',
+                handler:function(){
+                    var rows = $('#data').datagrid('getChanges');
+                    alert('changed rows: ' + rows.length + ' lines');
+                }
+            }],
+        })
+    })
+
+</script>
+</html>

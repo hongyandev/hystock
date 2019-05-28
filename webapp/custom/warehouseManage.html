@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>仓库设置</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css"/>
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/custom/warehouseManage.js"></script>
+    <style>
+        .datagrid-toolbar{
+            padding:5px;
+        }
+        .datagrid-toolbar a{
+            background: #1ab394;
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+<div class="easyui-layout" data-options="region:'center',fit:true" style="height:100%">
+    <table id="warehouseManage"></table>
+</div>
+<div id="addWareH"><!--dialog的属性，dialog扩展自window-->
+    <div class="form-horizontal">
+        <div class="col-sm-12">
+            <form id="ff" class="form-horizontal">
+                <div class="form-group hidden-class">
+                    <label class="col-sm-3 control-label" for="name">仓库id:</label>
+                    <div class="col-sm-9">
+                        <input type="hidden" value="add" id="action_type" />
+                        <input id="id" class="easyui-validatebox form-control" type="text" name="id" required="true"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="name">仓库编号:</label>
+                    <div class="col-sm-9">
+                        <input id="code" class="easyui-validatebox form-control" type="text" name="code" required="true"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="name">仓库名:</label>
+                    <div class="col-sm-9">
+                        <input id="name" class="easyui-validatebox form-control" type="text" name="name" required="true"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>计量单位</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/custom/unitList.js"></script>
+    <style>
+        .datagrid-toolbar .form-group{margin-bottom:0;}
+        .wrapper-content{
+            padding:10px;
+        }
+        .form-group{
+            margin:10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="navTab">
+    <ul class="clearfix">
+        <li id="unitWap" class="active" typeNum="0"><a href="javascript:void(0)">单计量单位</a></li>
+        <li id="unitGroupWap" typeNum="1"><a href="javascript:void(0)">多计量单位</a></li>
+    </ul>
+</div>
+<div  class="easyui-layout unitWap" data-options="region:'center',fit:true" style="height:90%">
+    <table class="easyui-datagrid" id="unitList1"></table>
+</div>
+<div  class="easyui-layout unitGroupWap" data-options="region:'center',fit:true" style="height:90%">
+    <table class="easyui-datagrid" id="unitList2"></table>
+</div>
+<div id="addUnit1">
+    <div class="wrapper-content">
+        <div class="form-horizontal">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">名称</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="unitName" name="unitNum" type="text" placeholder="必填项"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="addUnit2">
+    <div class="wrapper-content">
+        <div class="form-horizontal">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">基本单位</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" name="unitNum1" type="text" placeholder="基本单位应为最小度量单位"/>
+                    </div>
+                    <button class="col-sm-2 btn btn-default font12" onclick="addUnitRow(this)">增加副单位</button>
+                </div>
+                <ul class="mod-form-rows" id="mod-form-rows">
+                    <!--<li class="row-item">
+                        <div class="label-wrap">
+                            <a class="fa fa-trash-o fa-lg fa-ico" title="删除"></a>
+                            <label id="deputyUnitLabel">副单位1：</label>
+                        </div>
+                        <div class="ctn-wrap">
+                            <input type="text" class="ui-input"/>
+                            <span class="descript">=</span>
+                            <input type="text" class="ui-input rateNum"/>
+                            <span class="descript baseUnitLabel" id="baseUnitLabel">斤</span>
+                        </div>
+                    </li>-->
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Row Editing in DataGrid - jQuery EasyUI Demo</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/custom/goodsInfo.js"></script>
+    <style>
+        h3{font-size:15px;}
+        .btn-xs{margin-left:10px;}
+    </style>
+</head>
+<body>
+<div class="pdb30">
+    <form class="form-horizontal clearfix">
+        <input type="hidden" id="id" name="id" />
+        <input type="hidden" value="" id="action_type"/>
+        <div class="col-sm-12">
+            <h3 class="col-sm-8">基础资料</h3>
+        </div>
+        <div class="clearfix">
+            <div class="col-sm-12 form-inline">
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">商品编号</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="code" name="customNum" type="text" placeholder="必填项"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">商品名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="name" name="customNum" type="text" placeholder="必填项"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">商品条码</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="barCode" name="customNum" type="text" placeholder="必填项"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 form-inline">
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">规格型号</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="specs" name="customClass" type="text"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">商品类别</label>
+                    <div class="col-sm-8">
+                        <input id="category" class="easyui-combotree form-control" style="width:178px;">
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">首选仓库</label>
+                    <div class="col-sm-8">
+                        <input id="storage" class="easyui-combobox form-control" style="width:178px;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 form-inline ">
+                <div class="form-group col-sm-4 unitSingle">
+                    <label class="col-sm-4 control-label">计量单位</label>
+                    <div class="col-sm-8">
+                        <input id="unitSingle" type="text" class="easyui-combobox form-control" style="width:178px"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-4 control-label">
+                        <input type="checkbox"  id="moreUnitBtn" style="margin:0 2px 0 0;">多单位
+                    </label>
+                    <div class="col-sm-8 unitGroupBox" style="display: none">
+                        <input id="unitGroup" type="text" class="easyui-combobox form-control" style="width:178px"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4 sck" style="display: none">
+                    <label class="col-sm-4 control-label">首选出库单位</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="firstSaleUnit" class="easyui-combobox form-control" style="width:178px"/>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4 srk" style="display:none">
+                    <label class="col-sm-4 control-label">首选入库单位</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="firstPurUnit" class="easyui-combobox form-control" style="width:178px"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="editTabUnit" >
+                <table id="editTabGoodsPrice" class="easyui-datagrid" border="1" style="height: 100px;"></table>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <h3>价格策略</h3>
+            <div class="divEditTabPrice">
+                <table id="editTabPrice" class="easyui-datagrid" border="1" style="height: 100px;"></table>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <textarea id="note" class="form-control" rows="3" placeholder="添加备注信息"></textarea>
+        </div>
+        <!--kucunyujing-->
+        <div class="col-sm-12">
+            <div class="checkbox">
+                <label class="kcyj">
+                    <input type="checkbox"> 库存预警
+                </label>
+            </div>
+            <div class="col-sm-10 kcyjCon" style="display: none">
+                <div class="checkbox">
+                    <label id="warning">
+                        <input type="checkbox"> <span class="text-danger">启用分仓预警</span>
+                    </label>
+                </div>
+                <div class="divEditTabKc" style="display: none">
+                    <table id="editTabKc" class="easyui-datagrid" border="1" style="height: 180px;width:100%"></table>
+                    <div class="dropdown" style="display: none">
+                        <input type="text"/> <a href="#none" class="btn btn-success bathSave">确定</a>
+                    </div>
+                </div>
+                <div class="form-inline inputKc">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">最低库存</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="minInventory" name="customNum" type="text" placeholder="必填项"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">最高库存</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="maxInventory" name="customNum" type="text" placeholder="必填项"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--qichushezhi-->
+        <div class="col-sm-12">
+            <div class="checkbox">
+                <label class="earlyStage">
+                    <input type="checkbox"> 期初设置
+                </label>
+            </div>
+            <div id="divEditTab" style="display: none;">
+                <table id="goodsInventory" border="1" class="easyui-datagrid" style="min-height:200px"></table>
+            </div>
+        </div>
+
+    </form>
+    <div id="bottomField">
+         <div id="toolBottom" class="pull-right"><span id="groupBtn"><a class="btn btn-success" onclick="saveAddGoods()">保存</a></span></div>
+     </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>客户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/custom/customManager.js"></script>
+    <style>
+        .datagrid-toolbar .form-group{margin-bottom:0;}
+        #btnCombotree,#btnSearchId{
+            background:none;
+            color:#333;
+        }
+        .form-inline{
+            padding:5px 0;
+        }
+        .wrapper-content{
+            padding:10px;
+        }
+        #removeEdit,#addEdit{
+            background: none;
+            color:#333;
+            border:1px solid #e5e5e5
+        }
+        .textbox-addon{z-index:999999999}
+        .form-group{
+            margin:10px 0;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="form-inline search-head">
+        <div class="form-group">
+            <div class="col-sm-12" style="padding-right:0;padding-left:6px;">
+                <input id="pids" placeholder="请选择客户类别" class="easyui-combotree form-control pids" style="width:200px;">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="text" id="searTxt" class="form-control" placeholder="请输入分类名称"/>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success btn-search">查询</button>
+        </div>
+    </div>
+    <div  class="easyui-layout" data-options="region:'center',fit:true">
+        <table class="easyui-datagrid" id="customList"></table>
+    </div>
+
+<div id="addCusDialog">
+    <div class="wrapper-content">
+        <form class="form-horizontal">
+                <input type="hidden" value="add" id="action_type"/>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">客户编号</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="code" name="customNum" type="text" placeholder="必填项"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">客户类别</label>
+                        <div class="col-sm-8">
+                            <input id="pid" class="easyui-combotree form-control" style="width:188px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">余额日期</label>
+                        <div class="col-sm-8">
+                            <input id="initDate1" type="text" class="easyui-datebox " required="required" style="width:188px;"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">期初预收款</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="periodReceiveFunds1" name="" type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">开户银行</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="bank" name="" type="text"/>
+                        </div>
+                    </div>
+                    <!--<div class="form-group">
+                        <label class="col-sm-4 control-label">法人代表</label>
+                        <div class="col-sm-8">
+                            <input id="" type="text" class="form-control" name=""/>
+                        </div>
+                    </div>-->
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">客户名称</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="name" name="customNum" type="text" placeholder="必填项"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">期初应收款</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="receiveFunds1" name="customClass" type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">纳税人识别号</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="taxPayerNo" name="customClass" type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">银行账号</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="cardNo" name="" type="text"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">销售人员</label>
+                        <div class="col-sm-8">
+                            <input id="employee" type="text" class="easyui-combobox form-control" style="width:186px"/>
+                        </div>
+                    </div>
+                    <!--<div class="form-group">
+                        <label class="col-sm-4 control-label">法人身份证号</label>
+                        <div class="col-sm-8">
+                            <input id="" type="text" class="form-control" name=""/>
+                        </div>
+                    </div>-->
+                </div>
+            <table id="editTab"></table>
+            <textarea id="note" class="form-control" placeholder="添加备注信息"></textarea>
+        </form>
+    </div>
+</div>
+<div id="addressDialog">
+    <div class="wrapper-content">
+        <form class="form-horizontal clearfix">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">省</label>
+                    <div class="col-sm-9">
+                        <input id="province" type="text" class="easyui-combobox form-control" style="width:300px"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">市</label>
+                    <div class="col-sm-9">
+                        <input id="city" type="text" class="easyui-combobox form-control" style="width:300px"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">区</label>
+                    <div class="col-sm-9">
+                        <input id="district" type="text" class="easyui-combobox form-control" style="width:300px"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">详细地址</label>
+                    <div class="col-sm-9">
+                        <input id="detailDistrict" class="form-control" style="width:300px"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<div id="addUser">
+    <form class="form-horizontal">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">用户名</label>
+                <div class="col-sm-8">
+                    <input class="form-control" id="username" name="username" type="text" placeholder="必填项"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">姓名</label>
+                <div class="col-sm-8">
+                    <input class="form-control" id="realName" name="realName" type="text" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">性别</label>
+                <div class="col-sm-8">
+                    <select id="sex" class="form-control" name="sex">
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
