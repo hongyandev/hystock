@@ -17,9 +17,15 @@ $(function () {
         var d = date.getDate();
         return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
     }
-//采购单记录
-    $("#purchaseRecords").datagrid({
-        url: genAPI('pur/queryInvPuPage'),
+    //初始化日期
+    var date=new Date();
+    date.setDate(1);
+    var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    $("#startDate").datebox("setValue", dateStart);
+
+//调拨单记录
+    $("#stoTransRecords").datagrid({
+        url: genAPI('invTf/queryInvTfPage'),
         method: 'post',
         idField: 'id',
         loadMsg: '数据正在加载,请耐心的等待...',
@@ -36,10 +42,9 @@ $(function () {
         queryParams: {
             query: $("#searTxt").val(),
             status: $("#status").val(),
-            startDate: $("#startDate").val(),
+            startDate:$("#startDate").datebox("getValue"),
             endDate: $("#endDate").val(),
-            hxState: $("#hxState").val(),
-            transType:'5'
+            transType:'7'
         },
         columns: [[
             {
@@ -52,7 +57,7 @@ $(function () {
                 hidden: true
             },
             {
-                field: 'purDate',
+                field: 'invDate',
                 title: '单据日期',
                 width: 100,
                 hidden: false
@@ -61,41 +66,6 @@ $(function () {
                 field: 'number',
                 title: '单据编号',
                 width: 160,
-                hidden: false
-            },
-            {
-                field: 'customer',
-                title: '供应商id',
-                hidden: true
-            },
-            {
-                field: 'vendorName',
-                title: '供应商',
-                hidden: false,
-                width:100
-            },
-            {
-                field: "totalAmount",
-                title: "购货金额",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "discountRate",
-                title: "优惠后金额",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "payment",
-                title: "付款金额",
-                width: 100,
-                hidden: false
-            },
-            {
-                field: "hxState",
-                title: "付款状态",
-                width: 150,
                 hidden: false
             },
             {
@@ -163,69 +133,40 @@ $(function () {
             }
         }]
     });
-    //初始化日期
-    var date=new Date();
-    date.setDate(1);
-    var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    $("#startDate").datebox("setValue", dateStart);
-
-    //付款状态
-    var ids;
-    $('#hxState').combo({
-        required : true,
-        editable : true,
-        multiple : true
-    });
-    $('#sp').appendTo($('#hxState').combo('panel'));
-    $("#sp input").click(function() {
-        var _value = "";
-        var _text = "";
-        $("[name=hxState]:input:checked").each(function() {
-            _value += $(this).val() + ",";
-            _text += $(this).next("span").text() + ",";
-        });
-        //设置下拉选中值
-        $('#hxState').combo('setValue', _value).combo(
-            'setText', _text);
-        if (_value){
-            ids = _value.substring(0,_value.length-1);
-        }
-    });
-
-    //查询条件下采购单记录
+//查询条件下出库单记录
     $("#chx").on("click",function () {
-        $("#purchaseRecords").datagrid({
+        $("#stoTransRecords").datagrid({
             queryParams:{
-                query:$("#searTxt").val(),
-                status:$("#status").val(),
+                query: $("#searTxt").val(),
+                status: $("#status").val(),
                 startDate:$("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
-                hxState: ids
-            },
-        }).datagrid("reload",genAPI('pur/queryInvPuPage'));
+                transType:'7'
+            }
+        }).datagrid("reload",genAPI('invTf/queryInvTfPage'));
     })
 
 });
 
 //修改---
 function editPurchase() {
-    var row = $("#purchaseRecords").datagrid('getSelections');
+    var row = $("#stoTransRecords").datagrid('getSelections');
     if (row.length == 1) {
-        var tabTitle = '采购退货单';
+        var tabTitle = '调拨单';
         var dg="#tabs";
-        var url = "webapp/purchase/purchaseBack.html?id="+row[0].id;
+        var url = "webapp/warehuse/storageTransfers.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
-        $("#purchaseRecords").datagrid("clearSelections");
+        $("#stoTransRecords").datagrid("clearSelections");
     }else{
         layer.msg("请选中一行进行编辑");
-        $("#purchaseRecords").datagrid("clearSelections");
+        $("#stoTransRecords").datagrid("clearSelections");
         return false;
     }
 }
 //审核
 function auditPurchase() {
-    var data = $("#purchaseRecords").datagrid('getSelections');
+    var data = $("#stoTransRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
          id += data[i].id+',';
@@ -235,7 +176,7 @@ function auditPurchase() {
     }
     $.ajax({
         type:"POST",
-        url:genAPI('pur/batchCheckInvPu'),
+        url:genAPI('invTf/batchCheckInvTf'),
         data:{
             ids:ids
         },
@@ -250,7 +191,7 @@ function auditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseRecords").datagrid("reload").datagrid("clearSelections");
+                $("#stoTransRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});
@@ -261,7 +202,7 @@ function auditPurchase() {
 }
 //反审核
 function reAuditPurchase() {
-    var data = $("#purchaseRecords").datagrid('getSelections');
+    var data = $("#stoTransRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
         id += data[i].id+',';
@@ -271,7 +212,7 @@ function reAuditPurchase() {
     }
     $.ajax({
         type:"POST",
-        url:genAPI('pur/rsBatchCheckInvPu'),
+        url:genAPI('invTf/reBatchCheckInvTf'),
         data:{
             ids:ids
         },
@@ -286,7 +227,7 @@ function reAuditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"反审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseRecords").datagrid("reload").datagrid("clearSelections");
+                $("#stoTransRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});

@@ -1,8 +1,8 @@
-var rec;
 var categoryId;
 var storageId;
 var query;
 var zero;
+var transType;
 $(function () {
     $.ajaxSetup({
         headers:{
@@ -11,12 +11,12 @@ $(function () {
         }
 
     });
-//获取编剧单号
+//获取单据单号
     $.ajax({
         type:"POST",
         url:genAPI('settings/getBaseNextNo'),
         data:{
-            type:5
+            type:7
         },
         cache: false,
         dataType: "json",
@@ -26,24 +26,42 @@ $(function () {
             }
         }
     });
-
-//初始化日期
-    $('#initDate').datebox('calendar');
-    function myformatter(date){
-        var y = date.getFullYear();
-        var m = date.getMonth()+1;
-        var d = date.getDate();
-        return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
-    }
-//检索供应商
-    $(".btn-search").on("click",function () {
-        $("#vendorList").datagrid({
-            queryParams:{
-                query:$("#searTxt").val(),
-                category:$("#pids").val()
+//回显需要修改的商品
+    if($.cookie('id')){
+        $.ajax({
+            type: "post",
+            url: genAPI('invTf/getInvTfInfo'),
+            cache: false,
+            dataType: "json",
+            data: {
+                id:$.cookie('id')
             },
-        }).datagrid("reload",genAPI('settings/vendorList'));
-    });
+            success: function (res) {
+                if(res.code==200){
+                    //console.info(res);
+                    if(res.data){
+                        $("#tfId").val(res.data.id);
+                        $("#number").html(res.data.number);
+                        $("#initDate").datebox("setValue",res.data.invDate);
+                        $("#stoTransferList").datagrid({data:res.data.detail});
+                        $("#note").val(res.data.note);
+                        totalMoney();
+                        if(res.data.status=="2"){
+                            $("#mark").addClass("has-audit");
+                            $("#audit").hide();
+                            $("#reAudit,#returnPur").show();
+                            $("#stoTransferList").datagrid("removeEditor",['name','storageName','unit','qty','price','note'])
+                        }
+                    }
+                    $.cookie('id',null);
+                }else{
+                    layer.msg(res.message)
+                }
+            }, error: function () {
+
+            }
+        });
+    }
 //供应商类别
     $("#pids").combotree({
         url:genAPI('settings/categoryList'),
@@ -130,25 +148,21 @@ $(function () {
                 $("#vendorClass").val(rowSelect.code+rowSelect.name);
                 $("#vendorClass").attr("vid",rowSelect.id);
                 $(".taxRate").val(rowSelect.taxRate);
-                var opt = $("#purchaseList").datagrid('options');
-                var dg = $("#purchaseList");
+                var opt = $("#stoTransferList").datagrid('options');
+                var dg = $("#stoTransferList");
                 dg.datagrid('refreshRow', opt.editIndex);
                 var rowsData = dg.datagrid('getRows');
                 if(rowsData){
                     for(var i=0;i<rowsData.length-1;i++){
                         rowsData[i].taxRate = rowSelect.taxRate;
-                        rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
                         rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
-                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
-                        rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
                         dg.datagrid('refreshRow', i);
                     }
-                    dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
+                    dg.datagrid('statistics', ["qty","totalPrice"]);
 
                 }
-                discountData();
                 layer.close(index);
-               // $("#vendorList").datagrid("clearSelections")
+                // $("#vendorList").datagrid("clearSelections")
             }
             ,btn2: function(index, layero){
                 layer.close(index);
@@ -162,58 +176,15 @@ $(function () {
 //商品类别
     query = $("#searTxts").val();
     zero = $(".chk-ischecked").find('checkbox').prop('checked')== true ? '1' : '0';
-    $('#cateTree').tree({
-        lines:true,
-        animate:true,
-        url:genAPI('settings/categoryList'),
-        queryParams: {
-            typeNum: 3
-        },
-        formatter:function(node){
-            return node.name;
-        },
-        loadFilter: function(res){
-            return res.data
-        },
-        onClick : function(node) {
-            $("#goods").datagrid('load',{
-                query: query,
-                zero: zero,
-                categoryId:node.id,
-                storageId:storageId
-            })
-        }
-    });
-//获取仓库
-    $("#storage").combobox({
-        url:genAPI('settings/storageList'),
-        valueField: 'id',
-        textField: 'name',
-        cache: false,
-        editable: false,
-        panelHeight:'200',
-        loadFilter:function (data) {
-            return data.data
-        },
-        onSelect:function (record) {
-            storageId = record.id;
-        },
-        onClick:function (node) {
-            $("#goods").datagrid('load',{
-                query: query,
-                zero: zero,
-                categoryId:categoryId,
-                storageId:node.id
-            })
-        }
-    });
-//采购录入表格
-    var goodsid;
+
+    //入库单录入表格
+    var goodsId;
     var storageId;
-    var storageid;
-    var storageName;
-    //var goodsId;
-    $("#purchaseList").datagrid({
+    var storageidIn;
+    var storageidOut;
+    var storagenameOut;
+    var storagenameIn;
+    $("#stoTransferList").datagrid({
         rownumbers : true,
         singleSelect:true,
         fitColumns:false,
@@ -253,7 +224,7 @@ $(function () {
 
                         },
                         onSelect:function(index,record){
-                            goodsid = record.id;
+                            goodsId = record.id;
                         },
                         onHidePanel:function () {
                             $.ajax({
@@ -262,18 +233,18 @@ $(function () {
                                 cache:false,
                                 dataType:"json",
                                 data:{
-                                    id:goodsid
+                                    id:goodsId
                                 },
                                 success:function (res) {
                                     if(res.code==200){
                                         console.info(res.data);
-                                        var opt = $("#purchaseList").datagrid("options");
-                                        $("#purchaseList").datagrid('updateRow', {
+                                        var opt = $("#stoTransferList").datagrid("options");
+                                        $("#stoTransferList").datagrid('updateRow', {
                                             index: opt.editIndex,
                                             row: res.data
                                         });
 
-                                        $("#purchaseList").datagrid("editCell",{
+                                        $("#stoTransferList").datagrid("editCell",{
                                             index:opt.editIndex,
                                             field:'storageName'
                                         })
@@ -307,7 +278,7 @@ $(function () {
                                 content: $('#goodsList'),
                                 btn: ['选中并关闭', '取消'],
                                 yes: function(sec, layero){
-                                    var dg = $('#purchaseList');
+                                    var dg = $('#stoTransferList');
                                     var opt = dg.datagrid('options');
                                     var data = $("#goods").datagrid('getSelections');
                                     $("#goods").datagrid('endEditing');
@@ -327,7 +298,6 @@ $(function () {
                                     }
                                     $("#goods").datagrid("clearSelections");
                                     totalMoney();
-                                    discountData();
                                     layer.close(sec);
                                     if(dg.datagrid("getRows").length == dgIndex) {
                                         dg.datagrid("append", {});
@@ -347,70 +317,6 @@ $(function () {
             {
                 field:'storageId',
                 hidden:true
-            },
-            {   field:'storageName',
-                title:'仓库 &nbsp' +
-                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
-                width : 160,
-                hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageId || !rowData.storageName){
-                        rowData.storageId = storageid;
-                        rowData.storageName = storageName;
-                    }
-                    return rowData.storageName || "";
-                },
-                editor : {
-                    type : "combobox",
-                    options:{
-                        buttonIcon:'fa fa-search fa-lg',
-                        buttonAlign:'left',
-                        valueField:'id',
-                        textField:'name',
-                        url:genAPI('settings/storageList'),
-                        method:'post',
-                        loadFilter:function (data) {
-                            return data.data;
-                        },
-                        onSelect:function (record) {
-                             storageName = record.name;
-                             storageid = record.id;
-
-                        },
-                        onClickButton:function () {
-                            var rowData = $("#purchaseList").datagrid("getSelected");
-                            goodsInventoryList(rowData.goodsId);
-                            var dd = $(this);
-                            var st =  layer.open({
-                                type: 1,
-                                title:"仓库库存查询",
-                                skin: 'layui-layer-molv', //加上边框
-                                area: ['600px', '388px'], //宽高
-                                content: $('#goodsInventory')
-                                ,btn: ['确认', '关闭']
-                                ,yes: function(st, layero){
-                                    layer.close(st);
-                                    var dg = $('#purchaseList');
-                                    var opt = dg.datagrid('options');
-                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
-                                    $("#purchaseList").datagrid("updateRow",{
-                                        index: opt.editIndex,
-                                        row: {
-                                            storageName : stor.storageName,
-                                            storageId : stor.storageId
-                                        }
-                                    });
-                                    $("#goodsInventoryList").datagrid("clearSelections");
-                                }
-                                ,btn2: function(st, layero){
-                                    layer.close(st);
-                                }
-                            });
-
-
-                        }
-                    }
-                }
             },
             {   field:'unit',
                 title:'单位',
@@ -441,8 +347,8 @@ $(function () {
                         },
                         onBeforeLoad:function (param){
                             //console.info(param);
-                            var opts = $("#purchaseList").datagrid('options');
-                            var rows = $('#purchaseList').datagrid('getRows');
+                            var opts = $("#stoTransferList").datagrid('options');
+                            var rows = $('#stoTransferList').datagrid('getRows');
                             var rowsData = rows[opts.editIndex];
                             console.info(rowsData);
                             param.id = rowsData.unit || 0;
@@ -467,116 +373,144 @@ $(function () {
             },
             {
                 field:"purPrice",
-                title:"单价",
+                title:"采购单价",
                 width:150,
-                hidden:false
+                hidden:true
             },
             {
-                field:"taxPrice",
-                title:"含税单价",//单价*（1+税率）
-                width:150,
-                hidden:false,
-                formatter:function (value,record,index) {
-                    if(record.isFooter){
-                        return value;
-                    }
-                    try {
-                        var taxPrice = record.purPrice.mul(accAdd(1,accDiv(record.taxRate,100)))
-                        record.taxPrice = taxPrice;
-                        $("#purchaseList").datagrid("updateRow",{index: index, row: record});
-                        return taxPrice;
-                    } catch (e) {
-                        return value;
-                    }
-
-                }
+                field:'storageIdOut',
+                hidden:true
             },
-            {
-                field:"discountRate",
-                title:"折扣率",
-                width:150,
+            {   field:'storageNameOut',
+                title:'调出仓库 &nbsp' +
+                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
+                width : 160,
                 hidden:false,
-                editor:{
-                    type : "numberbox",
+                formatter:function (value,rowData,rowIndex) {
+                    if(!rowData.storageIdOut || !rowData.storageNameOut){
+                        rowData.storageIdOut  = storageidOut ;
+                        rowData.storageNameOut = storagenameOut ;
+                    }
+                    return rowData.storageNameOut || "";
+                },
+                editor : {
+                    type : "combobox",
                     options:{
-                        value:0,
-                        precision:2
-                    }
+                        buttonIcon:'fa fa-search fa-lg',
+                        buttonAlign:'left',
+                        valueField:'id',
+                        textField:'name',
+                        url:genAPI('settings/storageList'),
+                        method:'post',
+                        loadFilter:function (data) {
+                            return data.data;
+                        },
+                        onSelect:function (record) {
+                            storagenameOut = record.name;
+                            storageidOut = record.id;
 
-                }
-            },
-            {
-                field:"discountPrise",
-                title:"折扣额",//单价*折扣率*数量
-                width:150,
-                hidden:false,
-                formatter:function (value,record,index) {
-                    if(record.isFooter){
-                        return value;
-                    }
-                    try {
-                        var discountPrise = intToFloat(accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100))));
-                       // record.discountPrise = discountPrise;
-                       // $("#purchaseList").datagrid("updateRow",{index: index, row: record});
-                        return discountPrise;
-                    } catch (e) {
-                        return value;
-                    }
-                }
-            },
-            {
-                field:"totalPrice",
-                title:"金额",//单价*数量-（单价*折扣率*数量）
-                width:150,
-                hidden:false,
-                formatter:function (value,record,index) {
-                    if(record.isFooter){
-                        return value;
-                    }
-                    try {
-                       return intToFloat(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))));
-                    } catch (e) {
-                        return value;
-                    }
-                }
-            },
-            {
-                field:"taxRate",
-                title:"税率",
-                width:150,
-                hidden:false
-            },
-            {
-                field:"tax",
-                title:"税额",//[单价*数量-(单价*折扣率*数量)]*税率
-                width:150,
-                hidden:false,
-                formatter:function (value,record,index) {
-                    if(record.isFooter){
-                        return value;
-                    }
-                    try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accDiv(record.taxRate,100)));
-                    } catch (e) {
-                        return value;
-                    }
-                }
-            },
-            {
-                field:"totalLevied",
-                title:"价税合计",//[单价*数量-(单价*折扣率*数量)]*(1+税率)
-                width:150,
-                hidden:false,
-                formatter:function (value,record,index) {
-                    if(record.isFooter){
-                        return value;
-                    }
-                    try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accAdd(1,accDiv(record.taxRate,100))));
-                    } catch (e) {
-                        return value;
-                    }
+                        },
+                        onClickButton:function () {
+                            var rowData = $("#stoTransferList").datagrid("getSelected");
+                            goodsInventoryList(rowData.goodsId);
+                            var dd = $(this);
+                            var st =  layer.open({
+                                type: 1,
+                                title:"仓库库存查询",
+                                skin: 'layui-layer-molv', //加上边框
+                                area: ['600px', '388px'], //宽高
+                                content: $('#goodsInventory')
+                                ,btn: ['确认', '关闭']
+                                ,yes: function(st, layero){
+                                    layer.close(st);
+                                    var dg = $('#stoTransferList');
+                                    var opt = dg.datagrid('options');
+                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
+                                    $("#stoTransferList").datagrid("updateRow",{
+                                        index: opt.editIndex,
+                                        row: {
+                                            storageNameOut : stor.storageName,
+                                            storageId : stor.storageId
+                                        }
+                                    });
+                                    $("#goodsInventoryList").datagrid("clearSelections");
+                                }
+                                ,btn2: function(st, layero){
+                                    layer.close(st);
+                                }
+                            });
 
+
+                        }
+                    }
+                }
+            },
+            {
+                field:'storageIdIn',
+                hidden:true
+            },
+            {   field:'storageNameIn',
+                title:'调入仓库 &nbsp' +
+                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
+                width : 160,
+                hidden:false,
+                formatter:function (value,rowData,rowIndex) {
+                    if(!rowData.storageIdIn || !rowData.storageNameIn){
+                        rowData.storageIdIn = storageidIn;
+                        rowData.storageNameIn = storagenameIn;
+                    }
+                    return rowData.storageNameIn || "";
+                },
+                editor : {
+                    type : "combobox",
+                    options:{
+                        buttonIcon:'fa fa-search fa-lg',
+                        buttonAlign:'left',
+                        valueField:'id',
+                        textField:'name',
+                        url:genAPI('settings/storageList'),
+                        method:'post',
+                        loadFilter:function (data) {
+                            return data.data;
+                        },
+                        onSelect:function (record) {
+                            storagenameIn = record.name;
+                            storageidIn = record.id;
+
+                        },
+                        onClickButton:function () {
+                            var rowData = $("#stoTransferList").datagrid("getSelected");
+                            goodsInventoryList(rowData.goodsId);
+                            var dd = $(this);
+                            var st =  layer.open({
+                                type: 1,
+                                title:"仓库库存查询",
+                                skin: 'layui-layer-molv', //加上边框
+                                area: ['600px', '388px'], //宽高
+                                content: $('#goodsInventory')
+                                ,btn: ['确认', '关闭']
+                                ,yes: function(st, layero){
+                                    layer.close(st);
+                                    var dg = $('#stoTransferList');
+                                    var opt = dg.datagrid('options');
+                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
+                                    $("#stoTransferList").datagrid("updateRow",{
+                                        index: opt.editIndex,
+                                        row: {
+                                            storageNameIn : stor.storageName,
+                                            storageId : stor.storageId
+                                        }
+                                    });
+                                    $("#goodsInventoryList").datagrid("clearSelections");
+                                }
+                                ,btn2: function(st, layero){
+                                    layer.close(st);
+                                }
+                            });
+
+
+                        }
+                    }
                 }
             },
             {   field:"note",
@@ -590,17 +524,17 @@ $(function () {
         ]],
         lastFieldFun: function (dg, index, field) {
             var nextIndex = index + 1;
-            var row = $('#purchaseList').datagrid('getRows')[nextIndex];
+            var row = $('#stoTransferList').datagrid('getRows')[nextIndex];
 
-                if(!row) {
-                    $('#purchaseList').datagrid('append', {});
-                }
-                if (dg.datagrid('endEditing')) {
-                    dg.datagrid('selectRow', nextIndex).datagrid('editCell', {
-                        index: nextIndex,
-                        field: 'name'
-                    });
-                }
+            if(!row) {
+                $('#stoTransferList').datagrid('append', {});
+            }
+            if (dg.datagrid('endEditing')) {
+                dg.datagrid('selectRow', nextIndex).datagrid('editCell', {
+                    index: nextIndex,
+                    field: 'name'
+                });
+            }
         },
         toolbar:[{
             text:'添加',
@@ -611,20 +545,14 @@ $(function () {
                     storageName:'',
                     unit:'',
                     qty:'',
-                    purPrice:'',
-                    taxPrice:'',
-                    discountRate:'',
-                    discountPrise:'',
+                    price:'',
                     totalPrice:'',
-                    taxRate:'',
-                    tax:'',
-                    totalLevied:'',
                     note:''
                 };
-                $('#purchaseList').datagrid('append', row);
-                /*var editIndex = $("#purchaseList").datagrid('getRows').length-1;
-                if($('#purchaseList').datagrid('endEditing')){
-                    $('#purchaseList').datagrid('selectRow', editIndex).datagrid('editCell', {
+                $('#stoTransferList').datagrid('append', row);
+                /*var editIndex = $("#stoTransferList").datagrid('getRows').length-1;
+                if($('#stoTransferList').datagrid('endEditing')){
+                    $('#stoTransferList').datagrid('selectRow', editIndex).datagrid('editCell', {
                         index: editIndex,
                         field: 'name'
                     });
@@ -636,7 +564,7 @@ $(function () {
             handler:function () {
                 var t =$(this);
                 console.info(t);
-                var row = $("#purchaseList").datagrid('getSelections');
+                var row = $("#stoTransferList").datagrid('getSelections');
                 if(!row){
                     layer.msg('请选中一行进行操作！')
                 }
@@ -646,12 +574,11 @@ $(function () {
                         btn: ['确定', '取消'] //按钮
                     }, function (target) {
                         if (target) {
-                            $('#purchaseList').datagrid('removeit');
-                            var dg = $('#purchaseList');
+                            $('#stoTransferList').datagrid('removeit');
+                            var dg = $('#stoTransferList');
                             var opt = dg.datagrid('options');
                             dg.datagrid('refreshRow', opt.editIndex);
                             totalMoney();
-                            discountData();
                             layer.close(index);
                         }
                     }, function (index) {
@@ -661,38 +588,19 @@ $(function () {
             }
         }],
         onAfterEdit:function (rowIndex, rowData, changes) {
-            if(changes["discountRate"]|| changes["qty"]){
-                //var dg = $('#purchaseList');
-                //dg.datagrid("refreshRow", rowIndex);
-                /*var rows = dg.datagrid('getData');
-                for(var i=0;i<rows.rows.length;i++){
-                    rows.rows[i].discountRate = rows.rows[i].discountRate ? rows.rows[i].discountRate : 0;
-                    rows.rows[i].purPrice = rows.rows[i].purPrice ? rows.rows[i].purPrice : 0;
-                    rows.rows[i].taxRate = rows.rows[i].taxRate ? rows.rows[i].taxRate : 0;
-                    rows.rows[i].qty = rows.rows[i].qty ? rows.rows[i].qty : 0;
-                    rows.rows[i].discountPrise = intToFloat(accMul(rows.rows[i].qty,accMul(rows.rows[i].purPrice,accDiv(rows.rows[i].discountRate,100))));
-                    rows.rows[i].totalPrice = intToFloat(accSub(accMul(rows.rows[i].purPrice,rows.rows[i].qty),accMul(rows.rows[i].qty,accMul(rows.rows[i].purPrice,accDiv(rows.rows[i].discountRate,100)))));
-                    rows.rows[i].tax = intToFloat(accMul(accSub(accMul(rows.rows[i].purPrice,rows.rows[i].qty),accMul(rows.rows[i].qty,accMul(rows.rows[i].purPrice,accDiv(rows.rows[i].discountRate,100)))),accDiv(rows.rows[i].taxRate,100)));
-                    rows.rows[i].totalLevied = intToFloat(accMul(accSub(accMul(rows.rows[i].purPrice,rows.rows[i].qty),accMul(rows.rows[i].qty,accMul(rows.rows[i].purPrice,accDiv(rows.rows[i].discountRate,100)))),accAdd(1,accDiv(rows.rows[i].taxRate,100))));
-
-                }
-                dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);*/
+            if(changes["qty"] || changes["price"]){
                 totalMoney();
-                discountData();
             }
         }
     }).datagrid('enableCellEditing').datagrid('reloadFooter',
-            [{
-                "name":"合计：",
-                "qty":0,
-                "discountPrise":0,
-                "totalPrice":0,
-                "tax":0,
-                "totalLevied":0,
-                "isFooter":true
-            }]
+        [{
+            "name":"合计：",
+            "qty":0,
+            "totalPrice":0,
+            "isFooter":true
+        }]
 
-);
+    );
 //获取批量仓库列表
     $.ajax({
         type:"POST",
@@ -704,76 +612,23 @@ $(function () {
             var str="";
             $.each(res.data,function (index,val){
                 str+="<li>" +
-                        "<a class='clear block' storgeId='"+val.id+"' href='javascript:void(0)'>" +
-                            "<p class='font16'>"+val.name+"</p>" +
-                        "</a>" +
-                     "</li>";
+                    "<a class='clear block' storgeId='"+val.id+"' href='javascript:void(0)'>" +
+                    "<p class='font16'>"+val.name+"</p>" +
+                    "</a>" +
+                    "</li>";
             });
             $('.dropdownUl').append(str);
         }
     });
-//更改优惠率联动优惠后金额
-    $('input[name="discountRate"]').on('input propertychange', function() {
-        discountData();
-    });
-//计算本次欠款
-    $("#payment").on('input propertychange', function() {
-       $("#arrears").val(accSub($("#discount").val() || 0,$("#payment").val() || 0))
-    })
-//回显需要修改的商品
-    if($.cookie('id')){
-        $.ajax({
-            type: "post",
-            url: genAPI('pur/getInvPuInfo'),
-            cache: false,
-            dataType: "json",
-            data: {
-                id:$.cookie('id')
-            },
-            success: function (res) {
-                if(res.code==200){
-                    //console.info(res);
-                    if(res.data){
-                        $("#purId").val(res.data.id);
-                        $("#status").val(res.data.status);
-                        $("#vendorClass").val(res.data.vendorName);
-                        $("#vendorClass").attr("vid",res.data.customer);
-                        $("#number").html(res.data.number);
-                        $("#initDate").datebox("setValue",res.data.purDate);
-                        $("#purchaseList").datagrid({data:res.data.purDet});
-                        $("#discountRate").val(res.data.discountRate);
-                        $("#deduction").val(res.data.deduction);
-                        $("#payment").val(res.data.payment);
-                        $("#discount").val(res.data.totalAmount);
-                        $("#note").val(res.data.note);
-                        totalMoney();
-                       // discountData();
-                        if(res.data.status=="2"){
-                            $("#mark").addClass("has-audit");
-                            $("#audit").hide();
-                            $("#reAudit,#returnPur").show();
-                            $("#discountRate,#deduction,#payment,#arrears,#account").attr("readOnly",true);
-                            $("#purchaseList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
-                        }
-                    }
 
-                    $.cookie('id',null);
-                }else{
-                    layer.msg(res.message)
-                }
-            }, error: function () {
-
-            }
-        });
-    }
 //操作日志
-    $("#purLog").on("click",function () {
+    $("#dd").on("click",function () {
         $.ajax({
             type:'post',
             url:genAPI('query/queryInvOpeLog'),
             data:{
-                invId:$("#purId").val(),
-                vType:'5'
+                invId:$("#inOrderId").val(),
+                vType:'8'
             },
             success:function (res) {
                 if(res.code=='200'){
@@ -789,18 +644,11 @@ $(function () {
                             '     </li>\n' +
                             '  </ul>';
                     }
-                    if(res.data.length>0){
-                        layer.tips(str,
-                            '#dd', {
-                                tips: [1, '#3595CC'],
-                                time: 3000
-                            });
-                    }else{
-                        layer.tips("暂无操作日志",'#dd', {
+                    layer.tips(str,
+                        '#dd', {
                             tips: [1, '#3595CC'],
                             time: 3000
                         });
-                    }
                 }else{
                     layer.msg(res.msg)
                 }
@@ -887,12 +735,12 @@ function queryGoods(query,zero,categoryId,storageId) {
                             return data.data;
                         },
                         onBeforeLoad:function (param){
-                           //console.info(param);
-                           var opts = $("#goods").datagrid('options');
-                           var rows = $('#goods').datagrid('getRows');
-                           var rowsData = rows[opts.editIndex];
-                           console.info(rowsData);
-                           param.id = rowsData.unit;
+                            //console.info(param);
+                            var opts = $("#goods").datagrid('options');
+                            var rows = $('#goods').datagrid('getRows');
+                            var rowsData = rows[opts.editIndex];
+                            console.info(rowsData);
+                            param.id = rowsData.unit;
                         }
 
                     }
@@ -985,43 +833,22 @@ function goodsInventoryList(goodsId) {
         }
     })
 }
-//优惠后的金额与本次付款
-function discountData() {
-    var footerData = $("#purchaseList").datagrid("getFooterRows");
-    //console.info(footerData);
-    //var paymentData = $("#payment").val() || 0;
-    var discountRateData =accDiv($("#discountRate").val() || 0,100) ;
-        //付款优惠
-        $("#deduction").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
-        //优惠后的金额
-        $("#discount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
-        //本次付款
-        $("#payment").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
-        //本次欠款
-        $("#arrears").val(intToFloat(accSub(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData)),$("#payment").val() || 0)));
-
-}
 //合计
 function totalMoney() {
-    var dg = $('#purchaseList');
+    var dg = $('#stoTransferList');
     var rowsData = dg.datagrid('getRows');
     for(var i=0;i<rowsData.length;i++){
         if(!rowsData[i].goodsId){
             rowsData[i].goodsId = rowsData[i].id;
             rowsData[i].id = null;
         }
-        rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
+        rowsData[i].price = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
         rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
-        rowsData[i].taxRate = rowsData[i].taxRate ? rowsData[i].taxRate : 0;
         rowsData[i].qty = rowsData[i].qty ? rowsData[i].qty : 0;
-        rowsData[i].discountPrise = intToFloat(accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100))));
-        rowsData[i].totalPrice = intToFloat(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))));
-        rowsData[i].tax = intToFloat(accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100)));
-        rowsData[i].totalLevied = intToFloat(accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100))));
+        rowsData[i].totalPrice = intToFloat(accMul(rowsData[i].purPrice,rowsData[i].qty));
         dg.datagrid('refreshRow', i);
     }
-
-    dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
+    dg.datagrid('statistics', ["qty","totalPrice"]);
 }
 //查询商品
 function seachForm() {
@@ -1045,7 +872,7 @@ function seachForm() {
 }
 //开启扫描枪录入
 function start() {
-    var dg = $("#purchaseList");
+    var dg = $("#stoTransferList");
     dg.datagrid('removeEditor','name');
     dg.datagrid('addEditor',[
         {
@@ -1057,47 +884,47 @@ function start() {
                         var barCode = v;
                         var code = e.keyCode || e.which;
                         if(code == 13){
-                                $.ajax({
-                                    type:"POST",
-                                    url:genAPI('query/queryGoods'),
-                                    async:true,
-                                    data:{
-                                        barCode:barCode
-                                    },
-                                    dataType:"json",
-                                    success:function(res){
-                                        if(res.code=='200'){
-                                            var dg = $("#purchaseList");
-                                            var opt = dg.datagrid("options");
-                                            if(res.data==null){
-                                                $(e.target).val("");
-                                            } else {
-                                                var rowData = dg.datagrid('getRows');
-                                                var flag = true;
-                                                for(var i=0;i<rowData.length;i++){
-                                                    if(rowData.barCode ==  $(e.target).val()){
-                                                        rowData[i].qty++;
-                                                        flag = false;
-                                                    }
-                                                }
-                                                if(flag){
-                                                    res.data.qty = 1;
-                                                    dg.datagrid('updateRow', {
-                                                        index: opt.editIndex,
-                                                        row: res.data
-                                                    });
-                                                    dg.datagrid("append",{});
+                            $.ajax({
+                                type:"POST",
+                                url:genAPI('query/queryGoods'),
+                                async:true,
+                                data:{
+                                    barCode:barCode
+                                },
+                                dataType:"json",
+                                success:function(res){
+                                    if(res.code=='200'){
+                                        var dg = $("#stoTransferList");
+                                        var opt = dg.datagrid("options");
+                                        if(res.data==null){
+                                            $(e.target).val("");
+                                        } else {
+                                            var rowData = dg.datagrid('getRows');
+                                            var flag = true;
+                                            for(var i=0;i<rowData.length;i++){
+                                                if(rowData.barCode ==  $(e.target).val()){
+                                                    rowData[i].qty++;
+                                                    flag = false;
                                                 }
                                             }
-                                            dg.datagrid("editCell",{
-                                                index: opt.editIndex,
-                                                field: 'name'
-                                            })
-                                        }else{
-                                            layer.msg(res.message)
+                                            if(flag){
+                                                res.data.qty = 1;
+                                                dg.datagrid('updateRow', {
+                                                    index: opt.editIndex,
+                                                    row: res.data
+                                                });
+                                                dg.datagrid("append",{});
+                                            }
                                         }
+                                        dg.datagrid("editCell",{
+                                            index: opt.editIndex,
+                                            field: 'name'
+                                        })
+                                    }else{
+                                        layer.msg(res.message)
                                     }
-                                })
+                                }
+                            })
                         }
                         return false;
                     }
@@ -1106,14 +933,14 @@ function start() {
 
             }
         }
-        ]);
+    ]);
 
 
 }
 //关闭扫描枪录入
 function end() {
-    $("#purchaseList").datagrid('removeEditor',['name','storageName','unit','qty','discountRate']);
-    $("#purchaseList").datagrid('addEditor',[
+    $("#stoTransferList").datagrid('removeEditor',['name','storageName','unit','qty']);
+    $("#stoTransferList").datagrid('addEditor',[
         {field:'name',
             title:'产品名称- - -扫描枪录入<button class="switch switch-anim" onclick="checkNum(this)" type="checkbox"></button>',
             width : 300,
@@ -1164,13 +991,13 @@ function end() {
                             success:function (res) {
                                 if(res.code==200){
                                     console.info(res.data);
-                                    var opt = $("#purchaseList").datagrid("options");
-                                    $("#purchaseList").datagrid('updateRow', {
+                                    var opt = $("#stoTransferList").datagrid("options");
+                                    $("#stoTransferList").datagrid('updateRow', {
                                         index: opt.editIndex,
                                         row: res.data
                                     });
 
-                                    $("#purchaseList").datagrid("editCell",{
+                                    $("#stoTransferList").datagrid("editCell",{
                                         index:opt.editIndex,
                                         field:'storageName'
                                     })
@@ -1204,7 +1031,7 @@ function end() {
                             content: $('#goodsList'),
                             btn: ['选中并关闭', '取消'],
                             yes: function(sec, layero){
-                                var dg = $('#purchaseList');
+                                var dg = $('#stoTransferList');
                                 var opt = dg.datagrid('options');
                                 var data = $("#goods").datagrid('getSelections');
                                 $("#goods").datagrid('endEditing');
@@ -1224,7 +1051,6 @@ function end() {
                                 }
                                 $("#goods").datagrid("clearSelections");
                                 totalMoney();
-                                discountData();
                                 layer.close(sec);
                                 if(dg.datagrid("getRows").length == dgIndex) {
                                     dg.datagrid("append", {});
@@ -1316,8 +1142,8 @@ function end() {
                     },
                     onBeforeLoad:function (param){
                         //console.info(param);
-                        var opts = $("#purchaseList").datagrid('options');
-                        var rows = $('#purchaseList').datagrid('getRows');
+                        var opts = $("#stoTransferList").datagrid('options');
+                        var rows = $('#stoTransferList').datagrid('getRows');
                         var rowsData = rows[opts.editIndex];
                         console.info(rowsData);
                         param.id = rowsData.unit || 0;
@@ -1360,37 +1186,37 @@ function end() {
 //开关选中与否
 function checkNum(checkbox){
     $('.switch-anim').toggleClass('checked');
-   if($(checkbox).hasClass('checked')){
+    if($(checkbox).hasClass('checked')){
         console.log("选中");
         if($("#status").val() == "2"){
-            $("#purchaseList").datagrid("removeEditor","name");
+            $("#stoTransferList").datagrid("removeEditor","name");
         }else{
             start();
         }
 
     }else{
-       console.log("没选中");
+        console.log("没选中");
         if($("#status").val() == "2"){
-            $("#purchaseList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
+            $("#stoTransferList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
         }else{
             end();
         }
 
     }
-    var opts = $("#purchaseList").datagrid('options');
+    var opts = $("#stoTransferList").datagrid('options');
     //console.info(opts);
-    $("#purchaseList").datagrid('cancelEdit',opts.editIndex);
+    $("#stoTransferList").datagrid('cancelEdit',opts.editIndex);
 }
 //批量仓库
 function bathStorage() {
     if($('.dropdownBg').is(':hidden')){
         $(".dropdownBg").show();
-        var row = $("#purchaseList").datagrid("getRows");
+        var row = $("#stoTransferList").datagrid("getRows");
         $('.dropdownBg').find('li').click(function () {
             var storageName = $(this).text();
             var storageid = $(this).find("a").attr("storgeid");
             for(var i=0;i<row.length;i++){
-                $("#purchaseList").datagrid("updateRow",{
+                $("#stoTransferList").datagrid("updateRow",{
                     index: i,
                     row: {
                         storageName : storageName,
@@ -1404,200 +1230,119 @@ function bathStorage() {
         $('.dropdownBg').hide();
     }
 }
+//新增
+function addTransferList() {
+    var tabTitle = '调拨单';
+    var dg="#tabs";
+    var url = "webapp/warehouse/storageTransfer.html";
+    addTopTab(dg,tabTitle,url)
+}
 //保存
-function savePurchase() {
-    $("#purchaseList").datagrid('endEditing');
-    var dg = $("#purchaseList");
-    var purDet = dg.datagrid('getRows');
-    var purDate = $('#initDate').datebox('getValue');
+function saveTransferList() {
+    $("#stoTransferList").datagrid('endEditing');
+    var dg = $("#stoTransferList");
+    var inDet = dg.datagrid('getRows');
+    var invDate = $('#initDate').datebox('getValue');
     var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
+    if(inDet.length == 0){
         layer.msg("请选择商品！");
         return false;
     }else {
         var a = true;
-        for(var i=0;i<purDet.length;i++){
-            if(purDet[i].goodsId && purDet[i].storageId == ""){
+        for(var i=0;i<inDet.length;i++){
+            if(inDet[i].goodsId && inDet[i].storageId == ""){
                 layer.msg("请选择仓库！");
                 a = false;
                 break;
-            } else if (!purDet[i].goodsId){
+            } else if (!inDet[i].goodsId){
                 //purDet.splice(i,1)
                 dg.datagrid("deleteRow", i);
             }
         }
         if(!a){return false}
-        purDet = dg.datagrid('getRows');
-    }
-    if(!customer){
-        layer.msg("请选择供应商！");
-        return false;
+        inDet = dg.datagrid('getRows');
     }
     var data = {
-        id:$("#purId").val() ? $("#purId").val() : 0,
-        transType:'5',
+        id:$("#tfId").val() ? $("#tfId").val() : 0,
         number:$("#number").html(),
-        customer:customer,
-        purDate:purDate,
-        discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
-        payment:$("#payment").val(),
-        totalAmount:$("#discount").val(),
+        invDate:invDate,
         note:$("#note").val(),
-        purDet:purDet
+        detail:inDet
     };
+    /*if($("#tfId").val()!=0){
+        url
+    }*/
     $.ajax({
         type:"POST",
-        url:genAPI($("#purId").val()!=0 ? 'pur/modifyPurchase': 'pur/createPurchase'),
+        url:genAPI($("#tfId").val()!=0 ? 'invTf/modifyInvTf' :'invTf/createInvTf'),
         async:true,
         contentType:"application/json",
         data:JSON.stringify(data),
         success:function(res){
             if(res.code=='200'){
                 layer.msg("保存成功！");
-                $("#purId").val(res.data.id)
+                console.info(res.data);
+                $("#tfId").val(res.data.id);
             }else{
                 layer.msg(res.message)
             }
         }
     });
 }
-//保存并新增
-function addPurchase() {
-    var tabTitle = '采购单';
-    var dg="#tabs";
-    var url = "webapp/purchase/purchase.html";
-    addTopTab(dg,tabTitle,url)
-}
 //审核
-function auditPurchase() {
-   /* var purDet = $("#purchaseList").datagrid('getRows');
-    var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
-        layer.msg("请选择商品！");
-        return false;
-    }else{
-        for(var i=0;i<purDet.length;i++){
-            if(!purDet[i].id){
-                purDet.splice(i,1)
-            }
-        }
-        for(var i=0;i<purDet.length-1;i++){
-            if(purDet[i].storageId == ""){
-                layer.msg("请选择仓库！");
-                return false;
-            }
-        }
-    }
-    if(!customer){
-        layer.msg("请选择供应商！");
-        return false;
-    }*/
-    $("#purchaseList").datagrid('endEditing');
-    var dg = $("#purchaseList");
-    var purDet = dg.datagrid('getRows');
-    var purDate = $('#initDate').datebox('getValue');
-    var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
+function auditTransferList() {
+    $("#stoTransferList").datagrid('endEditing');
+    var dg = $("#stoTransferList");
+    var inDet = dg.datagrid('getRows');
+    var invDate = $('#initDate').datebox('getValue');
+    if(inDet.length == 0){
         layer.msg("请选择商品！");
         return false;
     }else {
         var a = true;
-        for(var i=0;i<purDet.length;i++){
-            if(purDet[i].goodsId && purDet[i].storageId == ""){
+        for(var i=0;i<inDet.length;i++){
+            if(inDet[i].goodsId && inDet[i].storageId == ""){
                 layer.msg("请选择仓库！");
                 a = false;
                 break;
-            } else if (!purDet[i].goodsId){
+            } else if (!inDet[i].goodsId){
                 //purDet.splice(i,1)
                 dg.datagrid("deleteRow", i);
             }
         }
         if(!a){return false}
-        purDet = dg.datagrid('getRows');
-    }
-    if(!customer){
-        layer.msg("请选择供应商！");
-        return false;
+        inDet = dg.datagrid('getRows');
     }
     var data = {
-        id:$("#purId").val() ? $("#purId").val() : 0,
-        transType:'5',
+        id:$("#tfId").val() ? $("#tfId").val() : 0,
         number:$("#number").html(),
-        customer:customer,
-        purDate:purDate,
-        discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
-        payment:$("#payment").val(),
-        totalAmount:$("#discount").val(),
+        invDate:invDate,
         note:$("#note").val(),
-        purDet:purDet
+        detail:inDet
     };
     $.ajax({
         type:"POST",
-        url:genAPI('pur/checkPurchase'),
+        url:genAPI('invTf/checkInvTf'),
         async:true,
         contentType:"application/json",
         data:JSON.stringify(data),
         success:function (res) {
             if(res.code==200){
-               $("#mark").addClass("has-audit");
-               $("#audit,#returnPur").hide();
-               $("#reAudit,#returnPur").show();
-               $("#purchaseList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
+                $("#mark").addClass("has-audit");
+                $("#audit").hide();
+                $("#reAudit,#returnPur").show();
+                $("#stoTransferList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
             }else{
                 layer.msg(res.message);
             }
         }
     })
 }
-//反审核
-function reAuditPurchase() {
-    $.ajax({
-        type:"POST",
-        url:genAPI('pur/rsBatchCheckInvPu'),
-        data:{
-            ids:$("#purId").val()
-        },
-        cache: false,
-        dataType: "json",
-        success:function (res) {
-            if(res.code==200){
-                layer.msg("反审核成功！");
-                $("#mark").removeClass("has-audit");
-                $("#audit").show();
-                $("#discountRate,#deduction,#payment,#arrears,#account").attr("readOnly",false);
-                $("#reAudit,#returnPur").hide();
-                end();
-            }else {
-                layer.msg(res.message);
-            }
-        }
-    })
-}
-//复制
-function copyPurchase() {
-
-}
 //历史单据
 function historyReceipts() {
-    var tabTitle = '采购单记录';
+    var tabTitle = '调拨单记录';
     var dg="#tabs";
-    var url = "webapp/purchase/purchaseHistory.html";
+    var url = "webapp/warehouse/stoTransHistory.html";
     addTopTab(dg,tabTitle,url)
 
 }
-function returnPurchase() {
-    var tabTitle = '采购退货单';
-    var dg="#tabs";
-    var url = "webapp/purchase/purchaseBack.html";
-    addTopTab(dg,tabTitle,url)
-    $.cookie('pbid',$("#purId").val());
-}
-
-
-
-
-
-
-

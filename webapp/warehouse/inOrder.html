@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>其他入库单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/warehouse/inOrder.js"></script>
+</head>
+<body>
+    <div>
+        <input type="hidden" id="inOrderId"/>
+        <div class="clearfix">
+            <div class="form-inline col-sm-12" style="z-index:99999">
+                <div class="form-group">
+                    <label>供应商：</label>
+                    <input id="vendorClass" placeholder="请选择客户类别" class="form-control" style="width:200px;">
+                    <input type="hidden" class="taxRate" />
+                </div>
+                <div class="form-group">
+                    <label>单据日期：</label>
+                    <input id="initDate" class="easyui-datebox form-control" value="myformatter()" style="width:200px">
+                </div>
+                <div class="form-group">
+                    <label>业务类别：</label>
+                    <input id="transType" class="easyui-combobox form-control" style="width:178px;">
+                </div>
+                <div class="pull-right pd10">
+                    <label>单据编号：</label>
+                    <span id="number"></span>
+                </div>
+            </div>
+            <div class="divDropdown">
+                <table class="easyui-datagrid" id="inOrderList"></table>
+                <div class="dropdownBg" style="display: none">
+                    <ul class="dropdownUl">
+                    </ul>
+                </div>
+                <div id="mark"></div>
+            </div>
+            <div class="">
+                <textarea id="note" class="form-control" placeholder="备注"></textarea>
+            </div>
+            <div style="margin-top:10px"></div>
+            <div class="col-sm-12 clearfix">
+                <div class="clearfix">
+                    <div class="pull-right">
+                        <button id="historyReceipts" class="btn btn-primary" onclick="historyReceipts()">历史单据</button>
+                        <a id="dd" href="javascript:void(0)" class="btn btn-primary btn-log">操作日志</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="goodsList" style="display: none">
+            <div class="form-inline search-head">
+                <div class="form-group">
+                    <div class="col-xs-12 form-inline">
+                        <div class="form-group">
+                            <input type="text" id="searTxts" class="form-control" placeholder="按商品编号，商品名称，规格型号等查询"/>
+                        </div>
+                        <div class="form-group">
+                            <label>仓库</label>
+                            <input class="form-control easyui-combobox" id="storage" />
+                        </div>
+                        <div class="form-group checkbox">
+                            <label class="chk-ischecked" style="margin-top:6px">
+                                <input type="checkbox" style="margin:0"> 零库存商品
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-search" onclick="seachForm()">查询</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left col-sm-10">
+                    <table class="easyui-datagrid" id="goods" ></table>
+                </div>
+                <div class="pull-left col-sm-2">
+                    <ul id="cateTree" class="easyui-tree goodsTree" fit="true"></ul>
+                </div>
+            </div>
+        </div>
+        <!--供应商-->
+        <div id="vendorInfo" style="display: none">
+            <div class="form-inline">
+                <div class="form-group">
+                    <div class="col-sm-12" style="padding-right:0;padding-left:6px;">
+                        <input id="pids" placeholder="请选择客户类别" class="easyui-combotree form-control" style="width:200px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <input type="text" id="searTxt" class="form-control" placeholder="请输入分类名称"/>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success btn-search">查询</button>
+                </div>
+
+            </div>
+            <div class="easyui-layout">
+                <table class="easyui-datagrid" id="vendorList"></table>
+            </div>
+        </div>
+        <!--商品库存-->
+        <div id="goodsInventory" style="display: none">
+            <table class="easyui-datagrid" id="goodsInventoryList"></table>
+        </div>
+        <!-- btn -->
+        <div id="bottomField">
+            <div id="toolBottom" class="pull-right">
+            <span>
+                <a id="saveAdd" class="btn btn-success" onclick="addInOrder()">新增</a>
+                <a id="save" class="btn btn-success" onclick="saveInOrder()">保存</a>
+                <a id="audit" class="btn btn-success" onclick="auditInOrder()">审核</a>
+            </span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>采购单记录</title>
+    <title>采购单</title>
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
     <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
@@ -21,7 +21,7 @@
     <script src="../../js/common/ztree-object.js"></script>
     <script src="../../js/commons.js"></script>
     <script src="../../config.js"></script>
-    <script src="../../js/purchase/purchaseHistory.js"></script>
+    <script src="../../js/warehouse/inOrderHistory.js"></script>
     <style type="text/css">
         input[type="checkbox"]{margin:0;}
         input.switch{
@@ -90,15 +90,6 @@
                 <input id="endDate" name="endDate" class="easyui-datebox" required labelPosition="top" value="myformatter(date)" validType="equaldDate['#startDate']" data-options="prompt:'请选择结束日期',editable:false"/>
             </div>
             <div class="form-group">
-                <label>付款状态:</label>
-                <select id="hxState" name="hxState" data-options="editable:true,width:200" style="width:160px;height:30px"></select>
-                　　 <div id="sp">
-                        <input type="checkbox" name="hxState" value="1"><span>未付款</span><br/>
-                        <input type="checkbox" name="hxState" value="2"><span>部分付款</span><br/>
-                        <input type="checkbox" name="hxState" value="3"><span>全部付款</span>
-                    </div>
-            </div>
-            <div class="form-group">
                 <label>审核状态:</label>
                 <select id="status" class="easyui-combobox" name="status" style="width:160px;">
                     <option value="1" selected = "selected">未审核</option>
@@ -109,7 +100,7 @@
                 <button id="chx" class="btn btn-success">查询</button>
             </div>
         </div>
-        <table class="easyui-datagrid" id="purchaseRecords"></table>
+        <table class="easyui-datagrid" id="inOrderRecords"></table>
 
     </div>
     <!-- btn -->

@@ -44,9 +44,9 @@ $(function () {
                     } else if(value == "7"){
                         return "调拨单"
                     } else if(value == "8"){
-                        return "其他入库单"
+                        return "其他入库单,盘盈"
                     } else if(value == "9"){
-                        return "其他出库单"
+                        return "其他出库单,盘亏"
                     } else{
                         return "成本调整单"
                     }

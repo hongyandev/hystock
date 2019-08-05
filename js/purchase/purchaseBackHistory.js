@@ -18,7 +18,7 @@ $(function () {
         return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
     }
 //采购单记录
-    $("#purchaseRecords").datagrid({
+    $("#purchaseBackRecords").datagrid({
         url: genAPI('pur/queryInvPuPage'),
         method: 'post',
         idField: 'id',
@@ -39,7 +39,7 @@ $(function () {
             startDate: $("#startDate").val(),
             endDate: $("#endDate").val(),
             hxState: $("#hxState").val(),
-            transType:'5'
+            transType:'6'
         },
         columns: [[
             {
@@ -76,7 +76,7 @@ $(function () {
             },
             {
                 field: "totalAmount",
-                title: "购货金额",
+                title: "退货金额",
                 width: 120,
                 hidden: false
             },
@@ -128,9 +128,9 @@ $(function () {
             text: '新增',
             iconCls: 'fa fa-plus fa-lg',
             handler: function () {
-                var tabTitle = '采购单';
+                var tabTitle = '采购退货单';
                 var dg="#tabs";
-                var url = "webapp/purchase/purchase.html";
+                var url = "webapp/purchase/purchaseBack.html";
                 addTopTab(dg,tabTitle,url);
             }
         }, '-', {
@@ -168,7 +168,6 @@ $(function () {
     date.setDate(1);
     var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     $("#startDate").datebox("setValue", dateStart);
-
     //付款状态
     var ids;
     $('#hxState').combo({
@@ -191,41 +190,39 @@ $(function () {
             ids = _value.substring(0,_value.length-1);
         }
     });
-
-    //查询条件下采购单记录
+    //查询条件下退货单记录
     $("#chx").on("click",function () {
-        $("#purchaseRecords").datagrid({
-            queryParams:{
-                query:$("#searTxt").val(),
-                status:$("#status").val(),
-                startDate:$("#startDate").datebox("getValue"),
+        $("#purchaseBackRecords").datagrid({
+            queryParams: {
+                query: $("#searTxt").val(),
+                status: $("#status").val(),
+                startDate: $("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
                 hxState: ids
             },
-        }).datagrid("reload",genAPI('pur/queryInvPuPage'));
-    })
-
+        }).datagrid("reload", genAPI('pur/queryInvPuPage'));
+    });
 });
 
 //修改---
 function editPurchase() {
-    var row = $("#purchaseRecords").datagrid('getSelections');
+    var row = $("#purchaseBackRecords").datagrid('getSelections');
     if (row.length == 1) {
-        var tabTitle = '采购退货单';
+        var tabTitle = '采购单';
         var dg="#tabs";
-        var url = "webapp/purchase/purchaseBack.html?id="+row[0].id;
+        var url = "webapp/purchase/purchase.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
-        $("#purchaseRecords").datagrid("clearSelections");
+        $("#purchaseBackRecords").datagrid("clearSelections");
     }else{
         layer.msg("请选中一行进行编辑");
-        $("#purchaseRecords").datagrid("clearSelections");
+        $("#purchaseBackRecords").datagrid("clearSelections");
         return false;
     }
 }
 //审核
 function auditPurchase() {
-    var data = $("#purchaseRecords").datagrid('getSelections');
+    var data = $("#purchaseBackRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
          id += data[i].id+',';
@@ -250,7 +247,7 @@ function auditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseRecords").datagrid("reload").datagrid("clearSelections");
+                $("#purchaseBackRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});
@@ -261,7 +258,7 @@ function auditPurchase() {
 }
 //反审核
 function reAuditPurchase() {
-    var data = $("#purchaseRecords").datagrid('getSelections');
+    var data = $("#purchaseBackRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
         id += data[i].id+',';
@@ -286,7 +283,7 @@ function reAuditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"反审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseRecords").datagrid("reload").datagrid("clearSelections");
+                $("#purchaseBackRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});
