@@ -1,7 +1,6 @@
 var rec;
-var storageId;
+var categoryId;
 var query;
-var zero;
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -118,16 +117,40 @@ $(function () {
         });
 
     });
+
+    //商品类别
+    query = $("#searTxts").val();
+    $('#cateTree').tree({
+        lines: true,
+        animate: true,
+        url: genAPI('settings/categoryList'),
+        queryParams: {
+            typeNum: 3
+        },
+        formatter: function (node) {
+            return node.name;
+        },
+        loadFilter: function (res) {
+            return res.data
+        },
+        onClick: function (node) {
+            $("#goods").datagrid('load', {
+                query: query,
+                categoryId: node.id
+            })
+        }
+    });
+
     //产品浮层
-    $("#goodl").on('click',function () {
+    $("#goodl").on('click', function () {
         layer.open({
             type: 1,
-            title:"选择商品",
+            title: "选择商品",
             skin: 'layui-layer-molv', //加上边框
             area: ['88%', '98%'], //宽高
             content: $('#goodsList'),
             btn: ['选中并关闭', '取消'],
-            yes: function(sec, layero){
+            yes: function (sec, layero) {
                 var dg = $('#purchaseList');
                 var opt = dg.datagrid('options');
                 var data = $("#goods").datagrid('getSelections');
@@ -138,29 +161,97 @@ $(function () {
                     row: data[0]
                 });
                 dg.datagrid('refreshRow', 0);
-                for(var i=1;i<data.length;i++){
+                for (var i = 1; i < data.length; i++) {
                     dg.datagrid('insertRow', {
                         index: dgIndex,
                         row: data[i]
                     });
                     dg.datagrid('refreshRow', i);
-                    dgIndex ++;
+                    dgIndex++;
                 }
                 $("#goods").datagrid("clearSelections");
                 totalMoney();
                 discountData();
                 layer.close(sec);
-                if(dg.datagrid("getRows").length == dgIndex) {
+                if (dg.datagrid("getRows").length == dgIndex) {
                     dg.datagrid("append", {});
                 } else {
-                    dg.datagrid("editCell",{index: dgIndex, field: 'name'});
+                    dg.datagrid("editCell", {index: dgIndex, field: 'name'});
                 }
             }
-            ,btn2: function(sec, layero){
+            , btn2: function (sec, layero) {
                 layer.close(sec);
             }
         })
+        queryGoods(query, categoryId);
     });
 });
+
+//查询商品列表（分页）
+
+function queryGoods(query, categoryId) {
+    $("#goods").datagrid({
+        url: genAPI('query/queryGoodsPage'),
+        method: 'post',
+        rownumbers: true,
+        striped: true,
+        nowrap: true,
+        checkOnSelect: true,
+        idField: 'id',
+        pagination: true,
+        height: 300,
+        singleSelect: true,
+        loadFilter: function (data) {
+            return data.data;
+        },
+        queryParams: {
+            query: query,
+            categoryId: categoryId,
+        },
+        columns: [[
+            {
+                field: 'code',
+                title: '商品编号',
+                width: 100,
+                hidden: false
+            },
+            {
+                field: 'name',
+                title: '商品名称',
+                width: 100,
+                hidden: false
+            },
+            {
+                field: 'specs',
+                title: '规格型号',
+                width: 100,
+                hidden: false
+            },
+            {
+                field: 'categoryName',
+                title: '商品类别',
+                width: 100,
+                hidden: false
+            },
+            {
+                field: 'unit',
+                title: '单位',
+                width: 50,
+                hidden: false,
+            },
+            {
+                field: 'currentQty',
+                title: '可用库存',
+                width: 80,
+                hidden: false
+            }
+        ]],
+        onClickRow: function (rowIndex, rowData) {
+            $(this).datagrid('selectRow', rowIndex);
+            var goods = rowData;
+            console.info(goods.code)
+        }
+    })
+}
 
 
