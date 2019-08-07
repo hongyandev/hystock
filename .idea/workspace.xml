@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e81f0bf1-4764-4c0b-a9b5-708f1dd59fe0" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/js/purchase/purchaseDet.js" afterPath="$PROJECT_DIR$/js/purchase/purchaseDet.js" />
-      <change beforePath="$PROJECT_DIR$/webapp/purchase/purchaseDet.html" afterPath="$PROJECT_DIR$/webapp/purchase/purchaseDet.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,8 +20,8 @@
       <file leaf-file-name="purchaseDet.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/purchase/purchaseDet.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="110" column="21" lean-forward="false" selection-start-line="110" selection-start-column="21" selection-end-line="110" selection-end-column="21" />
+            <state relative-caret-position="357">
+              <caret line="130" column="29" lean-forward="true" selection-start-line="130" selection-start-column="29" selection-end-line="130" selection-end-column="29" />
               <folding>
                 <element signature="e#509#1050#0" expanded="false" />
                 <element signature="e#1095#2300#0" expanded="false" />
@@ -34,8 +33,8 @@
       <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="94" column="7" lean-forward="true" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
+            <state relative-caret-position="578">
+              <caret line="94" column="7" lean-forward="false" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
               <folding>
                 <element signature="n#style#0;n#head#0;n#html#0;n#!!top" expanded="false" />
                 <element signature="n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -47,8 +46,8 @@
       <file leaf-file-name="purchase.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/purchase/purchase.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="140" column="40" lean-forward="true" selection-start-line="140" selection-start-column="40" selection-end-line="140" selection-end-column="40" />
+            <state relative-caret-position="1496">
+              <caret line="140" column="40" lean-forward="false" selection-start-line="140" selection-start-column="40" selection-end-line="140" selection-end-column="40" />
               <folding>
                 <element signature="n#style#0;n#head#0;n#html#0;n#!!top" expanded="false" />
                 <element signature="n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -60,8 +59,8 @@
       <file leaf-file-name="purchaseDet.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/purchase/purchaseDet.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="218">
-              <caret line="103" column="22" lean-forward="true" selection-start-line="103" selection-start-column="22" selection-end-line="103" selection-end-column="22" />
+            <state relative-caret-position="1360">
+              <caret line="103" column="22" lean-forward="false" selection-start-line="103" selection-start-column="22" selection-end-line="103" selection-end-column="22" />
               <folding>
                 <element signature="n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
               </folding>
@@ -72,7 +71,7 @@
       <file leaf-file-name="vendorList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/custom/vendorList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="136">
               <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
               <folding>
                 <element signature="e#587#1204#0" expanded="false" />
@@ -84,7 +83,7 @@
       <file leaf-file-name="purchase.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/purchase/purchase.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
+            <state relative-caret-position="680">
               <caret line="124" column="70" lean-forward="false" selection-start-line="124" selection-start-column="59" selection-end-line="124" selection-end-column="70" />
               <folding>
                 <element signature="e#93#196#0" expanded="false" />
@@ -132,8 +131,8 @@
       <file leaf-file-name="commons.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/commons.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="132" column="17" lean-forward="true" selection-start-line="132" selection-start-column="17" selection-end-line="132" selection-end-column="17" />
+            <state relative-caret-position="306">
+              <caret line="132" column="17" lean-forward="false" selection-start-line="132" selection-start-column="17" selection-end-line="132" selection-end-column="17" />
               <folding>
                 <element signature="e#120#674#0" expanded="false" />
                 <element signature="e#751#1227#0" expanded="false" />
@@ -163,7 +162,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/custom/supplierManage.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1445">
-              <caret line="85" column="103" lean-forward="true" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="103" />
+              <caret line="85" column="103" lean-forward="false" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="103" />
               <folding />
             </state>
           </provider>
@@ -307,6 +306,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -314,39 +314,10 @@
               <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
               <item name="hystock" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hystock" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hystock" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="custom" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hystock" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="purchase" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hystock" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hystock" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hystock" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="purchase" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -411,7 +382,8 @@
       <workItem from="1559003358411" duration="4861000" />
       <workItem from="1559026643734" duration="73000" />
       <workItem from="1564983644139" duration="15302000" />
-      <workItem from="1565052291078" duration="19204000" />
+      <workItem from="1565052291078" duration="19391000" />
+      <workItem from="1565138229567" duration="772000" />
     </task>
     <task id="LOCAL-00001" summary="新增采购明细表">
       <created>1564998727585</created>
@@ -420,25 +392,32 @@
       <option name="project" value="LOCAL" />
       <updated>1564998727586</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="新增采购明细表">
+      <created>1565084302274</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1565084302274</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="230696000" />
+    <option name="totallyTimeSpent" value="231655000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1688988" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16369048" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -464,7 +443,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/js/purchase/purchase.js</url>
           <line>1238</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
@@ -661,7 +639,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1513">
           <caret line="89" column="23" lean-forward="false" selection-start-line="89" selection-start-column="23" selection-end-line="89" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -684,7 +661,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
           <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -699,9 +675,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="1" column="2693" lean-forward="false" selection-start-line="1" selection-start-column="2693" selection-end-line="1" selection-end-column="2693" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -716,7 +689,7 @@
     <entry file="file://$PROJECT_DIR$/webapp/custom/supplierManage.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1445">
-          <caret line="85" column="103" lean-forward="true" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="103" />
+          <caret line="85" column="103" lean-forward="false" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="103" />
           <folding />
         </state>
       </provider>
@@ -725,7 +698,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="1787" column="0" lean-forward="false" selection-start-line="1787" selection-start-column="0" selection-end-line="1787" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -733,13 +705,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="27">
           <caret line="35" column="18" lean-forward="false" selection-start-line="35" selection-start-column="18" selection-end-line="35" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/custom/vendorList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="136">
           <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
           <folding>
             <element signature="e#587#1204#0" expanded="false" />
@@ -749,8 +720,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/purchase/purchase.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="140" column="40" lean-forward="true" selection-start-line="140" selection-start-column="40" selection-end-line="140" selection-end-column="40" />
+        <state relative-caret-position="1496">
+          <caret line="140" column="40" lean-forward="false" selection-start-line="140" selection-start-column="40" selection-end-line="140" selection-end-column="40" />
           <folding>
             <element signature="n#style#0;n#head#0;n#html#0;n#!!top" expanded="false" />
             <element signature="n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -760,8 +731,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/login.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="94" column="7" lean-forward="true" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
+        <state relative-caret-position="578">
+          <caret line="94" column="7" lean-forward="false" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
           <folding>
             <element signature="n#style#0;n#head#0;n#html#0;n#!!top" expanded="false" />
             <element signature="n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -771,8 +742,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/commons.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="132" column="17" lean-forward="true" selection-start-line="132" selection-start-column="17" selection-end-line="132" selection-end-column="17" />
+        <state relative-caret-position="306">
+          <caret line="132" column="17" lean-forward="false" selection-start-line="132" selection-start-column="17" selection-end-line="132" selection-end-column="17" />
           <folding>
             <element signature="e#120#674#0" expanded="false" />
             <element signature="e#751#1227#0" expanded="false" />
@@ -789,8 +760,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/purchase/purchaseDet.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="103" column="22" lean-forward="true" selection-start-line="103" selection-start-column="22" selection-end-line="103" selection-end-column="22" />
+        <state relative-caret-position="1360">
+          <caret line="103" column="22" lean-forward="false" selection-start-line="103" selection-start-column="22" selection-end-line="103" selection-end-column="22" />
           <folding>
             <element signature="n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
           </folding>
@@ -799,7 +770,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/purchase/purchase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
+        <state relative-caret-position="680">
           <caret line="124" column="70" lean-forward="false" selection-start-line="124" selection-start-column="59" selection-end-line="124" selection-end-column="70" />
           <folding>
             <element signature="e#93#196#0" expanded="false" />
@@ -845,8 +816,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/purchase/purchaseDet.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="110" column="21" lean-forward="false" selection-start-line="110" selection-start-column="21" selection-end-line="110" selection-end-column="21" />
+        <state relative-caret-position="357">
+          <caret line="130" column="29" lean-forward="true" selection-start-line="130" selection-start-column="29" selection-end-line="130" selection-end-column="29" />
           <folding>
             <element signature="e#509#1050#0" expanded="false" />
             <element signature="e#1095#2300#0" expanded="false" />
