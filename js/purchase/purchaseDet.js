@@ -1,4 +1,3 @@
-var rec;
 var categoryId;
 var query;
 $(function () {
@@ -36,7 +35,7 @@ $(function () {
             typeNum: 2
         },
         onClick: function (node) {
-
+            alert(JSON.stringify(node));
         },
         onBeforeExpand: function (node, param) {
 
@@ -104,7 +103,7 @@ $(function () {
                     layer.alert('请选中一行操作', {skin: 'layui-layer-molv'});
                     return false;
                 }
-                $("#vendorClass").val(rowSelect.code + rowSelect.name);
+                $("#vendorClass").val(rowSelect.code);
                 $("#vendorClass").attr("vid", rowSelect.id);
                 layer.close(index);
             }
@@ -147,41 +146,23 @@ $(function () {
             type: 1,
             title: "选择商品",
             skin: 'layui-layer-molv', //加上边框
-            area: ['88%', '98%'], //宽高
+            area: ['88%', '80%'], //宽高
             content: $('#goodsList'),
             btn: ['选中并关闭', '取消'],
-            yes: function (sec, layero) {
-                var dg = $('#purchaseList');
-                var opt = dg.datagrid('options');
-                var data = $("#goods").datagrid('getSelections');
-                $("#goods").datagrid('endEditing');
-                var dgIndex = opt.editIndex + 1;
-                dg.datagrid('updateRow', {
-                    index: opt.editIndex,
-                    row: data[0]
-                });
-                dg.datagrid('refreshRow', 0);
-                for (var i = 1; i < data.length; i++) {
-                    dg.datagrid('insertRow', {
-                        index: dgIndex,
-                        row: data[i]
-                    });
-                    dg.datagrid('refreshRow', i);
-                    dgIndex++;
+            yes: function (index, layero) {
+                var rowSelect = $("#goods").datagrid('getSelected');
+                if (!rowSelect) {
+                    layer.alert('请选中一行操作', {skin: 'layui-layer-molv'});
+                    return false;
                 }
-                $("#goods").datagrid("clearSelections");
-                totalMoney();
-                discountData();
-                layer.close(sec);
-                if (dg.datagrid("getRows").length == dgIndex) {
-                    dg.datagrid("append", {});
-                } else {
-                    dg.datagrid("editCell", {index: dgIndex, field: 'name'});
+                $("#goodl").val(rowSelect.code);
+                $("#goodl").attr("vid", rowSelect.id);
+                layer.close(index);
+            }
+            , btn2:
+                function (sec, layero) {
+                    layer.close(sec);
                 }
-            }
-            , btn2: function (sec, layero) {
-                layer.close(sec);
-            }
         })
         queryGoods(query, categoryId);
     });
@@ -248,10 +229,123 @@ function queryGoods(query, categoryId) {
         ]],
         onClickRow: function (rowIndex, rowData) {
             $(this).datagrid('selectRow', rowIndex);
-            var goods = rowData;
-            console.info(goods.code)
         }
     })
 }
+
+//点击查询
+function clickSearch() {
+    alert(JSON.stringify($("#pids").combotree('tree').tree('getSelected')));
+//采购单明细查询
+    $("#purchaseRes").datagrid({
+        url: genAPI('query/pu_detail'),
+        method: 'post',
+        idField: 'number',
+        loadMsg: '数据正在加载,请耐心的等待...',
+        pagination: true,
+        pageNum: 1,
+        pageSize: 10,
+        pageList: [20, 40, 50],
+        rownumbers: true,
+        fitColumns: false,
+        loadFilter: function (data) {
+            return data.data
+        },
+        queryParams: {
+            beginDate: $("#startDate").val(),
+            endDate: $("#endDate").val(),
+            supplierId: $("#vendorClass").val(),
+            goodsId: $("#goodl").val(),
+            number: $("#number").val(),
+            categoryId: $("#pids").combotree('tree').tree('getSelected').id,
+            storageId: $("#storageId").val()
+        },
+        columns: [[
+            {
+                field: 'id',
+                hidden: true
+            },
+            {
+                field: 'rows.transName',
+                title: '业务名称',
+                width: 100,
+                hidden: false
+            },
+            {
+                field: 'rows.number',
+                title: '单据编号',
+                width: 160,
+                hidden: false
+            },
+            {
+                field: 'rows.customerName',
+                title: '供应商名称',
+                hidden: false,
+                width: 100
+            },
+            {
+                field: 'rows.name',
+                title: '商品名称',
+                hidden: false,
+                width: 140
+            },
+            {
+                field: "rows.qty",
+                title: "数量",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "rows.unitName",
+                title: "单位",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "rows.purPrice",
+                title: "单价",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "rows.taxRate",
+                title: "税率",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "rows.discountRate",
+                title: "折扣率",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "payment",
+                title: "付款金额",
+                width: 100,
+                hidden: false
+            },
+            {
+                field: "rows.storageName",
+                title: "仓库名",
+                width: 120,
+                hidden: false
+            },
+            {
+                field: "rows.purDate",
+                title: "单据日期",
+                width: 150,
+                hidden: false
+            },
+            {
+                field: "rows.note",
+                title: "备注",
+                width: 150,
+                hidden: false
+            }
+        ]]
+    });
+}
+
 
 
