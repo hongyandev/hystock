@@ -1,6 +1,7 @@
 var categoryId;
 var query;
 $(function () {
+
     $.ajaxSetup({
         headers: {
             uid: $.cookie('uid'),
@@ -8,6 +9,12 @@ $(function () {
         }
 
     });
+
+    //初始化日期
+    var date=new Date();
+    date.setDate(1);
+    var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    $("#startDate").datebox("setValue", dateStart);
 
     //检索供应商
     $(".btn-search").on("click", function () {
@@ -35,7 +42,7 @@ $(function () {
             typeNum: 2
         },
         onClick: function (node) {
-            alert(JSON.stringify(node));
+            // alert(JSON.stringify(node));
         },
         onBeforeExpand: function (node, param) {
 
@@ -235,7 +242,8 @@ function queryGoods(query, categoryId) {
 
 //点击查询
 function clickSearch() {
-    alert(JSON.stringify($("#pids").combotree('tree').tree('getSelected')));
+    var node = $("#pids").combotree('tree').tree('getSelected');
+    var t = node ? node.id : '';
 //采购单明细查询
     $("#purchaseRes").datagrid({
         url: genAPI('query/pu_detail'),
@@ -248,8 +256,9 @@ function clickSearch() {
         pageList: [20, 40, 50],
         rownumbers: true,
         fitColumns: false,
+        singleSelect: true,
         loadFilter: function (data) {
-            return data.data
+            return data.data.rows
         },
         queryParams: {
             beginDate: $("#startDate").val(),
@@ -257,93 +266,9 @@ function clickSearch() {
             supplierId: $("#vendorClass").val(),
             goodsId: $("#goodl").val(),
             number: $("#number").val(),
-            categoryId: $("#pids").combotree('tree').tree('getSelected').id,
+            categoryId: t,
             storageId: $("#storageId").val()
-        },
-        columns: [[
-            {
-                field: 'id',
-                hidden: true
-            },
-            {
-                field: 'rows.transName',
-                title: '业务名称',
-                width: 100,
-                hidden: false
-            },
-            {
-                field: 'rows.number',
-                title: '单据编号',
-                width: 160,
-                hidden: false
-            },
-            {
-                field: 'rows.customerName',
-                title: '供应商名称',
-                hidden: false,
-                width: 100
-            },
-            {
-                field: 'rows.name',
-                title: '商品名称',
-                hidden: false,
-                width: 140
-            },
-            {
-                field: "rows.qty",
-                title: "数量",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "rows.unitName",
-                title: "单位",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "rows.purPrice",
-                title: "单价",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "rows.taxRate",
-                title: "税率",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "rows.discountRate",
-                title: "折扣率",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "payment",
-                title: "付款金额",
-                width: 100,
-                hidden: false
-            },
-            {
-                field: "rows.storageName",
-                title: "仓库名",
-                width: 120,
-                hidden: false
-            },
-            {
-                field: "rows.purDate",
-                title: "单据日期",
-                width: 150,
-                hidden: false
-            },
-            {
-                field: "rows.note",
-                title: "备注",
-                width: 150,
-                hidden: false
-            }
-        ]]
+        }
     });
 }
 
