@@ -244,7 +244,6 @@ function queryGoods(query, categoryId) {
 function clickSearch() {
     var node = $("#pids").combotree('tree').tree('getSelected');
     var t = node ? node.id : '';
-//采购单明细查询
     $("#purchaseRes").datagrid({
         url: genAPI('query/pu_detail'),
         method: 'post',
@@ -263,7 +262,7 @@ function clickSearch() {
         queryParams: {
             beginDate: $("#startDate").val(),
             endDate: $("#endDate").val(),
-            supplierId: $("#vendorClass").val(),
+            supplierId: $("#vendorClass").attr("vid"),
             goodsId: $("#goodl").val(),
             number: $("#number").val(),
             categoryId: t,
