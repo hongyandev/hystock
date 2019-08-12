@@ -4,7 +4,6 @@
     <list default="true" id="e81f0bf1-4764-4c0b-a9b5-708f1dd59fe0" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/js/purchase/purchaseDet.js" afterPath="$PROJECT_DIR$/js/purchase/purchaseDet.js" />
-      <change beforePath="$PROJECT_DIR$/webapp/purchase/purchaseDet.html" afterPath="$PROJECT_DIR$/webapp/purchase/purchaseDet.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,11 +20,11 @@
       <file leaf-file-name="purchaseDet.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/purchase/purchaseDet.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
+            <state relative-caret-position="85">
+              <caret line="65" column="15" lean-forward="false" selection-start-line="65" selection-start-column="15" selection-end-line="65" selection-end-column="15" />
               <folding>
                 <element signature="e#1785#2531#0" expanded="false" />
-                <element signature="e#5664#6580#0" expanded="false" />
+                <element signature="e#5692#6608#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -61,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/purchase/purchaseDet.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="104" column="33" lean-forward="false" selection-start-line="104" selection-start-column="33" selection-end-line="104" selection-end-column="33" />
+              <caret line="104" column="32" lean-forward="false" selection-start-line="104" selection-start-column="27" selection-end-line="104" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -233,8 +232,8 @@
         <option value="$PROJECT_DIR$/js/common/jquery-1.8.0.js" />
         <option value="$PROJECT_DIR$/js/purchase/purchase.js" />
         <option value="$PROJECT_DIR$/webapp/purchase/purchase.html" />
-        <option value="$PROJECT_DIR$/js/purchase/purchaseDet.js" />
         <option value="$PROJECT_DIR$/webapp/purchase/purchaseDet.html" />
+        <option value="$PROJECT_DIR$/js/purchase/purchaseDet.js" />
       </list>
     </option>
   </component>
@@ -354,7 +353,7 @@
       <workItem from="1565138229567" duration="20859000" />
       <workItem from="1565224532125" duration="20873000" />
       <workItem from="1565313301070" duration="7000" />
-      <workItem from="1565571081207" duration="4627000" />
+      <workItem from="1565571081207" duration="5082000" />
     </task>
     <task id="LOCAL-00001" summary="新增采购明细表">
       <created>1564998727585</created>
@@ -391,16 +390,23 @@
       <option name="project" value="LOCAL" />
       <updated>1565256073234</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="完成采购明细表">
+      <created>1565601664157</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1565601664157</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="277249000" />
+    <option name="totallyTimeSpent" value="277704000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16369048" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16369048" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -796,18 +802,18 @@
     <entry file="file://$PROJECT_DIR$/webapp/purchase/purchaseDet.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="104" column="33" lean-forward="false" selection-start-line="104" selection-start-column="33" selection-end-line="104" selection-end-column="33" />
+          <caret line="104" column="32" lean-forward="false" selection-start-line="104" selection-start-column="27" selection-end-line="104" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/purchase/purchaseDet.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
+        <state relative-caret-position="85">
+          <caret line="65" column="15" lean-forward="false" selection-start-line="65" selection-start-column="15" selection-end-line="65" selection-end-column="15" />
           <folding>
             <element signature="e#1785#2531#0" expanded="false" />
-            <element signature="e#5664#6580#0" expanded="false" />
+            <element signature="e#5692#6608#0" expanded="false" />
           </folding>
         </state>
       </provider>

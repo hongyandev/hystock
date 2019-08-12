@@ -90,6 +90,7 @@ $(function () {
         ]],
     });
     //供应商浮层
+    $("#pidss").loadData();
     $("#vendorClass").on('click', function () {
         if ($("#vendorInfo").is(':hidden')) {
             $("#vendorInfo").show();
