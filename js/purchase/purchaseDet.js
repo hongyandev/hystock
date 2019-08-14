@@ -1,7 +1,7 @@
 var categoryId;
 var query;
 $(function () {
-
+    var treeData;
     $.ajaxSetup({
         headers: {
             uid: $.cookie('uid'),
@@ -16,17 +16,17 @@ $(function () {
     var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     $("#startDate").datebox("setValue", dateStart);
 
-    //检索供应商
+    //检索供应商（浮层）
     $(".btn-search").on("click", function () {
         $("#vendorList").datagrid({
             queryParams: {
                 query: $("#searTxt").val(),
-                category: $("#pids").val()
+                category: $("#pidss").val()
             },
         }).datagrid("reload", genAPI('settings/vendorList'));
     });
-    //供应商类别
-    $("#pids").combotree({
+    //供应商类别（浮层）
+    $("#pidss").combotree({
         url: genAPI('settings/categoryList'),
         valueField: 'id',
         textField: 'name',
@@ -47,12 +47,24 @@ $(function () {
         onBeforeExpand: function (node, param) {
 
         },
+        //供应商类别
         onLoadSuccess: function (node, data) {
-
+            treeData = data;
+            $("#pids").combotree({
+                valueField: 'id',
+                textField: 'name',
+                parentField: 'pid',
+                formatter: function (node) {
+                    return node.name;
+                }
+            }).combotree('loadData',treeData);
         }
 
     });
-    //供应商列表
+
+
+
+    //供应商列表（浮层）
     $("#vendorList").datagrid({
         url: genAPI('settings/vendorList'),
         method: 'post',
@@ -68,7 +80,7 @@ $(function () {
         },
         queryParams: {
             query: $("#searTxt").val(),
-            category: $("#pids").val()
+            category: $("#pidss").val()
         },
         columns: [[
             {field: 'category2', title: '供应商类别', hidden: true},
@@ -90,7 +102,7 @@ $(function () {
         ]],
     });
     //供应商浮层
-    $("#pidss").loadData();
+    $("#pidss").combotree();
     $("#vendorClass").on('click', function () {
         if ($("#vendorInfo").is(':hidden')) {
             $("#vendorInfo").show();
@@ -125,7 +137,7 @@ $(function () {
 
     });
 
-    //商品类别
+    //商品类别（浮层）
     query = $("#searTxts").val();
     $('#cateTree').tree({
         lines: true,
@@ -148,7 +160,7 @@ $(function () {
         }
     });
 
-    //产品浮层
+    //商品浮层
     $("#goodl").on('click', function () {
         layer.open({
             type: 1,
@@ -176,8 +188,7 @@ $(function () {
     });
 });
 
-//查询商品列表（分页）
-
+//查询商品列表（浮层）
 function queryGoods(query, categoryId) {
     $("#goods").datagrid({
         url: genAPI('query/queryGoodsPage'),
