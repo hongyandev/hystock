@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/easyui.iml" filepath="$PROJECT_DIR$/.idea/easyui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/easyui demo.iml" filepath="$PROJECT_DIR$/.idea/easyui demo.iml" />
     </modules>
   </component>
 </project>
