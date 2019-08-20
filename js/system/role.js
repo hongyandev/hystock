@@ -26,7 +26,7 @@ $(function () {
             { field:'code',title:'角色代码',width:100}
         ]],
         toolbar:[{
-            text:'角色分配',
+            text:'权限分配',
             iconCls:'fa fa-user-secret fa-lg',
             handler:function(){
                 var row = $('#roleTable').datagrid('getSelected');
@@ -35,7 +35,7 @@ $(function () {
                 if(row){
                     layer.open({
                         type: 1,
-                        title:"权限管理",
+                        title:"权限分配",
                         skin: 'layui-layer-molv', //加上边框
                         area: ['680px', '480px'], //宽高
                         content:$("#treeTable"),

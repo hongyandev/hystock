@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>结算账户</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css"/>
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/custom/accountManage.js"></script>
+    <style>
+        .datagrid-toolbar{
+            padding:5px;
+        }
+        .datagrid-toolbar a{
+            background: #1ab394;
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+<div class="easyui-layout" data-options="region:'center',fit:true" style="height:100%">
+    <table id="accountList"></table>
+</div>
+<div id="accountInfo"><!--dialog的属性，dialog扩展自window-->
+    <form id="accountInfoForm" class="form-horizontal">
+        <input type="hidden" id="id" name="id" />
+        <div class="col-sm-12 form-inline">
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">账户编号:</label>
+                <div class="col-sm-8">
+                    <input id="number" class="easyui-validatebox form-control" type="text" name="number" required="true"/>
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">账户名称:</label>
+                <div class="col-sm-8">
+                    <input id="name" class="easyui-validatebox form-control" type="text" name="name" required="true"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 form-inline">
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">余额日期:</label>
+                <div class="col-sm-8">
+                    <input id="date" class="easyui-validatebox form-control" type="text" name="date" required="true"/>
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">期初余额:</label>
+                <div class="col-sm-8">
+                    <input id="amount" class="easyui-validatebox form-control" type="text" name="amount" required="true"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 form-inline">
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">账户类别:</label>
+                <div class="col-sm-8">
+                    <input id="type" class="easyui-validatebox form-control" type="text" name="type" required="true"/>
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="col-sm-4 control-label" for="name">设为默认:</label>
+                <div class="col-sm-8">
+                    <input id="first" class="easyui-validatebox form-control" type="text" name="first" required="true"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
