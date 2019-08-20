@@ -131,16 +131,19 @@ function getGoodsData(query,chk,category) {
                 width:100
             },
             {
+                field : 'unitCost',
+                title : '单位成本',
+                align : 'center',
+                formatter : function (value) {
+                    return _.ceil(value, 4);
+                },
+                width:80
+            },
+            {
                 field : 'quantity',
                 title : '期初数量',
                 align : 'center',
                 width:100
-            },
-            {
-                field : 'unitCost',
-                title : '单位成本',
-                align : 'center',
-                width:80
             },
             {
                 field : 'score',
@@ -148,7 +151,9 @@ function getGoodsData(query,chk,category) {
                 align : 'center',
                 width:100,
                 formatter:function (value,record,index) {
-                    return record.unitCost*record.quantity
+                    if(record.quantity){
+                        return record.unitCost*record.quantity
+                    }
                 }
             },
             {

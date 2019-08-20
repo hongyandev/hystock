@@ -15,7 +15,11 @@ $(function () {//ready()文档加载后
         singleSelect:true,
         fit:true,
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                return [];
+            }
         },
         columns:[[
             { field:'id',title:'ID',width:20},
@@ -37,13 +41,14 @@ $(function () {//ready()文档加载后
                     type: 1,
                     title:"新增",
                     skin: 'layui-layer-molv', //加上边框
-                    area: ['350px', '250px'], //宽高
+                    area: ['500px', '400px'], //宽高
                     content: $('#accountInfo'),
                     btn: ['保存', '取消'],
                     yes: function(index, layero){
                         //提交保存
-                        formSave("create");
-                        layer.close(index);
+                        if(formSave("create")){
+                            layer.close(index);
+                        }
                     }
                     ,btn2: function(index, layero){
                         layer.close(index);
@@ -60,13 +65,14 @@ $(function () {//ready()文档加载后
                         type: 1,
                         title:"编辑",
                         skin: 'layui-layer-molv', //加上边框
-                        area: ['350px', '300px'], //宽高
+                        area: ['500px', '500px'], //宽高
                         content: $('#accountInfo'),
                         btn: ['保存', '取消'],
                         yes: function(index, layero){
                             //提交保存
-                            formSave("modify");
-                            layer.close(index);
+                            if(formSave("modify")){
+                                layer.close(index);
+                            }
                         }
                         ,btn2: function(index, layero){
                             layer.close(index);
@@ -142,36 +148,31 @@ $(function () {//ready()文档加载后
     }
 )
 function formSave(action){
-    if($("#number").val()==""){
-        layer.alert("请输入账户编号",{skin:'layui-layer-molv'});
-        return false;
-    }
-    if($("#name").val()==""){
-        layer.alert("请输入账户名称",{skin:'layui-layer-molv'});
-        return false;
-    }
-    var url="";
-    var data = $("#accountInfoForm").serializeObject();
-    if(action=="create"){
-        url=genAPI('settings/account/create');
-    } else if(action=="modify"){
-        url=genAPI('settings/account/modify');
-    }
-    console.info(data);
-    return;
-    $.ajax({
-        type:"post",
-        url:url,
-        cache:false,
-        dataType:"json",
-        headers:{
-            "uid":$.cookie('uid'),
-            "token":$.cookie('jwt')
-        },
-        data: JSON.stringify(data),
-        contentType : "application/json;charset=UTF-8",
-        success:function (res) {
-            $("#accountList").datagrid('reload');
+    var isValid = $(this).form('validate');
+    if(isValid){
+        var data = $("#accountInfoForm").serializeObject();
+        if(!data.first){
+            data.first = 0;
         }
-    })
+        console.info(data);
+        $.ajax({
+            type:"post",
+            url: action=="create" ? genAPI('settings/account/create') : genAPI('settings/account/modify'),
+            cache:false,
+            dataType:"json",
+            headers:{
+                "uid":$.cookie('uid'),
+                "token":$.cookie('jwt')
+            },
+            data: JSON.stringify(data),
+            contentType : "application/json;charset=UTF-8",
+            success:function (res) {
+                $("#accountList").datagrid('reload');
+            },
+            error:function () {
+                isValid = false;
+            }
+        })
+    }
+    return isValid;
 }

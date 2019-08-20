@@ -38,45 +38,48 @@
 <div id="accountInfo"><!--dialog的属性，dialog扩展自window-->
     <form id="accountInfoForm" class="form-horizontal">
         <input type="hidden" id="id" name="id" />
-        <div class="col-sm-12 form-inline">
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">账户编号:</label>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">账户编号:</label>
                 <div class="col-sm-8">
-                    <input id="number" class="easyui-validatebox form-control" type="text" name="number" required="true"/>
+                    <input id="number" class="easyui-textbox form-control" style="width: 250px" type="text" name="number" data-options="required:true,validType:'length[1,50]'"/>
                 </div>
             </div>
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">账户名称:</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">账户名称:</label>
                 <div class="col-sm-8">
-                    <input id="name" class="easyui-validatebox form-control" type="text" name="name" required="true"/>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12 form-inline">
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">余额日期:</label>
-                <div class="col-sm-8">
-                    <input id="date" class="easyui-validatebox form-control" type="text" name="date" required="true"/>
-                </div>
-            </div>
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">期初余额:</label>
-                <div class="col-sm-8">
-                    <input id="amount" class="easyui-validatebox form-control" type="text" name="amount" required="true"/>
+                    <input id="name" class="easyui-textbox form-control" style="width: 250px" type="text" name="name" data-options="required:true,validType:'length[1,50]'"/>
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 form-inline">
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">账户类别:</label>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">余额日期:</label>
                 <div class="col-sm-8">
-                    <input id="type" class="easyui-validatebox form-control" type="text" name="type" required="true"/>
+                    <input id="date" class="easyui-datebox form-control" name="date" style="width: 180px">
                 </div>
             </div>
-            <div class="form-group col-sm-6">
-                <label class="col-sm-4 control-label" for="name">设为默认:</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">期初余额:</label>
                 <div class="col-sm-8">
-                    <input id="first" class="easyui-validatebox form-control" type="text" name="first" required="true"/>
+                    <input id="amount" class="easyui-numberbox form-control" style="width: 180px" type="text" name="amount"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">账户类别:</label>
+                <div class="col-sm-8">
+                    <select id="type" class="easyui-combobox" style="width: 180px" name="type" required="true">
+                        <option value="1">现金</option>
+                        <option value="2">银行存款</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name">设为默认:</label>
+                <div class="col-sm-8">
+                    <input type="checkbox" id="first" name="first" value="1">
                 </div>
             </div>
         </div>
