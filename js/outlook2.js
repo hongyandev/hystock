@@ -3,6 +3,10 @@ $(function(){
 	InitLeftMenu();
     tabCloseMenu();
     tabCloseEven();
+    var company = JSON.parse($.cookie('company')||'{}');
+    if(company.companyName){
+    	$('#companyName').html(company.companyName);
+	}
 });
 
 //初始化左侧

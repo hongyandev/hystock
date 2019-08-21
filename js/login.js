@@ -59,7 +59,7 @@ $(function () {
                         $.cookie('realName',res.data.user.realName);
                         $.cookie('uid',res.data.user.uid);
                         $.cookie('username',res.data.user.username);
-
+                        $.cookie('company', JSON.stringify(res.data.company))
                         location.href='index.html'
                     } else {
                         $('#myModal').modal();
