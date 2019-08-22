@@ -184,12 +184,12 @@ select, button, input[type="button"], input[type="reset"], input[type="submit"],
     line-height: 20px;
     margin-top: 30px;
 }
-
+/*
 .btn-sm {
     padding: 8px 24px !important;
     font-size: 16px !important;
 }
-
+*/
 .flag {
     position: absolute;
     top: 10px;
