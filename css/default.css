@@ -490,6 +490,3 @@ input.switch{
 .accordion-body{
     overflow-y: scroll!important;
 }
-::-webkit-scrollbar {/*隐藏滚轮*/
-    display: none;
-}

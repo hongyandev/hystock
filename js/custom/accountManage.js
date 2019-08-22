@@ -18,12 +18,13 @@ $(function () {//ready()文档加载后
             if(data.code == 200) {
                 return data.data
             } else {
+                layer.msg(data.message);
                 return [];
             }
         },
         columns:[[
-            { field:'id',title:'ID',width:20},
-            { field:'code',title:'账户编码',width:100},
+            { field:'id',title:'ID',width:50},
+            { field:'number',title:'账户编码',width:100},
             { field:'name',title:'账户名称',width:100},
             { field:'status',title:'状态',width:100,formatter: function(value,row,index){
                     if (value=="1"){
@@ -61,11 +62,12 @@ $(function () {//ready()文档加载后
             handler:function(){
                 var rowSelect=$("#accountList").datagrid("getSelected");
                 if(rowSelect){//?
+                    console.info(rowSelect)
                     layer.open({
                         type: 1,
                         title:"编辑",
                         skin: 'layui-layer-molv', //加上边框
-                        area: ['500px', '500px'], //宽高
+                        area: ['500px', '400px'], //宽高
                         content: $('#accountInfo'),
                         btn: ['保存', '取消'],
                         yes: function(index, layero){
@@ -78,6 +80,23 @@ $(function () {//ready()文档加载后
                             layer.close(index);
                         }
                     });
+                    $.ajax({
+                        type:"post",
+                        url:genAPI('settings/account/get'),
+                        cache:false,
+                        dataType:"json",
+                        data: {
+                            id : rowSelect.id
+                        },
+                        success:function (res) {
+                            if(res.code == 200){
+                                $('#accountInfo').form('load',res.data)
+                            }else{
+                                layer.msg(res.message);
+                            }
+                        },error:function () {
+                        }
+                    })
                 }else{
                     layer.alert("请选中一行进行操作",{skin:'layui-layer-molv'});
                 }
@@ -91,23 +110,18 @@ $(function () {//ready()文档加载后
                     layer.alert('请选中一行进行操作',{skin:'layui-layer-molv'});
                 }
                 if(rowSelect){
-                    var data = {
-                        accountId : rowSelect.id
-                    };
                     $.ajax({
                         type:"post",
                         url:genAPI('settings/account/freeze'),
                         cache:false,
                         dataType:"json",
-                        data:JSON.stringify(data),
-                        contentType : "application/json;charset=UTF-8",
+                        data:{
+                            accountId: rowSelect.id
+                        },
                         success:function (res) {
-                            // console.info(res);
+                            layer.msg(res.message);
                             if(res.code==200){
-                                layer.msg("成功冻结该账户");
                                 $('#accountList').datagrid('reload');
-                            }else{
-                                layer.msg(res.message);
                             }
                         },error:function () {
                         }
@@ -123,20 +137,19 @@ $(function () {//ready()文档加载后
                     layer.alert('请选中一行进行操作',{skin:'layui-layer-molv'});
                 }
                 if(rowSelect){
-                    var data = {
-                        accountId : rowSelect.id
-                    };
                     $.ajax({
                         type:"post",
                         url:genAPI('settings/account/unfreeze'),
                         cache:false,
                         dataType:"json",
-                        data:JSON.stringify(data),
-                        contentType : "application/json;charset=UTF-8",
+                        data:{
+                            accountId: rowSelect.id
+                        },
                         success:function (res) {
-                            // console.info(res);
-                            layer.msg("该账户已成功启用");
-                            $('#accountList').datagrid('reload');
+                            layer.msg(res.message);
+                            if(res.code==200){
+                                $('#accountList').datagrid('reload');
+                            }
                         },error:function () {
                         }
                     })
@@ -148,13 +161,12 @@ $(function () {//ready()文档加载后
     }
 )
 function formSave(action){
-    var isValid = $(this).form('validate');
+    var isValid = $("#accountInfoForm").form('validate');
     if(isValid){
         var data = $("#accountInfoForm").serializeObject();
         if(!data.first){
             data.first = 0;
         }
-        console.info(data);
         $.ajax({
             type:"post",
             url: action=="create" ? genAPI('settings/account/create') : genAPI('settings/account/modify'),
@@ -167,7 +179,10 @@ function formSave(action){
             data: JSON.stringify(data),
             contentType : "application/json;charset=UTF-8",
             success:function (res) {
-                $("#accountList").datagrid('reload');
+                layer.msg(res.message);
+                if(res.code==200){
+                    $('#accountList').datagrid('reload');
+                }
             },
             error:function () {
                 isValid = false;

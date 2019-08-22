@@ -116,7 +116,7 @@ $(function () {
         }
         layer.open({
             type: 1,
-            title:"选择商品",
+            title:"选择供应商",
             skin: 'layui-layer-molv', //加上边框
             area: ['88%', '80%'], //宽高
             content: $('#vendorInfo'),

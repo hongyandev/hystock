@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>收款单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/scm/receipt.js"></script>
+</head>
+<body>
+<div class="clearfix pdb30">
+    <form id="receiptFrom">
+        <input type="hidden" id="id" name="id" />
+        <div class="form-inline col-sm-12">
+            <div class="form-group">
+                <label>销货单位：</label>
+                <input id="customerName" name="customerName" class="easyui-textbox form-control" data-options="iconCls:'icon-search',iconAlign:'right'" style="width:200px;" readonly>
+                <input type="hidden" id="customer" name="customer"/>
+            </div>
+            <div class="form-group">
+                <label>总欠款：</label>
+                <input id="totalArrears" name="totalArrears" class="easyui-textbox form-control" style="width:112px;" readonly>
+            </div>
+            <div class="form-group">
+                <label>收款人：</label>
+                <input id="payee" name="payee" class="easyui-textbox form-control" style="width:112px;">
+            </div>
+            <div class="form-group">
+                <label>单据日期：</label>
+                <input id="initDate" class="easyui-datebox form-control" value="1" style="width:112px">
+            </div>
+            <div class="form-group pull-right">
+                <label>单据编号：</label>
+                <span id="number_span" style="line-height: 28px;"></span><a id="refreshNum" style="margin-left: 1em;line-height: 28px;" href="javascript:refreshNum();"><i class="fa fa-refresh"></i></a>
+                <input type="hidden" id="number" name="number" />
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

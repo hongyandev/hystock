@@ -1,15 +1,17 @@
 
-var ENV = 'TEST'; // TEST 测试  PROD 正式
+var ENV = 'LOCAL'; // TEST 测试  PROD 正式
 
 // 系统配置
 var config = (function(){
     var PARAM = {
+        LOCAL:{
+            url:'http://localhost:8081/'
+        },
         TEST:{
             url:'http://dev.jxc.sge.cn/'
         },
         PROD:{
-            url:''
-
+            url:'http://jxc.sge.cn/'
         }
     };
     return {
