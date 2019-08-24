@@ -119,7 +119,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
+                    return rowNumberFormat(v, r);
                 },
                 editor: {
                     type: "numberbox",
@@ -256,7 +256,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
+                    return rowNumberFormat(v, r);
                 }
             },
             {
@@ -265,7 +265,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
+                    return rowNumberFormat(v, r);
                 }
             },
             {
@@ -274,7 +274,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
+                    return rowNumberFormat(v, r);
                 }
             },
             {
@@ -283,7 +283,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
+                    return rowNumberFormat(v, r);
                 },
                 editor: {
                     type: "numberbox",

@@ -188,7 +188,9 @@ function intToFloat(value, precision){
         return;
     return Number(value).toFixed(precision);
 }
-
+function rowNumberFormat(value, row, precision) {
+    return row.isFooter ? '<b>'+intToFloat(value, precision)+'</b>' : intToFloat(value, precision);
+}
 //新增tab
 function addTopTab(dg,tabTitle,url) {
     var jq = top.jQuery;
