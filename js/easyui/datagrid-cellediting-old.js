@@ -1,4 +1,4 @@
-(function($){
+;(function($){
     $.extend($.fn.datagrid.methods, {
         endEditing: function (jq) {
             return jq.each(function(){

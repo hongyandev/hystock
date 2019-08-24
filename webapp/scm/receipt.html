@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
     <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
     <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/lodash.min.js"></script>
     <script src="../../js/common/jquery-1.8.0.min.js"></script>
     <script src="../../js/jquery.easyui.min.js"></script>
     <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
@@ -24,9 +25,15 @@
     <script src="../../config.js"></script>
     <script src="../../js/component/customerPanel.js"></script>
     <script src="../../js/scm/receipt.js"></script>
+    <style>
+        .btn span.l-btn-text {
+            margin: 0px;
+            line-height: 1.5em;
+        }
+    </style>
 </head>
 <body>
-<div class="clearfix pdb30">
+<div class="clearfix pdb30" style="margin-top: 44px">
     <form id="receiptFrom">
         <input type="hidden" id="id" name="id" />
         <div class="form-inline col-sm-12" style="margin-bottom: 10px">
@@ -56,6 +63,24 @@
     </form>
     <table id="receiptDetail" class="easyui-datagrid"></table>
     <table id="receiptBills" class="easyui-datagrid"></table>
+    <div class="form-inline col-sm-12">
+        <div class="form-group">
+            <label>收款总额：</label>
+            <input id="totalPayment" type="text" class="easyui-numberbox" data-options="min:0,precision:2" style="width:150px" readonly>
+        </div>
+        <div class=" pull-right">
+            <button type="button" class="btn btn-sm btn-primary">历史单据</button>
+            <button type="button" class="btn btn-sm btn-default">操作日志</button>
+        </div>
+    </div>
+    <div class="form-group pull-right top-btn-group">
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff">新建</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff">保存</a>
+        <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'">审核</a>
+    </div>
+    <div id="btn-reaudit" style="width:auto;">
+        <div>反审核</div>
+    </div>
 </div>
 </body>
 </html>

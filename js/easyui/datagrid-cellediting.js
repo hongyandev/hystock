@@ -511,7 +511,27 @@
 		},
 		getSelectedCells: function(jq){
 			return getSelectedCells(jq[0]);
-		}
+		},
+        statistics: function(jq, fields) {
+            return jq.each(function(){
+                var dg = $(this);
+                var data = dg.datagrid("getData");
+                if(!data.footer){
+                    data.footer = [{"isFooter":true}];
+                }
+                var rows = dg.datagrid('getFooterRows');
+                if(data.rows){
+                    $.each(fields, function (i, field) {
+                        var sum = 0;
+                        $.each(data.rows, function(i, n){
+                            sum = accAdd(sum,n[field]||0);
+                        });
+                        rows[0][field] = intToFloat(Number(String(sum).replace(/^(.*\..{4}).*$/,"$1")));
+                    })
+                }
+                dg.datagrid("reloadFooter");
+            })
+        },
 	});
 
 })(jQuery);

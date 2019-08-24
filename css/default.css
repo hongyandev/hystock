@@ -490,3 +490,12 @@ input.switch{
 .accordion-body{
     overflow-y: scroll!important;
 }
+.btn-success{
+    background: #1ab394;!important;
+}
+.top-btn-group {
+    position: fixed;
+    right: 10px;
+    top: 0;
+    z-index: 99999;
+}

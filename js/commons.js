@@ -179,8 +179,12 @@ Number.prototype.div = function (arg) {
     return accDiv(this, arg);
 };
 //保留两位小数
-function intToFloat(val){
-    return new Number(val).toFixed(2);
+function intToFloat(value, precision){
+    if(precision===undefined)
+        precision=2;
+    if(isNaN(Number(value)))
+        return;
+    return Number(value).toFixed(precision);
 }
 
 //新增tab
