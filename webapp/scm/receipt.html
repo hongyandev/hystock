@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../../css/default.css">
     <script src="../../js/common/lodash.min.js"></script>
     <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/common/handlebars.min.js"></script>
     <script src="../../js/jquery.easyui.min.js"></script>
     <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
     <script src="../../js/easyui/datagrid-cellediting.js"></script>
@@ -65,22 +66,55 @@
     <table id="receiptBills" class="easyui-datagrid"></table>
     <div class="form-inline col-sm-12">
         <div class="form-group">
-            <label>收款总额：</label>
+            <label>本次收款总额：</label>
             <input id="totalPayment" type="text" class="easyui-numberbox" data-options="min:0,precision:2" style="width:150px" readonly>
         </div>
-        <div class=" pull-right">
-            <button type="button" class="btn btn-sm btn-primary">历史单据</button>
-            <button type="button" class="btn btn-sm btn-default">操作日志</button>
+        <div class="form-group pull-right">
+            <button type="button" class="btn btn-sm btn-primary" onclick="historyReceipt()">历史单据</button>
+            <button id="receiptLogs" type="button" class="btn btn-sm btn-default">操作日志</button>
         </div>
     </div>
     <div class="form-group pull-right top-btn-group">
-        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff">新建</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff">保存</a>
-        <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'">审核</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff" onclick="createReceipt()">新增</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-default" data-options="plain:true" onclick="saveReceipt()">保存</a>
+        <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'" onclick="auditReceipt('audit')">审核</a>
     </div>
     <div id="btn-reaudit" style="width:auto;">
-        <div>反审核</div>
+        <div onclick="auditReceipt('reAudit')">反审核</div>
     </div>
+    <script type="text/x-handlebars-template" id="bills-search-panel">
+        <form>
+            <input type="hidden" name="billType" value="{{billType}}">
+            <input type="hidden" name="customerId" value="{{customerId}}">
+            <div class="form-inline col-sm-12">
+                <div class="form-group">
+                    <label>单据日期：</label>
+                    <input name="beginDate" class="easyui-datebox form-control begindate" value="1" style="width:112px">
+                    <span> - </span>
+                    <input name="endDate" class="easyui-datebox form-control enddate" value="1" style="width:112px">
+                    <button class="btn btn-sm btn-success searchBtn" type="button">查询</button>
+                </div>
+            </div>
+            <div class="form-inline col-sm-12" style="margin-bottom: 10px">
+                <div class="form-group">
+                    <label>单据编号：</label>
+                    <input name="billNumber" class="easyui-textbox form-control billnumber" style="width:400px">
+                </div>
+            </div>
+        </form>
+        <table class="easyui-datagrid" data-options="singleSelect:true,collapsible:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'itemid',width:80">Item ID</th>
+                    <th data-options="field:'productid',width:100">Product</th>
+                    <th data-options="field:'listprice',width:80,align:'right'">List Price</th>
+                    <th data-options="field:'unitcost',width:80,align:'right'">Unit Cost</th>
+                    <th data-options="field:'attr1',width:250">Attribute</th>
+                    <th data-options="field:'status',width:60,align:'center'">Status</th>
+                </tr>
+            </thead>
+        </table>
+    </script>
 </div>
 </body>
 </html>

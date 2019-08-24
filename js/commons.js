@@ -180,6 +180,8 @@ Number.prototype.div = function (arg) {
 };
 //保留两位小数
 function intToFloat(value, precision){
+    if(value===undefined)
+        value=0;
     if(precision===undefined)
         precision=2;
     if(isNaN(Number(value)))

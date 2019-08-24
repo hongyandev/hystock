@@ -86,7 +86,7 @@
                 type: 1,
                 title:"选择"+opts.typeEnum[opts.type].name,
                 skin: 'layui-layer-molv', //加上边框
-                area: ['88%', '80%'], //宽高
+                area: ['80%', '80%'], //宽高
                 content: body,
                 btn: ['选中并关闭', '取消'],
                 yes: function(index, layero){
@@ -111,7 +111,7 @@
                     body.hide();
                 },
                 success: function(layero, index){
-                    datagrid.datagrid('resize',{height:($(layero).find('.layui-layer-content').height()-70)});
+                    datagrid.datagrid('resize',{height:($(layero).find('.layui-layer-content').height()-50)});
                 }
             })
 

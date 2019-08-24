@@ -3,6 +3,7 @@ ul,li{list-style: none}
 a{ color:Black; text-decoration:none;}
 a:hover{text-decoration:underline;}
 .textbox03 {border:1px solid #878787;padding: 4px 3px;font-family:"微软雅黑",Verdana, Geneva, sans-serif,宋体;line-height: 14px; background-color: #fff;  height: auto; font-size: 14px;  font-weight: bold; width: 190px; }
+.panel{margin: 0}
 .panel-body{padding:0}
 .txt01{font-family:"微软雅黑",Verdana, Geneva, sans-serif,宋体;padding:3px 2px 2px 2px; border:1px solid #ddd; color:#000;}
 .txt {border: #878787 1px solid;padding: 4px 3px;font-family:"微软雅黑",Verdana, Geneva, sans-serif,宋体;line-height: 14px; background-color: #fff;  height: auto; font-size: 14px;}

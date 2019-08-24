@@ -15,7 +15,18 @@ function refreshNum() {
         }
     });
 }
-
+function createReceipt() {
+    console.info('creat')
+}
+function saveReceipt() {
+    console.info('save')
+}
+function auditReceipt(sign) {
+    console.info(sign)
+}
+function historyReceipt() {
+    console.info('history')
+}
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -108,7 +119,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return intToFloat(v);
+                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
                 },
                 editor: {
                     type: "numberbox",
@@ -196,16 +207,16 @@ $(function () {
         showFooter: true,
         onSelectCell: function (index, field) {
             if (field === 'action'){
-                receiptBills.datagrid('deleteRow', index).datagrid('statistics', ["nowCheck"]);
+                receiptBills.datagrid('deleteRow', index).datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
             }
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["nowCheck"]){
-                receiptDetail.datagrid('statistics', ["nowCheck"]);
+                receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
             }
         },
         onLoadSuccess: function (data) {
-            receiptDetail.datagrid('statistics', ["nowCheck"]);
+            receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
         },
         columns: [[
             {
@@ -245,7 +256,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return intToFloat(v);
+                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
                 }
             },
             {
@@ -254,7 +265,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return intToFloat(v);
+                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
                 }
             },
             {
@@ -263,7 +274,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return intToFloat(v);
+                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
                 }
             },
             {
@@ -272,7 +283,7 @@ $(function () {
                 width: 150,
                 align: 'right',
                 formatter: function (v, r, i) {
-                    return intToFloat(v);
+                    return r.isFooter ? '<b>'+intToFloat(v)+'</b>' : intToFloat(v);
                 },
                 editor: {
                     type: "numberbox",
@@ -285,9 +296,65 @@ $(function () {
         ]],
         toolbar: [
             {
-                text: '核销单据',
-                iconCls: 'fa fa-folder-open fa-lg',
-                handler: function () {}
+                text: '选择源单',
+                handler: function () {
+                    var customerId = $("#customer").val();
+                    if(!customerId){
+                        layer.msg('请选择销货单位');
+                    }
+                    var template = Handlebars.compile($("#bills-search-panel").html());
+                    layer.open({
+                        type: 1,
+                        title:"选择源单",
+                        skin: 'layui-layer-molv', //加上边框
+                        area: ['80%', '80%'], //宽高
+                        content: template({
+                            billType: 3,
+                            customerId: customerId
+                        }),
+                        btn: ['选中并关闭', '取消'],
+                        yes: function(index, layero){
+                            layer.close(index);
+                        },
+                        btn2: function(index, layero){
+                            layer.close(index);
+                        },
+                        end: function () {
+                        },
+                        success: function(layero, index){
+                            $(layero).find(".easyui-datebox").datebox();
+                            $(layero).find(".easyui-textbox").textbox({
+                                prompt: '支持以逗号（英文格式）分隔多个单据号查询',
+                                width: _.multiply($(layero).find('.layui-layer-content').width(), 0.8)
+                            });
+                            var dg = $(layero).find(".easyui-datagrid");
+                            dg.datagrid({
+                                fitColumns:true,
+                                striped:true,
+                                nowrap:true,
+                                pagination:true,
+                                rownumbers:true,
+                                singleSelect:true,
+                                url : genAPI('query/billsReceipt'),
+                                method:'post',
+                                queryParams: $(layero).find("form").serializeObject(),
+                                loadFilter:function (data) {
+                                    if(data.code == 200){
+                                        return data.data
+                                    } else {
+                                        layer.msg(data.message);
+                                    }
+                                }
+                            }).datagrid('resize',{
+                                height: _.subtract($(layero).find('.layui-layer-content').height(), 90)
+                            });
+                            $(layero).find("button.searchBtn").bind("click", function () {
+                                var data = $(layero).find("form").serializeObject();
+                                dg.datagrid('load', data);
+                            })
+                        }
+                    })
+                }
             }
         ]
     })
@@ -297,8 +364,10 @@ $(function () {
             rows:[],
             footer: [{
                 billNumber: '<b>合计:</b>',
-                nowCheck:0,
                 isFooter: true
             }]
         });
+    $("#receiptLogs").bind("click", function () {
+        console.info('receiptLogs')
+    })
 });
