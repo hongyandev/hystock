@@ -210,7 +210,6 @@ $(function () {
 //采购录入表格
     var goodsid;
     var storageId;
-    var storageid;
     var storageName;
     //var goodsId;
     $("#purchaseList").datagrid({
@@ -354,10 +353,10 @@ $(function () {
                 width : 160,
                 hidden:false,
                 formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageId || !rowData.storageName){
-                        rowData.storageId = storageid;
+                    //if(!rowData.storageId || !rowData.storageName){
+                        rowData.storageId = storageId;
                         rowData.storageName = storageName;
-                    }
+                    //}
                     return rowData.storageName || "";
                 },
                 editor : {
@@ -374,8 +373,11 @@ $(function () {
                         },
                         onSelect:function (record) {
                              storageName = record.name;
-                             storageid = record.id;
+                             storageId = record.id;
 
+                        },
+                        onUnselect:function () {
+                          //alert('111')
                         },
                         onClickButton:function () {
                             var rowData = $("#purchaseList").datagrid("getSelected");

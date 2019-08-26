@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>采购单记录</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/sales/saleHistory.js"></script>
+    <style type="text/css">
+        input[type="checkbox"]{margin:0;}
+        input.switch{
+            margin:4px 0 4px;
+        }
+        .switch {
+            width: 50px;
+            height: 22px;
+            position: relative;
+            border: 1px solid #dfdfdf;
+            background-color: #fdfdfd;
+            box-shadow: #dfdfdf 0 0 0 0 inset;
+            border-radius: 20px;
+            background-clip: content-box;
+            display: inline-block;
+            -webkit-appearance: none;
+            user-select: none;
+            outline: none;
+        }
+        .switch:before {
+            content: '';
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            top: -1px;
+            left: 0;
+            border-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .switch.checked {
+            border-color: #64bd63;
+            box-shadow: #64bd63 0 0 0 16px inset;
+            background-color: #64bd63;
+        }
+        .switch.checked:before {
+            left: 28px;
+        }
+        .switch.switch-anim {
+            transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+        }
+        .switch.switch-anim:before {
+            transition: left 0.3s;
+        }
+        .switch.switch-anim.checked {
+            box-shadow: #64bd63 0 0 0 16px inset;
+            background-color: #64bd63;
+            transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+        }
+        .switch.switch-anim.checked:before {
+            transition: left 0.3s;
+        }
+    </style>
+</head>
+<body>
+<div class="clearfix pdb30">
+    <div class="clearfix">
+        <div class="form-inline col-sm-12" style="z-index:99999">
+            <div class="form-group">
+                <input type="text" id="searTxt" class="form-control" placeholder="请输入单据号或供应商或备注"/>
+            </div>
+            <div class="form-group">
+                <label>单据日期：</label>
+                <input id="startDate" name="startDate" class="easyui-datebox textbox-f" data-options="prompt:'请选择开始日期',editable:false,required:'true'"/>
+                -
+                <input id="endDate" name="endDate" class="easyui-datebox" required labelPosition="top" value="myformatter(date)" validType="equaldDate['#startDate']" data-options="prompt:'请选择结束日期',editable:false"/>
+            </div>
+            <div class="form-group">
+                <label>付款状态:</label>
+                <select id="hxState" name="hxState" data-options="editable:true,width:200" style="width:160px;height:30px"></select>
+                　　 <div id="sp">
+                <input type="checkbox" name="hxState" value="1"><span>未付款</span><br/>
+                <input type="checkbox" name="hxState" value="2"><span>部分付款</span><br/>
+                <input type="checkbox" name="hxState" value="3"><span>全部付款</span>
+            </div>
+            </div>
+            <div class="form-group">
+                <label>审核状态:</label>
+                <select id="status" class="easyui-combobox" name="status" style="width:160px;">
+                    <option value="1" selected = "selected">未审核</option>
+                    <option value="2">已审核</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button id="chx" class="btn btn-success">查询</button>
+            </div>
+        </div>
+        <table class="easyui-datagrid" id="purchaseRecords"></table>
+
+    </div>
+    <!-- btn -->
+    <div id="bottomField">
+        <div id="toolBottom" class="pull-right">
+            <span>
+                <a id="save" class="btn btn-success" onclick="savePurchase()">保存并新增</a>
+                <a id="audit" class="btn btn-success" onclick="auditPurchase()">审核</a>
+                <a id="reAudit" class="btn btn-success" onclick="reAuditPurchase()">反审核</a>
+            </span>
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>

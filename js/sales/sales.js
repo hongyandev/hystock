@@ -139,7 +139,7 @@ $(function () {
                         rowsData[i].taxRate = rowSelect.taxRate;
                         rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
                         rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
-                        // rowsData[i].tax = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
+                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
                         rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
                         dg.datagrid('refreshRow', i);
                     }
@@ -353,10 +353,10 @@ $(function () {
                 width : 160,
                 hidden:false,
                 formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageId || !rowData.storageName){
+                    // if(!rowData.storageId || !rowData.storageName){
                         rowData.storageId = storageId;
                         rowData.storageName = storageName;
-                    }
+                    // }
                     return rowData.storageName || "";
                 },
                 editor : {
@@ -692,14 +692,14 @@ $(function () {
         discountData();
     });
 //计算本次欠款
-    $("#payment").on('input propertychange', function() {
-        $("#arrears").val(accSub($("#discount").val() || 0,$("#payment").val() || 0))
+    $("#income").on('input propertychange', function() {
+        $("#arrears").val(accSub($("#discount").val() || 0,$("#income").val() || 0))
     })
 //回显需要修改的商品
     if($.cookie('id')){
         $.ajax({
             type: "post",
-            url: genAPI('pur/getInvPuInfo'),
+            url: genAPI('pur/getInvSaInfo'),
             cache: false,
             dataType: "json",
             data: {
@@ -718,7 +718,7 @@ $(function () {
                         $("#salesList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
                         $("#deduction").val(res.data.deduction);
-                        $("#payment").val(res.data.payment);
+                        $("#income").val(res.data.income);
                         $("#discount").val(res.data.totalAmount);
                         $("#note").val(res.data.note);
                         totalMoney();
@@ -727,7 +727,7 @@ $(function () {
                             $("#mark").addClass("has-audit");
                             $("#audit").hide();
                             $("#reAudit,#returnPur").show();
-                            $("#discountRate,#deduction,#payment,#arrears,#account").attr   ("readOnly",true);
+                            $("#discountRate,#deduction,#income,#arrears,#account").attr   ("readOnly",true);
                             $("#salesList").datagrid("removeEditor",['name','storageName','unit','qty','discountRate','note'])
                         }
                     }
@@ -742,13 +742,13 @@ $(function () {
         });
     }
 //操作日志
-    $("#purLog").on("click",function () {
+    $("#salesLog").on("click",function () {
         $.ajax({
             type:'post',
             url:genAPI('query/queryInvOpeLog'),
             data:{
                 invId:$("#salesId").val(),
-                vType:'5'
+                vType:'3'
             },
             success:function (res) {
                 if(res.code=='200'){
@@ -963,17 +963,15 @@ function goodsInventoryList(goodsId) {
 //优惠后的金额与本次付款
 function discountData() {
     var footerData = $("#salesList").datagrid("getFooterRows");
-    //console.info(footerData);
-    //var paymentData = $("#payment").val() || 0;
     var discountRateData =accDiv($("#discountRate").val() || 0,100) ;
     //付款优惠
     $("#deduction").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
     //优惠后的金额
     $("#discount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
-    //本次付款
-    $("#payment").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
+    //本次到款
+    $("#income").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
     //本次欠款
-    $("#arrears").val(intToFloat(accSub(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData)),$("#payment").val() || 0)));
+    $("#arrears").val(intToFloat(accSub(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData)),$("#income").val() || 0)));
 
 }
 //合计
@@ -1416,7 +1414,7 @@ function savePurchase() {
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
         deduction:$("#deduction").val(),
-        income:$("#payment").val(),
+        income:$("#income").val(),
         totalAmount:$("#discount").val(),
         note:$("#note").val(),
         detail:detail
@@ -1476,20 +1474,20 @@ function auditPurchase() {
     }
     var data = {
         id:$("#salesId").val() ? $("#salesId").val() : 0,
-        transType:'5',
+        transType:'3',
         number:$("#number").html(),
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
         deduction:$("#deduction").val(),
-        payment:$("#payment").val(),
+        income:$("#income").val(),
         totalAmount:$("#discount").val(),
         note:$("#note").val(),
         detail:detail
     };
     $.ajax({
         type:"POST",
-        url:genAPI('pur/checkPurchase'),
+        url:genAPI('/invSa/checkInvSa'),
         async:true,
         contentType:"application/json",
         data:JSON.stringify(data),
@@ -1509,7 +1507,7 @@ function auditPurchase() {
 function reAuditPurchase() {
     $.ajax({
         type:"POST",
-        url:genAPI('pur/rsBatchCheckInvPu'),
+        url:genAPI('/invSa/rsbatchCheckInvSa'),
         data:{
             ids:$("#salesId").val()
         },
@@ -1520,7 +1518,7 @@ function reAuditPurchase() {
                 layer.msg("反审核成功！");
                 $("#mark").removeClass("has-audit");
                 $("#audit").show();
-                $("#discountRate,#deduction,#payment,#arrears,#account").attr("readOnly",false);
+                $("#discountRate,#deduction,#income,#arrears,#account").attr("readOnly",false);
                 $("#reAudit,#returnPur").hide();
                 end();
             }else {
@@ -1535,14 +1533,14 @@ function copyPurchase() {
 }
 //历史单据
 function historyReceipts() {
-    var tabTitle = '采购单记录';
+    var tabTitle = '销售单记录';
     var dg="#tabs";
     var url = "webapp/purchase/purchaseHistory.html";
     addTopTab(dg,tabTitle,url)
 
 }
 function returnPurchase() {
-    var tabTitle = '采购退货单';
+    var tabTitle = '销售退货单';
     var dg="#tabs";
     var url = "webapp/purchase/purchaseBack.html";
     addTopTab(dg,tabTitle,url)
