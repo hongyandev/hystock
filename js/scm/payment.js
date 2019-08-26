@@ -82,11 +82,11 @@ $(function () {
     });
     refreshNum();
     $('#customerName').customerPanel({
-        type: 'customer',
+        type: 'vendor',
         el: "#customer",
         required: true,
         onSelected: function (tar, row) {
-            $("#totalArrears").numberbox('setValue', isNaN(Number(row.proceeds))?0:row.proceeds);
+            $("#totalArrears").numberbox('setValue', isNaN(Number(row.pay))?0:row.pay);
             var billsRows = $("#receiptBills").datagrid('getRows');
             if(billsRows.length > 0){
                 $("#receiptBills").datagrid('loadData', {
@@ -268,7 +268,7 @@ $(function () {
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["nowCheck"]){
-                receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+                receiptBills.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
             }
         },
         onLoadSuccess: function (data) {
@@ -304,7 +304,11 @@ $(function () {
             {
                 field: "billDate",
                 title: "单据日期",
-                width: 150
+                width: 150,
+                formatter: function (v,r,i) {
+                    if(v)
+                        return moment(v).format('YYYY-MM-DD');
+                }
             },
             {
                 field: "billPrice",
@@ -356,7 +360,7 @@ $(function () {
                 handler: function () {
                     var customerId = $("#customer").val();
                     if(!customerId){
-                        layer.msg('请选择销货单位');
+                        layer.msg('请选择购货单位');
                         return;
                     }
                     var template = Handlebars.compile($("#bills-search-panel").html());
@@ -366,7 +370,7 @@ $(function () {
                         skin: 'layui-layer-molv', //加上边框
                         area: ['80%', '80%'], //宽高
                         content: template({
-                            billType: 3,
+                            billType: 5,
                             customerId: customerId
                         }),
                         btn: ['选中并关闭', '取消'],
@@ -386,7 +390,7 @@ $(function () {
                             });
                             if(index != -1) {
                                 layer.msg("此单已选取，请选择其他单据。");
-                                return false;
+                                return;
                             }
                             $("#receiptBills")
                                 .datagrid('appendRow', row)
@@ -447,7 +451,11 @@ $(function () {
                                     {
                                         field: "billDate",
                                         title: "单据日期",
-                                        width: 120
+                                        width: 120,
+                                        formatter: function (v,r,i) {
+                                            if(v)
+                                                return moment(v).format('YYYY-MM-DD');
+                                        }
                                     },
                                     {
                                         field: "billPrice",

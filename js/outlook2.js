@@ -70,7 +70,7 @@ function InitLeftMenu() {
                 $('#nav').accordion('select', t);
 
 			}else{
-
+				layer.msg(res.message);
 			}
         },
         error:function () {

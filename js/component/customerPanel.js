@@ -73,8 +73,9 @@
             columns: opts.typeEnum[opts.type].columns,
         });
         var textbox = tar.textbox({
-            readonly:true,
-            buttonIcon:'icon-search'
+            readonly: true,
+            buttonIcon:'icon-search',
+            required: opts.required
         });
         textbox.next('span').find('.textbox-button').bind('click',function () {
             if(body.is(':hidden')){
@@ -139,6 +140,7 @@
         }
     };
     $.fn.customerPanel.defaults = {
+        required: false,
         typeEnum: {
             customer: {
                 name:'客户',
