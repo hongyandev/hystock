@@ -40,7 +40,7 @@ function saveReceipt() {
         var data = $('#receiptFrom').serializeObject();
         $.extend(data, {
             detail: $("#receiptDetail").datagrid('acceptChanges').datagrid('getRows'),
-            bills: $("#receiptBills").datagrid('getRows')
+            bills: $("#receiptBills").datagrid('acceptChanges').datagrid('getRows')
         })
         if(data.detail.length == 0){
             layer.msg('请添加结算明细');
@@ -51,6 +51,7 @@ function saveReceipt() {
             return;
         }
         console.info(data)
+        // return;
         $.ajax({
             type:"post",
             url: genAPI(data.id ? 'receipt/modify' : 'receipt/create') ,
@@ -73,6 +74,19 @@ function auditReceipt(sign) {
 function historyReceipt() {
     addTopTab("#tabs",'收款单记录',"webapp/scm/billHistory.html?type="+$("#transType").val());
 }
+function statistics() {
+    var dFooter = $("#receiptDetail").datagrid('getFooterRows');
+    var bFooter = $("#receiptBills").datagrid('getFooterRows');
+    if(dFooter && bFooter){
+        var payment = Number(dFooter[0].payment);
+        var nowCheck = Number(bFooter[0].nowCheck);
+        if(isNaN(payment) || isNaN(nowCheck)) {
+            $("#totalPayment").numberbox('setValue', 0);
+        } else {
+            $("#totalPayment").numberbox('setValue', payment-nowCheck == 0 ? payment : payment-nowCheck);
+        }
+    }
+}
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -86,7 +100,8 @@ $(function () {
         el: "#customer",
         required: true,
         onSelected: function (tar, row) {
-            $("#totalArrears").numberbox('setValue', isNaN(Number(row.pay))?0:row.pay);
+            $("#allPayment").numberbox('setValue', isNaN(Number(row.pay))?0:row.pay);
+            $("#totalPayment").numberbox('setValue', 0);
             var billsRows = $("#receiptBills").datagrid('getRows');
             if(billsRows.length > 0){
                 $("#receiptBills").datagrid('loadData', {
@@ -101,7 +116,7 @@ $(function () {
             }
         }
     });
-    $("#payee").combobox({
+    $("#payer").combobox({
         url: genAPI('user/comboList'),
         valueField: 'uid',
         textField: 'realName',
@@ -126,15 +141,18 @@ $(function () {
         onSelectCell: function (index, field) {
             if (field === 'action'){
                 receiptDetail.datagrid('deleteRow', index).datagrid('statistics', ["payment"]);
+                statistics()
             }
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["payment"]){
                 receiptDetail.datagrid('statistics', ["payment"]);
+                statistics();
             }
         },
         onLoadSuccess: function (data) {
             receiptDetail.datagrid('statistics', ["payment"]);
+            statistics();
         },
         columns: [[
             {
@@ -264,15 +282,18 @@ $(function () {
         onSelectCell: function (index, field) {
             if (field === 'action'){
                 receiptBills.datagrid('deleteRow', index).datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+                statistics();
             }
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["nowCheck"]){
-                receiptBills.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+                receiptBills.datagrid('statistics', ["nowCheck"]);
+                statistics()
             }
         },
         onLoadSuccess: function (data) {
             receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+            statistics()
         },
         columns: [[
             {
@@ -382,13 +403,13 @@ $(function () {
                                 return false;
                             }
                             var rows = $("#receiptBills").datagrid('getRows');
-                            var index = -1;
+                            var sign = -1;
                             $.each(rows, function (i, o) {
                                 if(o.billId == row.billId){
-                                    index = i;
+                                    sign = i;
                                 }
                             });
-                            if(index != -1) {
+                            if(sign != -1) {
                                 layer.msg("此单已选取，请选择其他单据。");
                                 return;
                             }

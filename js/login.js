@@ -20,7 +20,8 @@ $(function () {
 
 $(function () {
     $(".login").height($(window).height());
-
+    $("#khdm").val($.cookie('khdm') || '');
+    $("#username").val($.cookie('username') || '')
     $('#password').keyup(function (event) {
         if (event.keyCode == "13") {
             $("#login").trigger("click");
