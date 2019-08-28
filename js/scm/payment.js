@@ -72,7 +72,7 @@ function auditReceipt(sign) {
     console.info(sign)
 }
 function historyReceipt() {
-    addTopTab("#tabs",'收款单记录',"webapp/scm/billHistory.html?type="+$("#transType").val());
+    addTopTab("#tabs",'收款单记录',"webapp/scm/billHistory.html?transType="+$("#transType").val());
 }
 function statistics() {
     var dFooter = $("#receiptDetail").datagrid('getFooterRows');
