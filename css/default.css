@@ -429,7 +429,8 @@ select, button, input[type="button"], input[type="reset"], input[type="submit"],
     background: url(../images/audit.png) 0 0 no-repeat;
     position: absolute;
     right: 40px;
-    bottom: 65px;
+    top: 100px;
+    z-index: 999;
 }
 input[type="checkbox"]{margin:0;}
 input.switch{

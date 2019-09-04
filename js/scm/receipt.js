@@ -86,7 +86,7 @@ $(function () {
         el: "#customer",
         required: true,
         onSelected: function (tar, row) {
-            $("#totalArrears").numberbox('setValue', isNaN(Number(row.proceeds))?0:row.proceeds);
+            $("#allProceeds").numberbox('setValue', isNaN(Number(row.proceeds))?0:row.proceeds);
             var billsRows = $("#receiptBills").datagrid('getRows');
             if(billsRows.length > 0){
                 $("#receiptBills").datagrid('loadData', {

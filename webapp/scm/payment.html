@@ -39,6 +39,7 @@
     <form id="receiptFrom">
         <input type="hidden" id="receiptId" name="id" />
         <input type="hidden" id="transType" name="transType" value="15" />
+        <input type="hidden" id="status" name="status" />
         <div class="form-inline col-sm-12" style="margin-bottom: 10px">
             <div class="form-group">
                 <label>购货单位：</label>
@@ -63,6 +64,7 @@
                 <input type="hidden" id="number" name="number" />
             </div>
         </div>
+        <div id="mark"></div>
         <table id="receiptDetail" class="easyui-datagrid"></table>
         <table id="receiptBills" class="easyui-datagrid"></table>
         <div class="col-sm-12">
@@ -83,6 +85,7 @@
         <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff" onclick="createReceipt()">新建</a>
         <a href="javascript:void(0)" class="easyui-linkbutton btn btn-default" data-options="plain:true" onclick="saveReceipt()">保存</a>
         <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'" onclick="auditReceipt('audit')">审核</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-danger" style="color: #fff" data-options="plain:true" onclick="deleteReceipt()">删除</a>
     </div>
     <div id="btn-reaudit" style="width:auto;">
         <div onclick="auditReceipt('reAudit')">反审核</div>
@@ -110,17 +113,18 @@
         <table class="easyui-datagrid"></table>
     </script>
     <script type="text/x-handlebars-template" id="operation-logs-tpl">
-        {{#list data}}
+        {{#data}}
         <ul class="tipul">
             <li>
-                <p>
+                <p style="line-height: 1.5em;">
                     <span>{{logName}}</span>
                     <span>{{user}}</span>
+                    <br/>
+                    <time>{{createTime}}</time>
                 </p>
-                <time>{{createTime}}</time>
             </li>
         </ul>
-        {{/list}}
+        {{/data}}
     </script>
 </div>
 </body>

@@ -1,5 +1,11 @@
 
 $(function () {
+    $.ajaxSetup({
+        headers: {
+            uid: $.cookie('uid'),
+            token: $.cookie('jwt')
+        }
+    });
     // 自定义的校验器
     var reg = /^1[3|4|5|7|8|9][0-9]{9}$/;
     $.extend($.fn.validatebox.defaults.rules, {
@@ -194,16 +200,14 @@ function rowNumberFormat(value, row, precision) {
 //新增tab
 function addTopTab(dg,tabTitle,url) {
     var jq = top.jQuery;
-    if(!jq(dg).tabs('exists',tabTitle)){
-        jq(dg).tabs('add',{
-            title:tabTitle,
-            content:'<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:90%;overflow: scroll"></iframe>',
-            closable:true
-        });
-    }else{
-        jq(dg).tabs('select',tabTitle);
-        jq('#mm-tabupdate').click();
+    if(jq(dg).tabs('exists',tabTitle)){
+        jq(dg).tabs('close',tabTitle);
     }
+    jq(dg).tabs('add',{
+        title:tabTitle,
+        content:'<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:90%;overflow: scroll"></iframe>',
+        closable:true
+    });
 }
 
 
