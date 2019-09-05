@@ -37,7 +37,7 @@ function createReceipt() {
     refreshNum();
 }
 
-function saveReceipt() {
+function saveReceipt(sign) {
     if ($('#receiptFrom').form('validate')) {
         var data = $('#receiptFrom').serializeObject();
         $.extend(data, {
@@ -52,17 +52,20 @@ function saveReceipt() {
             layer.msg('请选择源单据')
             return;
         }
-        console.info(data)
+        // console.info(data)
         // return;
         $.ajax({
             type: "post",
-            url: genAPI(data.id ? 'receipt/modify' : 'receipt/create'),
+            url: sign=='audit' ? genAPI('receipt/check') : genAPI(data.id ? 'receipt/modify' : 'receipt/create'),
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function (res) {
                 if (res.code == 200) {
                     $("#receiptId").val(res.data.id);
                     $("#status").val(res.data.status);
+                    if(sign=='audit'){
+                        refresh(res.data.id);
+                    }
                 }
                 layer.msg(res.message);
             }
@@ -73,11 +76,44 @@ function saveReceipt() {
 }
 
 function auditReceipt(sign) {
-    console.info(sign)
+    if(sign=='audit'){
+        saveReceipt(sign);
+    } else {
+        $.ajax({
+            type: "POST",
+            url: genAPI('receipt/reBatchCheck'),
+            data: {
+                ids: $("#receiptId").val(),
+                transType: $("#transType").val()
+            },
+            cache: false,
+            dataType: "json",
+            success: function (res) {
+                if (res.code == 200) {
+                    layer.msg("反审核成功");
+                    refresh($("#receiptId").val());
+                } else {
+                    layer.alert(res.message, {skin: 'layui-layer-molv'});
+                }
+            }
+        });
+    }
+}
+
+function refresh(id) {
+    var jq = top.jQuery;
+    var tab = jq('#tabs').tabs('getSelected');
+    jq('#tabs').tabs('update', {
+        tab: tab,
+        options: {
+            content:'<iframe scrolling="auto" frameborder="0"  src="webapp/scm/payment.html?id='+id+'" style="width:100%;height:90%;overflow: scroll"></iframe>'
+        }
+    })
+    tab.panel('refresh');
 }
 
 function historyReceipt() {
-    addTopTab("#tabs", '收款单记录', "webapp/scm/billHistory.html?transType=" + $("#transType").val());
+    addTopTab("#tabs", '付款单记录', "webapp/scm/billHistory.html?transType=" + $("#transType").val());
 }
 
 function deleteReceipt() {
@@ -429,7 +465,7 @@ $(function () {
                             var row = dg.datagrid("getSelected")
                             if (!row) {
                                 layer.msg('请选中一行操作');
-                                return false;
+                                return;
                             }
                             var rows = $("#receiptBills").datagrid('getRows');
                             var sign = -1;

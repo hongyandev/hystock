@@ -205,6 +205,7 @@ function addTopTab(dg,tabTitle,url) {
     }
     jq(dg).tabs('add',{
         title:tabTitle,
+        cache: false,
         content:'<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:90%;overflow: scroll"></iframe>',
         closable:true
     });

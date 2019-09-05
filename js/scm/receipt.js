@@ -35,7 +35,7 @@ function createReceipt() {
     });
     refreshNum();
 }
-function saveReceipt() {
+function saveReceipt(sign) {
     if($('#receiptFrom').form('validate')){
         var data = $('#receiptFrom').serializeObject();
         $.extend(data, {
@@ -50,15 +50,19 @@ function saveReceipt() {
             layer.msg('请选择源单据')
             return;
         }
-        console.info(data)
+        // console.info(data)
         $.ajax({
             type:"post",
-            url: genAPI(data.id ? 'receipt/modify' : 'receipt/create') ,
+            url: sign=='audit' ? genAPI('receipt/check') : genAPI(data.id ? 'receipt/modify' : 'receipt/create') ,
             contentType:"application/json",
             data:JSON.stringify(data),
             success:function (res) {
                 if(res.code==200){
                     $("#receiptId").val(res.data.id);
+                    $("#status").val(res.data.status);
+                    if(sign=='audit'){
+                        refresh(res.data.id);
+                    }
                 }
                 layer.msg(res.message);
             }
@@ -68,19 +72,88 @@ function saveReceipt() {
     }
 }
 function auditReceipt(sign) {
-    console.info(sign)
+    if(sign=='audit'){
+        saveReceipt(sign);
+    } else {
+        $.ajax({
+            type: "POST",
+            url: genAPI('receipt/reBatchCheck'),
+            data: {
+                ids: $("#receiptId").val(),
+                transType: $("#transType").val()
+            },
+            cache: false,
+            dataType: "json",
+            success: function (res) {
+                if (res.code == 200) {
+                    layer.msg("反审核成功");
+                    refresh($("#receiptId").val());
+                } else {
+                    layer.alert(res.message, {skin: 'layui-layer-molv'});
+                }
+            }
+        });
+    }
+}
+function refresh(id) {
+    var jq = top.jQuery;
+    var tab = jq('#tabs').tabs('getSelected');
+    jq('#tabs').tabs('update', {
+        tab: tab,
+        options: {
+            content:'<iframe scrolling="auto" frameborder="0"  src="webapp/scm/receipt.html?id='+id+'" style="width:100%;height:90%;overflow: scroll"></iframe>'
+        }
+    })
+    tab.panel('refresh');
 }
 function historyReceipt() {
-    addTopTab("#tabs",'收款单记录',"webapp/scm/billHistory.html?type="+$("#transType").val());
+    addTopTab("#tabs",'收款单记录',"webapp/scm/billHistory.html?transType="+$("#transType").val());
 }
-$(function () {
-    $.ajaxSetup({
-        headers: {
-            uid: $.cookie('uid'),
-            token: $.cookie('jwt')
+
+function deleteReceipt() {
+    if($("#receiptId").val() && $("#status").val() == 1) {
+        $.ajax({
+            type: "POST",
+            url: genAPI('receipt/delete'),
+            data: {
+                id: $("#receiptId").val()
+            },
+            cache: false,
+            dataType: "json",
+            success: function (res) {
+                if (res.code == 200) {
+                    layer.msg("删除成功");
+                    createReceipt();
+                } else {
+                    layer.alert(res.message, {skin: 'layui-layer-molv'});
+                }
+            }
+        });
+    } else {
+        layer.msg("单据当前状态不可删除");
+    }
+}
+
+function statistics() {
+    var dFooter = $("#receiptDetail").datagrid('getFooterRows');
+    var bFooter = $("#receiptBills").datagrid('getFooterRows');
+    if (dFooter && bFooter) {
+        var payment = Number(dFooter[0].payment);
+        var nowCheck = Number(bFooter[0].nowCheck);
+        if (isNaN(payment) || isNaN(nowCheck)) {
+            $("#totalProceeds").numberbox('setValue', 0);
+        } else {
+            $("#totalProceeds").numberbox('setValue', payment - nowCheck == 0 ? payment : payment - nowCheck);
         }
-    });
-    refreshNum();
+    }
+}
+
+$(function () {
+    var theRequest = getRequest();
+    var id = theRequest.id;
+    if (id === undefined) {
+        refreshNum();
+    }
     $('#customerName').customerPanel({
         type: 'customer',
         el: "#customer",
@@ -126,15 +199,18 @@ $(function () {
         onSelectCell: function (index, field) {
             if (field === 'action'){
                 receiptDetail.datagrid('deleteRow', index).datagrid('statistics', ["payment"]);
+                statistics();
             }
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["payment"]){
                 receiptDetail.datagrid('statistics', ["payment"]);
+                statistics();
             }
         },
         onLoadSuccess: function (data) {
             receiptDetail.datagrid('statistics', ["payment"]);
+            statistics();
         },
         columns: [[
             {
@@ -142,7 +218,7 @@ $(function () {
                 width: 38,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return !row.isFooter ? '<button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times"></i></button>' : '';
+                    return (!row.isFooter && $("#status").val()=='1') ? '<button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times"></i></button>' : '';
                 }
             },
             {
@@ -264,15 +340,18 @@ $(function () {
         onSelectCell: function (index, field) {
             if (field === 'action'){
                 receiptBills.datagrid('deleteRow', index).datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+                statistics();
             }
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["nowCheck"]){
-                receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+                receiptBills.datagrid('statistics', ["nowCheck"]);
+                statistics();
             }
         },
         onLoadSuccess: function (data) {
-            receiptDetail.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+            receiptBills.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
+            statistics();
         },
         columns: [[
             {
@@ -280,7 +359,7 @@ $(function () {
                 width: 38,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return !row.isFooter ? '<button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times"></i></button>' : '';
+                    return (!row.isFooter && $("#status").val()=='1') ? '<button class="btn btn-xs btn-danger" type="button"><i class="fa fa-times"></i></button>' : '';
                 }
             },
             {
@@ -304,7 +383,11 @@ $(function () {
             {
                 field: "billDate",
                 title: "单据日期",
-                width: 150
+                width: 150,
+                formatter: function (v, r, i) {
+                    if (v)
+                        return moment(v).format('YYYY-MM-DD');
+                }
             },
             {
                 field: "billPrice",
@@ -375,18 +458,18 @@ $(function () {
                             var row = dg.datagrid("getSelected")
                             if(!row){
                                 layer.msg('请选中一行操作');
-                                return false;
+                                return;
                             }
                             var rows = $("#receiptBills").datagrid('getRows');
-                            var index = -1;
+                            var sign = -1;
                             $.each(rows, function (i, o) {
                                 if(o.billId == row.billId){
-                                    index = i;
+                                    sign = i;
                                 }
                             });
-                            if(index != -1) {
+                            if(sign != -1) {
                                 layer.msg("此单已选取，请选择其他单据。");
-                                return false;
+                                return;
                             }
                             $("#receiptBills")
                                 .datagrid('appendRow', row)
@@ -447,7 +530,11 @@ $(function () {
                                     {
                                         field: "billDate",
                                         title: "单据日期",
-                                        width: 120
+                                        width: 120,
+                                        formatter: function (v, r, i) {
+                                            if (v)
+                                                return moment(v).format('YYYY-MM-DD');
+                                        }
                                     },
                                     {
                                         field: "billPrice",
@@ -499,7 +586,41 @@ $(function () {
                 isFooter: true
             }]
         });
+    if (id) {
+        $.ajax({
+            type: 'post',
+            url: genAPI('receipt/get'),
+            data: {
+                id: id,
+                transType: $("#transType").val()
+            },
+            success: function (res) {
+                if (res.code === 200) {
+                    $("#receiptFrom").form('load',res.data);
+                    $("#number_span").html(res.data.number);
+                    if(res.data.status == '2'){
+                        $("#mark").addClass("has-audit");
+                        receiptDetail.datagrid('disableCellEditing');
+                        receiptDetail.datagrid('getPanel').find("div.datagrid-toolbar a").eq(0).hide();
+                        receiptBills.datagrid('disableCellEditing');
+                        receiptBills.datagrid('getPanel').find("div.datagrid-toolbar a").eq(0).hide();
+                    }
+                    receiptDetail.datagrid('loadData',res.data.detail).datagrid('statistics', ["payment"]);
+                    receiptBills.datagrid('loadData',res.data.bills).datagrid('statistics', ["billPrice", "hasCheck", "notCheck", "nowCheck"])
+                    statistics();
+                } else {
+                    layer.msg(res.message)
+                }
+            }
+        });
+    }
+    var tips;
     $("#operationLogs").bind("click", function () {
+        if(tips){
+            layer.close(tips);
+            tips = undefined;
+            return;
+        }
         var that = this;
         var receiptId = $("#receiptId").val();
         if(receiptId){
@@ -511,22 +632,22 @@ $(function () {
                     vType: $("#transType").val()
                 },
                 success:function (res) {
-                    if(res.code===200){
+                    if (res.code === 200) {
                         var tpl = Handlebars.compile($("#operation-logs-tpl").html());
-                        if(res.data.length > 0){
-                            layer.tips(tpl(res),
+                        if (res.data.length > 0) {
+                            tips = layer.tips(tpl(res),
                                 that, {
                                     tips: [1, '#3595CC'],
-                                    time: 3000
+                                    time: 0
                                 });
                         }
-                    }else{
+                    } else {
                         layer.msg(res.message)
                     }
                 }
             });
         } else {
-            layer.tips("暂无操作日志", that, {
+            tips = layer.tips("暂无操作日志", that, {
                 tips: [1, '#3595CC'],
                 time: 3000
             });
