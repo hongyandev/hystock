@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>其他收入单</title>
+    <link rel="stylesheet" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/icon.css"/>
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/lodash.min.js"></script>
+    <script src="../../js/common/moment-with-locales.min.js"></script>
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/common/handlebars.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/easyui/datagrid-cellediting.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/common/ajax-object.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../js/component/customerPanel.js"></script>
+    <script src="../../js/scm/ori_inc.js"></script>
+    <style>
+        .btn span.l-btn-text {
+            margin: 0px;
+            line-height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+<div class="clearfix pdb30" style="margin-top: 44px">
+    <form id="receiptFrom">
+        <input type="hidden" id="receiptId" name="id" />
+        <input type="hidden" id="transType" name="transType" value="16" />
+        <input type="hidden" id="status" name="status" value="1" />
+        <div class="form-inline col-sm-12" style="margin-bottom: 10px">
+            <div class="form-group">
+                <label>付款单位：</label>
+                <input id="customerName" name="customerName" class="easyui-textbox form-control" style="width:200px;">
+                <input id="customer" type="hidden" name="customer" />
+            </div>
+            <div class="form-group">
+                <label>收款人：</label>
+                <input id="payee" name="operator" class="easyui-combobox form-control" style="width:112px;">
+            </div>
+            <div class="form-group">
+                <label>单据日期：</label>
+                <input id="repDate" name="repDate" class="easyui-datebox form-control" value="1" style="width:112px">
+            </div>
+            <div class="form-group pull-right">
+                <label>单据编号：</label>
+                <span id="number_span" style="line-height: 28px;"></span><a id="refreshNum" style="margin-left: 1em;line-height: 28px;" href="javascript:refreshNum();"><i class="fa fa-refresh"></i></a>
+                <input type="hidden" id="number" name="number" />
+            </div>
+        </div>
+        <div id="mark"></div>
+        <table id="receiptDetail" class="easyui-datagrid"></table>
+        <div class="col-sm-12">
+            <input name="note" class="easyui-textbox" label="备注:" labelPosition="top" multiline="true" style="width:90%;height:80px">
+        </div>
+        <div class="form-inline col-sm-12">
+            <div class="form-group">
+                <label>本次收款总额：</label>
+                <input id="totalProceeds" name="totalProceeds" class="easyui-numberbox form-control" data-options="precision:2" style="width:112px;" readonly>
+            </div>
+            <div class="form-group pull-right">
+                <button type="button" class="btn btn-sm btn-primary" onclick="historyReceipt()">历史单据</button>
+                <button id="operationLogs" type="button" class="btn btn-sm btn-default">操作日志</button>
+            </div>
+        </div>
+    </form>
+    <div class="form-group pull-right top-btn-group">
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-success" data-options="plain:true" style="color: #fff" onclick="createReceipt()">新建</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-default" data-options="plain:true" onclick="saveReceipt()">保存</a>
+        <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'" onclick="auditReceipt('audit')">审核</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton btn btn-danger" style="color: #fff" data-options="plain:true" onclick="deleteReceipt()">删除</a>
+    </div>
+    <div id="btn-reaudit" style="width:auto;">
+        <div onclick="auditReceipt('reAudit')">反审核</div>
+    </div>
+    <script type="text/x-handlebars-template" id="operation-logs-tpl">
+        {{#data}}
+        <ul class="tipul">
+            <li>
+                <p>
+                    <span>{{logName}}</span>
+                    <span>{{user}}</span>
+                    <br/>
+                    <time>{{createTime}}</time>
+                </p>
+            </li>
+        </ul>
+        {{/data}}
+    </script>
+</div>
+</body>
+</html>
