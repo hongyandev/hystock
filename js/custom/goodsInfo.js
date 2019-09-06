@@ -23,6 +23,7 @@ $(function () {
                             var data = res.data;
                              $("#id").val(data.goods.id);
                              $("#code").val(data.goods.code);
+                             $("#cpdm").val(data.goods.cpdm);
                              $("#name").val(data.goods.name);
                              $("#barCode").val(data.goods.barCode);
                              $("#specs").val(data.goods.specs);
@@ -634,6 +635,7 @@ function saveAddGoods() {
         url=genAPI('goods/addGoods');
         data={
             code:$("#code").val(),
+            cpdm:$("#cpdm").val(),
             name:$("#name").val(),
             barCode:$("#barCode").val(),
             specs:$("#specs").val(),
@@ -659,6 +661,7 @@ function saveAddGoods() {
         data={
             id:$("#id").val(),
             code:$("#code").val(),
+            cpdm:$("#cpdm").val(),
             name:$("#name").val(),
             barCode:$("#barCode").val(),
             specs:$("#specs").val(),

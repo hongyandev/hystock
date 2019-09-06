@@ -198,13 +198,13 @@ function msgShow(title, msgString, msgType) {
 }
 
 $(function () {
-    $.cookie('jwt');
-    $.cookie('khdm');
-    $.cookie('realName');
-    $.cookie('uid');
-    $.cookie('username');
     $("#username").text($.cookie('realName'));
-
+    $.ajaxSetup({
+        headers: {
+            uid: $.cookie('uid'),
+            token: $.cookie('jwt')
+        }
+    });
 });
 
 function logout() {
@@ -213,13 +213,23 @@ function logout() {
         btn: ['确定','取消'] //按钮
     }, function(r){
         if (r) {
-            $.cookie('jwt', null);
-            $.cookie('realName', null);
-            $.cookie('uid', null);
-            layer.load(1, {
-                shade: [0.1,'#fff'] //0.1透明度的白色背景
-            });
-            window.location.href = './login.html' + location.search;
+            $.ajax({
+                type:"post",
+                url: genAPI('account/logout'),
+                success:function (res) {
+                	if(res.code==200){
+                        $.cookie('jwt', null);
+                        $.cookie('realName', null);
+                        $.cookie('uid', null);
+                        layer.load(1, {
+                            shade: [0.1,'#fff'] //0.1透明度的白色背景
+                        });
+                        window.location.href = './login.html' + location.search;
+                    } else {
+                		layer.msg(res.message);
+					}
+                }
+            })
         }
     }, function(index){
         layer.close(index)
