@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>销售单记录</title>
+    <title>采购退货单记录</title>
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
     <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
@@ -21,7 +21,7 @@
     <script src="../../js/common/ztree-object.js"></script>
     <script src="../../js/commons.js"></script>
     <script src="../../config.js"></script>
-    <script src="../../js/sales/saleHistory.js"></script>
+    <script src="../../js/sales/saleRetHistory.js"></script>
     <style type="text/css">
         input[type="checkbox"]{margin:0;}
         input.switch{
@@ -81,7 +81,7 @@
     <div class="clearfix">
         <div class="form-inline col-sm-12" style="z-index:99999">
             <div class="form-group">
-                <input type="text" id="searTxt" class="form-control" placeholder="请输入单据号或供应商或备注"/>
+                <input type="text" id="searTxt" class="form-control" placeholder="请输入单据号或客户或备注"/>
             </div>
             <div class="form-group">
                 <label>单据日期：</label>
@@ -90,12 +90,12 @@
                 <input id="endDate" name="endDate" class="easyui-datebox" required labelPosition="top" value="myformatter(date)" validType="equaldDate['#startDate']" data-options="prompt:'请选择结束日期',editable:false"/>
             </div>
             <div class="form-group">
-                <label>付款状态:</label>
+                <label>收款状态:</label>
                 <select id="hxState" name="hxState" data-options="editable:true,width:200" style="width:160px;height:30px"></select>
                 　　 <div id="sp">
-                <input type="checkbox" name="hxState" value="1"><span>未付款</span><br/>
-                <input type="checkbox" name="hxState" value="2"><span>部分付款</span><br/>
-                <input type="checkbox" name="hxState" value="3"><span>全部付款</span>
+                <input type="checkbox" name="hxState" value="1"><span>未收款</span><br/>
+                <input type="checkbox" name="hxState" value="2"><span>部分收款</span><br/>
+                <input type="checkbox" name="hxState" value="3"><span>全部收款</span>
             </div>
             </div>
             <div class="form-group">
@@ -109,16 +109,16 @@
                 <button id="chx" class="btn btn-success">查询</button>
             </div>
         </div>
-        <table class="easyui-datagrid" id="salesRecords"></table>
+        <table class="easyui-datagrid" id="saleRetRecords"></table>
 
     </div>
     <!-- btn -->
     <div id="bottomField">
         <div id="toolBottom" class="pull-right">
             <span>
-                <a id="save" class="btn btn-success" onclick="saveSales()">新增</a>
-                <a id="audit" class="btn btn-success" onclick="auditSales()">审核</a>
-                <a id="reAudit" class="btn btn-success" onclick="reAuditSales()">反审核</a>
+                <a id="save" class="btn btn-success" onclick="savePurchase()">保存并新增</a>
+                <a id="audit" class="btn btn-success" onclick="auditPurchase()">审核</a>
+                <a id="reAudit" class="btn btn-success" onclick="reAuditPurchase()">反审核</a>
             </span>
         </div>
 

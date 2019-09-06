@@ -212,9 +212,9 @@ $(function () {
 function editPurchase() {
     var row = $("#purchaseRecords").datagrid('getSelections');
     if (row.length == 1) {
-        var tabTitle = '采购退货单';
+        var tabTitle = '采购单';
         var dg="#tabs";
-        var url = "webapp/purchase/purchaseBack.html?id="+row[0].id;
+        var url = "webapp/purchase/purchase.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
         $("#purchaseRecords").datagrid("clearSelections");
