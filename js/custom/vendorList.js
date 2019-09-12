@@ -140,7 +140,7 @@ $(function () {
                             $("#cardNo").val(res.data.vendor.cardNo);
                             $("#receiveFunds2").val(res.data.vendor.receiveFunds2);
                             $("#periodReceiveFunds2").val(res.data.vendor.periodReceiveFunds2);
-                            $("#taxRate").val(res.data.taxRate);
+                            $("#taxRate").val(res.data.vendor.taxRate);
                         },error:function () {
 
                         }

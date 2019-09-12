@@ -17,9 +17,9 @@ $(function () {
         var d = date.getDate();
         return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
     }
-//采购单记录
-    $("#purchaseBackRecords").datagrid({
-        url: genAPI('pur/queryInvPuPage'),
+//销售退货单记录
+    $("#saleRetRecords").datagrid({
+        url: genAPI('invSa/queryInvSaPage'),
         method: 'post',
         idField: 'id',
         loadMsg: '数据正在加载,请耐心的等待...',
@@ -39,7 +39,7 @@ $(function () {
             startDate: $("#startDate").val(),
             endDate: $("#endDate").val(),
             hxState: $("#hxState").val(),
-            transType:'6'
+            transType:'4'
         },
         columns: [[
             {
@@ -52,7 +52,7 @@ $(function () {
                 hidden: true
             },
             {
-                field: 'purDate',
+                field: 'saleDate',
                 title: '单据日期',
                 width: 100,
                 hidden: false
@@ -65,12 +65,12 @@ $(function () {
             },
             {
                 field: 'customer',
-                title: '供应商id',
+                title: '客户id',
                 hidden: true
             },
             {
                 field: 'vendorName',
-                title: '供应商',
+                title: '客户',
                 hidden: false,
                 width:100
             },
@@ -87,14 +87,14 @@ $(function () {
                 hidden: false
             },
             {
-                field: "payment",
-                title: "付款金额",
+                field: "income",
+                title: "到款金额",
                 width: 100,
                 hidden: false
             },
             {
                 field: "hxState",
-                title: "付款状态",
+                title: "收款状态",
                 width: 150,
                 hidden: false
             },
@@ -128,9 +128,9 @@ $(function () {
             text: '新增',
             iconCls: 'fa fa-plus fa-lg',
             handler: function () {
-                var tabTitle = '采购退货单';
+                var tabTitle = '销售退货单';
                 var dg="#tabs";
-                var url = "webapp/purchase/purchaseBack.html";
+                var url = "webapp/sales/saleReturn.html";
                 addTopTab(dg,tabTitle,url);
             }
         }, '-', {
@@ -192,48 +192,48 @@ $(function () {
     });
     //查询条件下退货单记录
     $("#chx").on("click",function () {
-        $("#purchaseBackRecords").datagrid({
+        $("#saleRetRecords").datagrid({
             queryParams: {
                 query: $("#searTxt").val(),
                 status: $("#status").val(),
                 startDate: $("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
                 hxState: ids,
-                transType:'6'
+                transType:'4'
             },
-        }).datagrid("reload", genAPI('pur/queryInvPuPage'));
+        }).datagrid("reload", genAPI('invSa/queryInvSaPage'));
     });
 });
 
 //修改---
 function editPurchase() {
-    var row = $("#purchaseBackRecords").datagrid('getSelections');
+    var row = $("#saleRetRecords").datagrid('getSelections');
     if (row.length == 1) {
-        var tabTitle = '采购退货单';
+        var tabTitle = '销售退货单';
         var dg="#tabs";
-        var url = "webapp/purchase/purchaseBack.html?id="+row[0].id;
+        var url = "webapp/sales/saleReturn.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
-        $("#purchaseBackRecords").datagrid("clearSelections");
+        $("#saleRetRecords").datagrid("clearSelections");
     }else{
         layer.msg("请选中一行进行编辑");
-        $("#purchaseBackRecords").datagrid("clearSelections");
+        $("#saleRetRecords").datagrid("clearSelections");
         return false;
     }
 }
 //审核
 function auditPurchase() {
-    var data = $("#purchaseBackRecords").datagrid('getSelections');
+    var data = $("#saleRetRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
-         id += data[i].id+',';
+        id += data[i].id+',';
     }
     if(id){
         var ids = id.substring(0,id.length-1)
     }
     $.ajax({
         type:"POST",
-        url:genAPI('pur/batchCheckInvPu'),
+        url:genAPI('invSa/batchCheckInvSa'),
         data:{
             ids:ids
         },
@@ -248,7 +248,7 @@ function auditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseBackRecords").datagrid("reload").datagrid("clearSelections");
+                $("#saleRetRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});
@@ -259,7 +259,7 @@ function auditPurchase() {
 }
 //反审核
 function reAuditPurchase() {
-    var data = $("#purchaseBackRecords").datagrid('getSelections');
+    var data = $("#saleRetRecords").datagrid('getSelections');
     var id="";
     for(var i=0;i<data.length;i++){
         id += data[i].id+',';
@@ -269,7 +269,7 @@ function reAuditPurchase() {
     }
     $.ajax({
         type:"POST",
-        url:genAPI('pur/rsBatchCheckInvPu'),
+        url:genAPI('invSa/rsBatchCheckInvSa'),
         data:{
             ids:ids
         },
@@ -284,7 +284,7 @@ function reAuditPurchase() {
                 if(numbers){
                     layer.alert(numbers.substring(0,numbers.length-1)+"反审核成功！",{skin:'layui-layer-molv'})
                 }
-                $("#purchaseBackRecords").datagrid("reload").datagrid("clearSelections");
+                $("#saleRetRecords").datagrid("reload").datagrid("clearSelections");
 
             }else {
                 layer.alert(res.message,{skin:'layui-layer-molv'});
