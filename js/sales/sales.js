@@ -4,6 +4,9 @@ var storageId;
 var query;
 var zero;
 $(function () {
+    var company = $.cookie('company');
+    var obj = JSON.parse(company);
+    var tax = obj.tax;
     $.ajaxSetup({
         headers:{
             uid:$.cookie('uid'),
@@ -138,9 +141,9 @@ $(function () {
                     for(var i=0;i<rowsData.length-1;i++){
                         rowsData[i].taxRate = rowSelect.taxRate;
                         rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
-                        rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
-                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
-                        rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
+                        rowsData[i].SalePrice = rowsData[i].SalePrice ? rowsData[i].SalePrice : 0;
+                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
+                        rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
                         dg.datagrid('refreshRow', i);
                     }
                     dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
@@ -290,7 +293,6 @@ $(function () {
                         },
                         columns: [[
                             {field:'id',title:'id',hidden:true},
-                            {field:'taxRate',title:'税率',hidden:true},
                             {field:'code',title:'商品编号',width:80,align:'center'},
                             {field:'name',title:'商品名称',width:120,align:'center'},
                             {field:'specs',title:'规格型号',width:80,align:'center'},
@@ -480,7 +482,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        var taxPrice = record.purPrice.mul(accAdd(1,accDiv(record.taxRate,100)))
+                        var taxPrice = record.SalePrice.mul(accAdd(1,accDiv(record.taxRate,100)))
                         record.taxPrice = taxPrice;
                         $("#salesList").datagrid("updateRow",{index: index, row: record});
                         return taxPrice;
@@ -492,7 +494,7 @@ $(function () {
             },
             {
                 field:"discountRate",
-                title:"折扣率",
+                title:"折扣率(%)",
                 width:150,
                 hidden:false,
                 editor:{
@@ -514,7 +516,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        var discountPrise = intToFloat(accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100))));
+                        var discountPrise = intToFloat(accMul(record.qty,accMul(record.SalePrice,accDiv(record.discountRate,100))));
                         return discountPrise;
                     } catch (e) {
                         return value;
@@ -531,7 +533,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))));
+                        return intToFloat(accSub(accMul(record.SalePrice,record.qty),accMul(record.qty,accMul(record.SalePrice,accDiv(record.discountRate,100)))));
                     } catch (e) {
                         return value;
                     }
@@ -539,9 +541,16 @@ $(function () {
             },
             {
                 field:"taxRate",
-                title:"税率",
+                title:"税率(%)",
                 width:150,
-                hidden:false
+                hidden:false,
+                editor:{
+                    type : "numberbox",
+                    options:{
+                        value:0,
+                        precision:2
+                    }
+                }
             },
             {
                 field:"tax",
@@ -553,7 +562,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accDiv(record.taxRate,100)));
+                        return intToFloat(accMul(accSub(accMul(record.SalePrice,record.qty),accMul(record.qty,accMul(record.SalePrice,accDiv(record.discountRate,100)))),accDiv(record.taxRate,100)));
                     } catch (e) {
                         return value;
                     }
@@ -569,7 +578,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accAdd(1,accDiv(record.taxRate,100))));
+                        return intToFloat(accMul(accSub(accMul(record.SalePrice,record.qty),accMul(record.qty,accMul(record.SalePrice,accDiv(record.discountRate,100)))),accAdd(1,accDiv(record.taxRate,100))));
                     } catch (e) {
                         return value;
                     }
@@ -608,12 +617,12 @@ $(function () {
                     storageName:'',
                     unit:'',
                     qty:'',
-                    purPrice:'',
+                    SalePrice:'',
                     taxPrice:'',
                     discountRate:'',
                     discountPrise:'',
                     totalPrice:'',
-                    taxRate:'',
+                    taxRate:tax,
                     tax:'',
                     totalLevied:'',
                     note:''
@@ -707,7 +716,7 @@ $(function () {
             },
             success: function (res) {
                 if(res.code==200){
-                    console.info(res.data.detail);
+                    // console.info(res.data.detail);
                     if(res.data){
                         $("#salesId").val(res.data.id);
                         $("#status").val(res.data.status);
@@ -984,13 +993,13 @@ function totalMoney() {
             rowsData[i].id = null;
         }
         rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
-        rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
+        rowsData[i].SalePrice = rowsData[i].SalePrice ? rowsData[i].SalePrice : 0;
         rowsData[i].taxRate = rowsData[i].taxRate ? rowsData[i].taxRate : 0;
         rowsData[i].qty = rowsData[i].qty ? rowsData[i].qty : 0;
-        rowsData[i].discountPrise = intToFloat(accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100))));
-        rowsData[i].totalPrice = intToFloat(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))));
-        rowsData[i].tax = intToFloat(accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100)));
-        rowsData[i].totalLevied = intToFloat(accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100))));
+        rowsData[i].discountPrise = intToFloat(accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100))));
+        rowsData[i].totalPrice = intToFloat(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))));
+        rowsData[i].tax = intToFloat(accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100)));
+        rowsData[i].totalLevied = intToFloat(accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100))));
         dg.datagrid('refreshRow', i);
     }
 
@@ -1542,7 +1551,7 @@ function historyReceipts() {
 function returnSale() {
     var tabTitle = '销售退货单';
     var dg="#tabs";
-    var url = "webapp/purchase/purchaseBack.html";
+    var url = "webapp/sales/saleReturn.html";
     addTopTab(dg,tabTitle,url)
     $.cookie('pbid',$("#salesId").val());
 }

@@ -4,6 +4,9 @@ var storageId;
 var query;
 var zero;
 $(function () {
+    var company = $.cookie('company');
+    var obj = JSON.parse(company);
+    var tax = obj.tax;
     $.ajaxSetup({
         headers:{
             uid:$.cookie('uid'),
@@ -38,17 +41,17 @@ $(function () {
             },
             success: function (res) {
                 if(res.code==200){
-                    //console.info(res);
+                    // console.info(res);
                     if(res.data){
                         $("#salerId").val(res.data.id);
                         $("#status").val(res.data.status);
                         $("#vendorClass").val(res.data.vendorName);
                         $("#vendorClass").attr("vid",res.data.customer);
                         $("#number").html(res.data.number);
-                        $("#saleRList").datagrid({data:res.data.purDet});
+                        $("#saleRList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
                         $("#deduction").val(res.data.deduction);
-                        $("#payment").val(res.data.payment);
+                        $("#payment").val(res.data.income);
                         $("#discount").val(res.data.totalAmount);
                         $("#note").val(res.data.note);
                         totalMoney();
@@ -182,9 +185,9 @@ $(function () {
                     for(var i=0;i<rowsData.length-1;i++){
                         rowsData[i].taxRate = rowSelect.taxRate;
                         rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
-                        rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
-                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
-                        rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].purPrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].purPrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
+                        rowsData[i].salePrice = rowsData[i].salePrice ? rowsData[i].salePrice : 0;
+                        rowsData[i].tax = accMul(accSub(accMul(rowsData[i].salePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].salePrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
+                        rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].salePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].salePrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
                         dg.datagrid('refreshRow', i);
                     }
                     dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
@@ -397,9 +400,11 @@ $(function () {
                 width : 160,
                 hidden:false,
                 formatter:function (value,rowData,rowIndex) {
+                if(storageId){
                     rowData.storageId = storageId;
                     rowData.storageName = storageName;
-                    return rowData.storageName || "";
+                }
+                    return rowData.storageName;
                 },
                 editor : {
                     type : "combobox",
@@ -512,7 +517,7 @@ $(function () {
                 }
             },
             {
-                field:"purPrice",
+                field:"salePrice",
                 title:"单价",
                 width:150,
                 hidden:false
@@ -527,7 +532,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        var taxPrice = record.purPrice.mul(accAdd(1,accDiv(record.taxRate,100)))
+                        var taxPrice = record.salePrice.mul(accAdd(1,accDiv(record.taxRate,100)))
                         record.taxPrice = taxPrice;
                         $("#saleRList").datagrid("updateRow",{index: index, row: record});
                         return taxPrice;
@@ -561,7 +566,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        var discountPrise = intToFloat(accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100))));
+                        var discountPrise = intToFloat(accMul(record.qty,accMul(record.salePrice,accDiv(record.discountRate,100))));
                         return discountPrise;
                     } catch (e) {
                         return value;
@@ -578,7 +583,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))));
+                        return intToFloat(accSub(accMul(record.salePrice,record.qty),accMul(record.qty,accMul(record.salePrice,accDiv(record.discountRate,100)))));
                     } catch (e) {
                         return value;
                     }
@@ -600,7 +605,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accDiv(record.taxRate,100)));
+                        return intToFloat(accMul(accSub(accMul(record.salePrice,record.qty),accMul(record.qty,accMul(record.salePrice,accDiv(record.discountRate,100)))),accDiv(record.taxRate,100)));
                     } catch (e) {
                         return value;
                     }
@@ -616,7 +621,7 @@ $(function () {
                         return value;
                     }
                     try {
-                        return intToFloat(accMul(accSub(accMul(record.purPrice,record.qty),accMul(record.qty,accMul(record.purPrice,accDiv(record.discountRate,100)))),accAdd(1,accDiv(record.taxRate,100))));
+                        return intToFloat(accMul(accSub(accMul(record.salePrice,record.qty),accMul(record.qty,accMul(record.salePrice,accDiv(record.discountRate,100)))),accAdd(1,accDiv(record.taxRate,100))));
                     } catch (e) {
                         return value;
                     }
@@ -664,12 +669,12 @@ $(function () {
                     storageName:'',
                     unit:'',
                     qty:'',
-                    purPrice:'',
+                    salePrice:'',
                     taxPrice:'',
                     discountRate:'',
                     discountPrise:'',
                     totalPrice:'',
-                    taxRate:'',
+                    taxRate:tax,
                     tax:'',
                     totalLevied:'',
                     note:''
@@ -763,18 +768,18 @@ $(function () {
             },
             success: function (res) {
                 if(res.code==200){
-                    //console.info(res);
+                    console.info(res);
                     if(res.data){
                         $("#salerId").val(res.data.id);
                         $("#status").val(res.data.status);
                         $("#vendorClass").val(res.data.vendorName);
                         $("#vendorClass").attr("vid",res.data.customer);
                         $("#number").html(res.data.number);
-                        $("#initDate").datebox("setValue",res.data.purDate);
-                        $("#saleRList").datagrid({data:res.data.purDet});
+                        $("#initDate").datebox("setValue",res.data.saleDate);
+                        $("#saleRList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
                         $("#deduction").val(res.data.deduction);
-                        $("#payment").val(res.data.payment);
+                        $("#payment").val(res.data.income);
                         $("#discount").val(res.data.totalAmount);
                         $("#note").val(res.data.note);
                         totalMoney();
@@ -949,7 +954,7 @@ function queryGoods(query,zero,categoryId,storageId) {
                 hidden:false
             },
             {   field:'taxRate',
-                title:'税率',
+                title:'税率(%)',
                 width : 100,
                 hidden:true
             }
@@ -1373,7 +1378,7 @@ function end() {
         },
         {
             field:"discountRate",
-            title:"折扣率",
+            title:"折扣率(%)",
             width:150,
             hidden:false,
             editor:{
@@ -1439,26 +1444,26 @@ function bathStorage() {
 function saveRsale() {
     $("#saleRList").datagrid('endEditing');
     var dg = $("#saleRList");
-    var purDet = dg.datagrid('getRows');
-    var purDate = $('#initDate').datebox('getValue');
+    var detail = dg.datagrid('getRows');
+    var saleDate = $('#initDate').datebox('getValue');
     var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
+    if(detail.length == 0){
         layer.msg("请选择商品！");
         return false;
     }else {
         var a = true;
-        for(var i=0;i<purDet.length;i++){
-            if(purDet[i].goodsId && purDet[i].storageId == ""){
+        for(var i=0;i<detail.length;i++){
+            if(detail[i].goodsId && detail[i].storageId == ""){
                 layer.msg("请选择仓库！");
                 a = false;
                 break;
-            } else if (!purDet[i].goodsId){
-                //purDet.splice(i,1)
+            } else if (!detail[i].goodsId){
+                //detail.splice(i,1)
                 dg.datagrid("deleteRow", i);
             }
         }
         if(!a){return false}
-        purDet = dg.datagrid('getRows');
+        detail = dg.datagrid('getRows');
     }
     if(!customer){
         layer.msg("请选择客户！");
@@ -1469,17 +1474,17 @@ function saveRsale() {
         transType:'4',
         number:$("#number").html(),
         customer:customer,
-        purDate:purDate,
+        saleDate:saleDate,
         discountRate:$("#discountRate").val(),
         deduction:$("#deduction").val(),
-        payment:$("#payment").val(),
+        income:$("#payment").val(),
         totalAmount:$("#discount").val(),
         note:$("#note").val(),
-        purDet:purDet
+        detail:detail
     };
     $.ajax({
         type:"POST",
-        url:genAPI($("#salerId").val()!=0 ? 'invSa/createInvSa': '/invSa/modifyInvSa'),
+        url:genAPI($("#salerId").val()!=0 ? '/invSa/modifyInvSa': '/invSa/createInvSa'),
         async:true,
         contentType:"application/json",
         data:JSON.stringify(data),
@@ -1504,26 +1509,26 @@ function addRsale() {
 function auditRsale() {
     $("#saleRList").datagrid('endEditing');
     var dg = $("#saleRList");
-    var purDet = dg.datagrid('getRows');
-    var purDate = $('#initDate').datebox('getValue');
+    var detail = dg.datagrid('getRows');
+    var saleDate = $('#initDate').datebox('getValue');
     var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
+    if(detail.length == 0){
         layer.msg("请选择商品！");
         return false;
     }else {
         var a = true;
-        for(var i=0;i<purDet.length;i++){
-            if(purDet[i].goodsId && purDet[i].storageId == ""){
+        for(var i=0;i<detail.length;i++){
+            if(detail[i].goodsId && detail[i].storageId == ""){
                 layer.msg("请选择仓库！");
                 a = false;
                 break;
-            } else if (!purDet[i].goodsId){
-                //purDet.splice(i,1)
+            } else if (!detail[i].goodsId){
+                //detail.splice(i,1)
                 dg.datagrid("deleteRow", i);
             }
         }
         if(!a){return false}
-        purDet = dg.datagrid('getRows');
+        detail = dg.datagrid('getRows');
     }
     if(!customer){
         layer.msg("请选择客户！");
@@ -1534,13 +1539,13 @@ function auditRsale() {
         transType:'4',
         number:$("#number").html(),
         customer:customer,
-        purDate:purDate,
+        saleDate:saleDate,
         discountRate:$("#discountRate").val(),
         deduction:$("#deduction").val(),
-        payment:$("#payment").val(),
+        income:$("#payment").val(),
         totalAmount:$("#discount").val(),
         note:$("#note").val(),
-        purDet:purDet
+        detail:detail
     };
     $.ajax({
         type:"POST",
@@ -1590,7 +1595,7 @@ function copyRsale() {
 }
 //历史单据
 function historyReceipts() {
-    var tabTitle = '采购退货单记录';
+    var tabTitle = '销售退货单记录';
     var dg="#tabs";
     var url = "webapp/sales/saleRetHistory.html";
     addTopTab(dg,tabTitle,url)

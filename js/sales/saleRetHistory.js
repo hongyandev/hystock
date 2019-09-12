@@ -52,7 +52,7 @@ $(function () {
                 hidden: true
             },
             {
-                field: 'purDate',
+                field: 'saleDate',
                 title: '单据日期',
                 width: 100,
                 hidden: false
@@ -65,12 +65,12 @@ $(function () {
             },
             {
                 field: 'customer',
-                title: '供应商id',
+                title: '客户id',
                 hidden: true
             },
             {
                 field: 'vendorName',
-                title: '供应商',
+                title: '客户',
                 hidden: false,
                 width:100
             },
@@ -87,14 +87,14 @@ $(function () {
                 hidden: false
             },
             {
-                field: "payment",
-                title: "付款金额",
+                field: "income",
+                title: "到款金额",
                 width: 100,
                 hidden: false
             },
             {
                 field: "hxState",
-                title: "付款状态",
+                title: "收款状态",
                 width: 150,
                 hidden: false
             },
@@ -128,9 +128,9 @@ $(function () {
             text: '新增',
             iconCls: 'fa fa-plus fa-lg',
             handler: function () {
-                var tabTitle = '采购退货单';
+                var tabTitle = '销售退货单';
                 var dg="#tabs";
-                var url = "webapp/purchase/purchaseBack.html";
+                var url = "webapp/sales/saleReturn.html";
                 addTopTab(dg,tabTitle,url);
             }
         }, '-', {
@@ -198,7 +198,8 @@ $(function () {
                 status: $("#status").val(),
                 startDate: $("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
-                hxState: ids
+                hxState: ids,
+                transType:'4'
             },
         }).datagrid("reload", genAPI('invSa/queryInvSaPage'));
     });
@@ -208,9 +209,9 @@ $(function () {
 function editPurchase() {
     var row = $("#saleRetRecords").datagrid('getSelections');
     if (row.length == 1) {
-        var tabTitle = '采购退货单';
+        var tabTitle = '销售退货单';
         var dg="#tabs";
-        var url = "webapp/sales/saleRetHistory.html?id="+row[0].id;
+        var url = "webapp/sales/saleReturn.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
         $("#saleRetRecords").datagrid("clearSelections");
@@ -268,7 +269,7 @@ function reAuditPurchase() {
     }
     $.ajax({
         type:"POST",
-        url:genAPI('invSa/rsbatchCheckInvSa'),
+        url:genAPI('invSa/rsBatchCheckInvSa'),
         data:{
             ids:ids
         },

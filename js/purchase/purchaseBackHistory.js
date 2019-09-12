@@ -198,7 +198,8 @@ $(function () {
                 status: $("#status").val(),
                 startDate: $("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
-                hxState: ids
+                hxState: ids,
+                transType:'6'
             },
         }).datagrid("reload", genAPI('pur/queryInvPuPage'));
     });

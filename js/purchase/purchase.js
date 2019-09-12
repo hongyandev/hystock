@@ -290,7 +290,6 @@ $(function () {
                         },
                         columns: [[
                             {field:'id',title:'id',hidden:true},
-                            {field:'taxRate',title:'税率',hidden:true},
                             {field:'code',title:'商品编号',width:80,align:'center'},
                             {field:'name',title:'商品名称',width:120,align:'center'},
                             {field:'specs',title:'规格型号',width:80,align:'center'},
@@ -495,7 +494,7 @@ $(function () {
             },
             {
                 field:"discountRate",
-                title:"折扣率",
+                title:"折扣率(%)",
                 width:150,
                 hidden:false,
                 editor:{
@@ -544,7 +543,7 @@ $(function () {
             },
             {
                 field:"taxRate",
-                title:"税率",
+                title:"税率(%)",
                 width:150,
                 hidden:false
             },
@@ -734,7 +733,7 @@ $(function () {
             },
             success: function (res) {
                 if(res.code==200){
-                    //console.info(res);
+                    // console.info(res);
                     if(res.data){
                         $("#purId").val(res.data.id);
                         $("#status").val(res.data.status);

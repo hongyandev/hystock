@@ -199,7 +199,7 @@ function editPurchase() {
     if (row.length == 1) {
         var tabTitle = '销售单';
         var dg="#tabs";
-        var url = "webapp/sales/sales.html?id="+row[0].id;
+        var url = "webapp/sales/sale.html?id="+row[0].id;
         addTopTab(dg,tabTitle,url);
         $.cookie('id',row[0].id);
         $("#salesRecords").datagrid("clearSelections");
