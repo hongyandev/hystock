@@ -1,11 +1,5 @@
 
 $(function () {
-    $.ajaxSetup({
-        headers: {
-            uid: $.cookie('uid'),
-            token: $.cookie('jwt')
-        }
-    });
     // 自定义的校验器
     var reg = /^1[3|4|5|7|8|9][0-9]{9}$/;
     $.extend($.fn.validatebox.defaults.rules, {
