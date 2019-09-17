@@ -3,180 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <link rel="stylesheet" href="../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" href="../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../js/plugins/layer/theme/default/layer.css">
     <link rel="stylesheet" href="../css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="../css/icon.css"/>
     <link rel="stylesheet" href="../css/font-awesome/font-awesome.css">
     <link rel="stylesheet" href="../css/default.css">
+    <link rel="stylesheet" href="../css/home.css">
     <script src="../js/common/lodash.min.js"></script>
     <script src="../js/common/moment-with-locales.min.js"></script>
     <script src="../js/jquery/1.9.1/jquery.min.js"></script>
     <script src="../js/common/jquery.cookie.js"></script>
+    <script src="../js/jquery.easyui.min.js"></script>
+    <script src="../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../js/plugins/layer/layer.js"></script>
     <script src="../js/echarts/echarts.min.js"></script>
     <script src="../js/echarts/theme/macarons.js"></script>
+    <script src="../js/commons.js"></script>
     <script src="../config.js"></script>
-    <style>
-        .home-goodsMsg {
-            height: 145px;
-        }
-
-        .goodsMsg-dtl {
-            color: #fff;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .goodsMsg-dtl {
-            font-size: 14px;
-            height: 100%;
-        }
-
-        .goodsMsg-dtl .panel .name {
-            line-height: 34px;
-            padding: 10px;
-        }
-
-        .goodsMsg-dtl .panel .number {
-            font-size: 45px;
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .goodsMsg-dtl .panel {
-            width: 100%;
-            height: 100%;
-        }
-
-        .goodsMsg-dtl .blue {
-            background-color: rgb(91, 143, 212);
-            border: 1px solid rgb(71, 121, 200);
-        }
-
-        .goodsMsg-dtl .blue .name {
-            background-color: #779cdb;
-        }
-
-        .goodsMsg-dtl .orange {
-            background-color: rgb(252, 133, 86);
-            border: 1px solid rgb(244, 114, 56);
-        }
-
-        .goodsMsg-dtl .orange .name {
-            background-color: #f79b67;
-        }
-
-        .goodsMsg-dtl .green {
-            background-color: rgb(71, 192, 86);
-            border: 1px solid rgb(46, 177, 60);
-        }
-
-        .goodsMsg-dtl .green .name {
-            background-color: #62ca6c;
-        }
-
-        .goodsMsg-dtl .yellow {
-            background-color: rgb(248, 187, 57);
-            border: 1px solid rgb(233, 169, 16);
-        }
-
-        .goodsMsg-dtl .yellow .name {
-            background-color: #f9c650;
-        }
-
-        .goodsMsg-dtl, .goodsMsg-warp {
-            height: 100%;
-        }
-
-        .goodsMsg-dtl .icon-left {
-            left: 7px;
-        }
-
-        .goodsMsg-dtl .icon-right {
-            right: 7px;
-        }
-
-        .goodsMsg-dtl .next, .goodsMsg-dtl .pre {
-            position: absolute;
-            top: 52px;
-            color: #fff;
-            opacity: .2;
-            padding: 15px 6px;
-            background-color: #000;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .panel{
-            border:none
-        }
-        .panel-heading {
-            color: #fff;
-            background-color: #1ab394;
-            border-color: #1ab394;
-        }
-        .home-common .number {
-            float: right;
-        }
-        .nav-tabs > li > a{
-            color:#333;
-            border:none
-        }
-        .nav > li > a:hover,
-        .nav > li > a:focus {
-            text-decoration: none;
-            background: none;
-            border:none;
-            color:#1ab394;
-        }
-    </style>
 </head>
 <body style="background-color: #eee">
-<div class="container-fluid clearfix">
-    <div class="clearfix" >
+<div id="home" class="container-fluid clearfix pdb30" style="padding: 15px 0 0 15px;">
+    <div class="clearfix">
         <div class="col-md-8">
-            <div class="goodsMsg-dtl" style="margin-left: 0px;height:145px;margin-bottom: 15px;">
-                <span class="icon-left pre"><i class="fa fa-angle-left"></i></span>
+            <div class="goodsMsg-dtl" style="margin-left:0px;height:145px;margin-bottom:15px;">
+                <span class="icon-left pre" style="display: none"><i class="fa fa-angle-left"></i></span>
                 <div class="col-md-3 goodsMsg-warp">
                     <div class="panel orange">
-                        <span class="name">未审核销货单</span>
-                        <div class="number">42</div>
+                        <span class="name"></span>
+                        <div class="number"></div>
                     </div>
                 </div>
                 <div class="col-md-3 goodsMsg-warp">
                     <div class="panel yellow">
-                        <span class="name">未审核购货单</span>
-                        <div class="number">30</div>
+                        <span class="name"></span>
+                        <div class="number"></div>
                     </div>
                 </div>
                 <div class="col-md-3 goodsMsg-warp">
                     <div class="panel green">
-                        <span class="name">未审核其他入库单</span>
-                        <div class="number">12</div>
+                        <span class="name"></span>
+                        <div class="number"></div>
                     </div>
                 </div>
                 <div class="col-md-3 goodsMsg-warp">
                     <div class="panel blue">
-                        <span class="name">未审核收款单</span>
-                        <div class="number">11</div>
+                        <span class="name"></span>
+                        <div class="number"></div>
                     </div>
                 </div>
-                <span class="icon-right next"><i class="fa fa-angle-right"></i></span>
+                <span class="icon-right next" style="display:none;"><i class="fa fa-angle-right"></i></span>
             </div>
             <div class="clearfix">
-                <div id="home-notice" class="home-charts panel" style="width: 100%; min-height: 600px; padding: 15px">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a href="#home-sales" aria-controls="sales" role="tab" data-toggle="tab">销货</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#home-purchase" aria-controls="purchase" role="tab"  data-toggle="tab">购货</a>
-                        </li>
-                        <li role="presentation" style="float: right"><a href="#">近七天&nbsp;<i class="fa fa-caret-down" aria-hidden="true"></i></a></li>
-                    </ul>
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="home-sales">销货</div>
-                        <div role="tabpanel" class="tab-pane" id="home-purchase">购货</div>
+                <div id="home-chart" class="easyui-tabs" style="width: 100%; height: 400px; padding: 15px">
+                    <div title="销货" style="padding:10px;">
+                        <div id="saChart" style="height: 100%"></div>
                     </div>
+                    <div title="购货" style="padding:10px;">
+                        <div id="puChart" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-tools">
+                <a id="mb" href="javascript:void(0)" class="easyui-menubutton"
+                   data-options="menu:'#mm'">近七天</a>
+                <div id="mm" style="width:40px;">
+                    <div data-options="name:'day'">近七天</div>
+                    <div data-options="name:'week'">近七周</div>
+                    <div data-options="name:'month'">近七月</div>
                 </div>
             </div>
         </div>
@@ -197,7 +92,6 @@
         </div>
     </div>
 </div>
-<script src="../js/bootstrap/bootstrap.min.js"></script>
 <script src="../js/home.js"></script>
 </body>
 </html>
