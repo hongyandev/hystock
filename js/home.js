@@ -2,7 +2,7 @@ const quickLink = function (type) {
     layer.msg(type);
 };
 $(function () {
-    var _i = 0, _name = 'day', saChart, puChart, option = {
+    var _i = 0, _time = 'day', saChart, puChart, chartOption = {
         tooltip: {
             trigger: 'axis',
             axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -51,7 +51,7 @@ $(function () {
             }
         ]
     };
-    const _count = [3, 5, 14, 15, 7, 8, 9, 16, 17], panels = _.chunk(_count, 4), pages = panels.length;
+    const _count = [3, 5, 14, 15, 7, 8, 9, 16, 17], panels = _.chunk(_count, 4), pages = panels.length, chartTheme = 'macarons';
     const getGoodsMsgData = function (i) {
         _i += i;
         if (_i === -1) {
@@ -92,7 +92,7 @@ $(function () {
             error: function (err) {
                 layer.msg(err);
             }
-        })
+        });
     };
     var homeChart = $('#home-chart').tabs({
         tools: '#tab-tools',
@@ -103,7 +103,8 @@ $(function () {
     $('#mm').menu({
         onClick: function (item) {
             $('#mb').find('.l-btn-text').html(item.text);
-            _name = item.name;
+            _time = item.name;
+            loadChart()
         }
     })
     $('.pre').click(function () {
@@ -119,40 +120,90 @@ $(function () {
         switch (index) {
             case 0:
                 if (saChart === undefined) {
-                    saChart = echarts.init(document.getElementById("saChart"), 'macarons');
-                    saChart.setOption(option);
+                    saChart = echarts.init(document.getElementById("saChart"), chartTheme);
+                    saChart.setOption(chartOption);
                 }
-                saChart.setOption({
-                    legend: {
-                        data: ['销售', '销售退货']
+                saChart.showLoading();
+                $.ajax({
+                    type: 'POST',
+                    url: genAPI('query/homeChartData'),
+                    data: {
+                        index: index,
+                        time: _time
                     },
-                    series: [
-                        {
-                            name: '销售'
-                        },
-                        {
-                            name: '销售退货'
+                    success: function (res) {
+                        saChart.hideLoading();
+                        if (res.code == 200) {
+                            var data = res.data;
+                            saChart.setOption({
+                                legend: {
+                                    data: ['销售', '销售退货']
+                                },
+                                xAxis: {
+                                    data: data.xAxis
+                                },
+                                series: [
+                                    {
+                                        name: '销售',
+                                        data: data.a0
+                                    },
+                                    {
+                                        name: '销售退货',
+                                        data: data.a1
+                                    }
+                                ]
+                            });
+                        } else {
+                            layer.msg(res.message);
                         }
-                    ]
+                    },
+                    error: function (err) {
+                        layer.msg(err);
+                    }
                 });
                 break;
             case 1:
                 if (puChart === undefined) {
-                    puChart = echarts.init(document.getElementById("puChart"), 'macarons');
-                    puChart.setOption(option);
+                    puChart = echarts.init(document.getElementById("puChart"), chartTheme);
+                    puChart.setOption(chartOption);
                 }
-                puChart.setOption({
-                    legend: {
-                        data: ['采购', '采购退货']
+                puChart.showLoading();
+                $.ajax({
+                    type: 'POST',
+                    url: genAPI('query/homeChartData'),
+                    data: {
+                        index: index,
+                        time: _time
                     },
-                    series: [
-                        {
-                            name: '采购'
-                        },
-                        {
-                            name: '采购退货'
+                    success: function (res) {
+                        puChart.hideLoading();
+                        if (res.code == 200) {
+                            var data = res.data;
+                            puChart.setOption({
+                                legend: {
+                                    data: ['采购', '采购退货']
+                                },
+                                xAxis: {
+                                    data: data.xAxis
+                                },
+                                series: [
+                                    {
+                                        name: '采购',
+                                        data: data.a0
+                                    },
+                                    {
+                                        name: '采购退货',
+                                        data: data.a1
+                                    }
+                                ]
+                            });
+                        } else {
+                            layer.msg(res.message);
                         }
-                    ]
+                    },
+                    error: function (err) {
+                        layer.msg(err);
+                    }
                 });
                 break;
         }
