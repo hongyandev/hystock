@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../css/home.css">
     <script src="../js/common/lodash.min.js"></script>
     <script src="../js/common/moment-with-locales.min.js"></script>
+    <script src="../js/common/handlebars.min.js"></script>
     <script src="../js/jquery/1.9.1/jquery.min.js"></script>
     <script src="../js/common/jquery.cookie.js"></script>
     <script src="../js/jquery.easyui.min.js"></script>
@@ -80,7 +81,7 @@
                 <!-- Default panel contents -->
                 <div class="panel-heading">关键数据</div>
                 <!-- List group -->
-                <div class="list-group home-common">
+                <div id="home-key-data" class="list-group home-common">
                     <a href="#" class="list-group-item">现金：<span class="number">279,915.00</span></a>
                     <a href="#" class="list-group-item">银行存款：<span class="number">224,311.00</span></a>
                     <a href="#" class="list-group-item">客户欠款：<span class="number">179,223.40</span></a>
@@ -93,5 +94,10 @@
     </div>
 </div>
 <script src="../js/home.js"></script>
+<script type="text/x-handlebars-template" id="home-key-data-tmp">
+    {{#data}}
+    <a href="javascript:void(0)" class="list-group-item">{{name}}：<span class="number">{{number}}</span></a>
+    {{/data}}
+</script>
 </body>
 </html>
