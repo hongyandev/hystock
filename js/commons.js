@@ -192,10 +192,17 @@ function rowNumberFormat(value, row, precision) {
     return row.isFooter ? '<b>'+intToFloat(value, precision)+'</b>' : intToFloat(value, precision);
 }
 //新增tab
-function addTopTab(dg,tabTitle,url) {
+function addTopTab(dg,tabTitle,url,params) {
     var jq = top.jQuery;
     if(jq(dg).tabs('exists',tabTitle)){
         jq(dg).tabs('close',tabTitle);
+    }
+    if(params != undefined && typeof params === "object") {
+        var str = "";
+        for (var item in params){
+            str += (str.length == 0 ? "" : "&") + item + "=" +params[item];
+        }
+        url += (url.indexOf("?") == -1 ? "?" : "&") + str;
     }
     jq(dg).tabs('add',{
         title:tabTitle,

@@ -1,5 +1,60 @@
-const quickLink = function (type) {
-    layer.msg(type);
+const quickLink = function (transType) {
+    layer.msg(transType);
+    // [3, 5, 14, 15, 7, 8, 9, 16, 17]
+    var tabTitle, url, params;
+    switch (transType) {
+        case 3:
+            tabTitle = '销售单记录';
+            url = "webapp/sales/saleHistory.html";
+            break;
+        case 5:
+            tabTitle = '采购单记录';
+            url = "webapp/purchase/purchaseHistory.html";
+            break;
+        case 14:
+            tabTitle = '收款单记录';
+            url = "webapp/scm/billHistory.html";
+            params = {
+                transType: transType
+            };
+            break;
+        case 15:
+            tabTitle = '付款单记录';
+            url = "webapp/scm/billHistory.html";
+            params = {
+                transType: transType
+            };
+            break;
+        case 7:
+            tabTitle = '调拨单记录';
+            url = "webapp/warehouse/stoTransHistory.html";
+            break;
+        case 8:
+            tabTitle = '其他入库单记录';
+            url = "webapp/warehouse/inOrderHistory.html";
+            break;
+        case 9:
+            tabTitle = '其他出库单记录';
+            url = "webapp/warehouse/outOrderHistory.html";
+            break;
+        case 16:
+            tabTitle = '其他收入单记录';
+            url = "webapp/scm/billHistory.html";
+            params = {
+                transType: transType
+            };
+            break;
+        case 17:
+            tabTitle = '其他支出单记录';
+            url = "webapp/scm/billHistory.html";
+            params = {
+                transType: transType
+            };
+            break;
+        default:
+            return;
+    }
+    addTopTab("#tabs", tabTitle, url, params);
 };
 $(function () {
     var _i = 0, _time = 'day', saChart, puChart, chartOption = {
@@ -209,4 +264,29 @@ $(function () {
         }
     }
     loadChart();
+    const loadKeyData = function () {
+        let loading = layer.load();
+        $.ajax({
+            type: 'GET',
+            url: genAPI('query/homeKeyData'),
+            success: function (res) {
+                layer.close(loading);
+                if (res.code == 200) {
+                    if (res.data.length > 0) {
+                        var tpl = Handlebars.compile($("#home-key-data-tpl").html());
+                        $("#home-key-data").html(tpl(res));
+                    }
+                } else {
+                    layer.msg(res.message);
+                }
+            },
+            error: function (err) {
+                layer.msg(err);
+            }
+        });
+    }
+    loadKeyData();
+    $('#refreshKeyData').click(function () {
+        loadKeyData();
+    })
 });

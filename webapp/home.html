@@ -79,24 +79,18 @@
         <div class="col-md-4">
             <div class="panel clearfix">
                 <!-- Default panel contents -->
-                <div class="panel-heading">关键数据</div>
+                <div class="panel-heading">关键数据<a id="refreshKeyData" style="margin-left: 1em;color: #fff;" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></div>
                 <!-- List group -->
                 <div id="home-key-data" class="list-group home-common">
-                    <a href="#" class="list-group-item">现金：<span class="number">279,915.00</span></a>
-                    <a href="#" class="list-group-item">银行存款：<span class="number">224,311.00</span></a>
-                    <a href="#" class="list-group-item">客户欠款：<span class="number">179,223.40</span></a>
-                    <a href="#" class="list-group-item">供应商欠款：<span class="number">177,586.18</span></a>
-                    <a href="#" class="list-group-item">销售收入(本月)：<span class="number">700.00</span></a>
-                    <a href="#" class="list-group-item">采购金额(本月)：<span class="number">0.00</span></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script src="../js/home.js"></script>
-<script type="text/x-handlebars-template" id="home-key-data-tmp">
+<script type="text/x-handlebars-template" id="home-key-data-tpl">
     {{#data}}
-    <a href="javascript:void(0)" class="list-group-item">{{name}}：<span class="number">{{number}}</span></a>
+    <a href="javascript:void(0)" class="list-group-item">{{key}}：<span class="number">{{number}}</span></a>
     {{/data}}
 </script>
 </body>
