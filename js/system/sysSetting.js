@@ -19,7 +19,7 @@ $(function () {
                 $("#companyTel").val(res.data.companyTel);
                 $("#companyFax").val(res.data.companyFax);
                 $("#postcode").val(res.data.postcode);
-                $("#startDate").datebox("setValue",res.data.startDate);
+                $("#startDate").val(moment(res.data.startDate).format('L'));
                 $("#billRequiredCheck option[value='" + res.data.billRequiredCheck + "']").attr("selected", true);
                 $("#tax").val(res.data.tax);
             }
@@ -34,7 +34,6 @@ function saveSysinfo() {
      companyTel:$("#companyTel").val(),
      companyFax:$("#companyFax").val(),
        postcode:$("#postcode").val(),
-      startDate:$("#startDate").datebox('getValue'),
 billRequiredCheck:$("#billRequiredCheck").val(),
             tax:$("#tax").val()
     }

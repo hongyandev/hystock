@@ -494,6 +494,7 @@ input.switch{
 }
 .btn-success{
     background: #1ab394;!important;
+    border-color: #1ab394;!important;
 }
 .top-btn-group {
     position: fixed;
