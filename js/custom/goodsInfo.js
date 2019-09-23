@@ -94,7 +94,12 @@ $(function () {
         editable: false,
         panelHeight:'200',
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         onSelect:function (record) {
 
@@ -112,7 +117,12 @@ $(function () {
             typeNum:3
         },
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         formatter:function(node){
             return node.name;
@@ -147,7 +157,12 @@ $(function () {
             isGroup:0
         },
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         formatter: function(row){
             var opts = $(this).combobox('options');
@@ -176,7 +191,12 @@ $(function () {
             isCombo:1
         },
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         formatter: function(row){
             var opts = $(this).combobox('options');
@@ -240,7 +260,12 @@ $(function () {
             unit:$("#unitGroup").val() || 0
         },
         loadFilter: function(data){
-             return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
          rownumbers : true,
          singleSelect : true,
@@ -316,7 +341,12 @@ $(function () {
              goodsId:$("#id").val() || 0
          },
          loadFilter: function(data){
-             return data.data
+             if(data.code == 200) {
+                 return data.data
+             } else {
+                 layer.msg(data.message);
+                 return [];
+             }
          },
          columns:[[
              { field:'levelName',
@@ -403,7 +433,12 @@ $(function () {
             goodsId:$("#id").val() || 0
         },
         loadFilter: function(data){
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         columns:[[
             { field:'storageName',
@@ -471,7 +506,12 @@ $(function () {
             goodsId:$("#id").val() || 0
         },
         loadFilter: function(data){
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         showFooter:true,
         columns:[[
@@ -501,7 +541,12 @@ $(function () {
                         editable: false,
                         panelHeight:'200',
                         loadFilter:function (data) {
-                            return data.data
+                            if(data.code == 200) {
+                                return data.data
+                            } else {
+                                layer.msg(data.message);
+                                return [];
+                            }
                         },
                         onSelect:function (record) {
                             console.info(record);

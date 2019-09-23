@@ -51,8 +51,13 @@ $(function () {
         textField:'name',
         parentField:'pid',
         panelWidth:'200',
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         formatter:function(node){
             return node.name;
@@ -82,8 +87,13 @@ $(function () {
         rownumbers:true,
         singleSelect:true,
         height:400,
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams:{
             query:$("#searTxt").val(),
@@ -173,7 +183,12 @@ $(function () {
             return node.name;
         },
         loadFilter: function(res){
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onClick : function(node) {
             $("#goods").datagrid('load',{
@@ -192,8 +207,13 @@ $(function () {
         cache: false,
         editable: false,
         panelHeight:'200',
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onSelect:function (record) {
             storageId = record.id;
@@ -245,8 +265,13 @@ $(function () {
                         mode:'remote',
                         editable:true,
                         hasDownArrow:false,
-                        loadFilter:function (data) {
-                            return data.data;
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
                         },
                         onBeforeLoad: function(param){
 
@@ -367,8 +392,13 @@ $(function () {
                         textField:'name',
                         url:genAPI('settings/storageList'),
                         method:'post',
-                        loadFilter:function (data) {
-                            return data.data;
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
                         },
                         onSelect:function (record) {
                              storageName = record.name;
@@ -437,8 +467,13 @@ $(function () {
                         textField:'unitName',
                         url:genAPI('settings/getUnitsById'),//通过id获取计量单位
                         method:'post',
-                        loadFilter:function (data) {
-                            return data.data;
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
                         },
                         onBeforeLoad:function (param){
                             //console.info(param);
@@ -825,8 +860,13 @@ function queryGoods(query,zero,categoryId,storageId) {
         idField:'id',
         pagination:true,
         height:300,
-        loadFilter:function (data) {
-            return data.data;
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams:{
             query:query,
@@ -884,8 +924,13 @@ function queryGoods(query,zero,categoryId,storageId) {
                         textField:'unitName',
                         url:genAPI('settings/getUnitsById'),//通过id获取计量单位
                         method:'post',
-                        loadFilter:function (data) {
-                            return data.data;
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
                         },
                         onBeforeLoad:function (param){
                            //console.info(param);
@@ -944,8 +989,13 @@ function goodsInventoryList(goodsId) {
         singleSelect:true,
         idField:'id',
         height:200,
-        loadFilter:function (data) {
-            return data.data;
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams:{
             goodsId:goodsId
@@ -1141,8 +1191,13 @@ function end() {
                     mode:'remote',
                     editable:true,
                     hasDownArrow:false,
-                    loadFilter:function (data) {
-                        return data.data;
+                    loadFilter:function (res) {
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     onBeforeLoad: function(param){
                         console.info(param);
@@ -1260,8 +1315,13 @@ function end() {
                     textField:'name',
                     url:genAPI('settings/storageList'),
                     method:'post',
-                    loadFilter:function (data) {
-                        return data.data;
+                    loadFilter:function (res) {
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     onSelect:function (record) {
                         return record.name;
@@ -1312,8 +1372,13 @@ function end() {
                     textField:'unitName',
                     url:genAPI('settings/getUnitsById'),//通过id获取计量单位
                     method:'post',
-                    loadFilter:function (data) {
-                        return data.data;
+                    loadFilter:function (res) {
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     onBeforeLoad:function (param){
                         //console.info(param);

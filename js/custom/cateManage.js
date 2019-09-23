@@ -30,7 +30,12 @@ function getData(type,searTxt) {
         treeField:'name',
         fit:true,
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         queryParams: {
             typeNum: type,

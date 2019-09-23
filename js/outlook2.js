@@ -221,11 +221,11 @@ function logout() {
                         $.cookie('jwt', null);
                         $.cookie('realName', null);
                         $.cookie('uid', null);
-                        window.location.href = './login.html' + location.search;
                     } else {
                         layer.close(loading);
                         layer.msg(res.message);
                     }
+                    window.location.href = './login.html' + location.search;
                 }
             })
         }

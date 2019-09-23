@@ -20,8 +20,13 @@ $(function () {
         pagination:true,
         rownumbers:true,
         singleSelect:true,
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         columns:[[
             { field:'uid',title:'uid',hidden:true},

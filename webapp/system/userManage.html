@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../css/default.css">
+    <script src="../../js/common/lodash.min.js"></script>
+    <script src="../../js/common/moment-with-locales.min.js"></script>
+    <script src="../../js/common/handlebars.min.js"></script>
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <style>
+        .btn span.l-btn-text {
+            margin: 0px;
+            line-height: 1.5em;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north'" style="margin-top: 44px;height: 55px">
+    <form id="searchFrom">
+        <input id="transType" type="hidden" name="transType" />
+        <div class="form-inline col-sm-12" style="margin-bottom: 10px">
+            <div class="form-group">
+                <input id="query" name="query" class="easyui-textbox form-control" style="width:200px">
+            </div>
+            <div class="form-group">
+                <label>状态：</label>
+                <input id="status" name="status" class="easyui-combobox form-control" style="width:80px;">
+                <button id="searchBtn" class="btn btn-sm btn-success" type="button">查询</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div data-options="region:'center'">
+    <table id="dataTable" class="easyui-datagrid"></table>
+</div>
+<div class="form-group pull-right top-btn-group">
+    <a href="javascript:void(0)" style="color: #fff" class="easyui-linkbutton btn btn-primary" data-options="plain:true" onclick="addUser()">新增</a>
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton btn btn-default" data-options="plain:true" onclick="modifyUser()">编辑</a>-->
+    <a id="btn-audit" href="javascript:void(0)" class="easyui-splitbutton btn btn-default" data-options="menu:'#btn-reaudit'" onclick="modifyStatus(1)">启用</a>
+</div>
+<div id="btn-reaudit" style="width:auto;">
+    <div onclick="modifyStatus(9)">禁用</div>
+</div>
+</body>
+<script src="../../js/system/userManage.js"></script>
+<script type="text/x-handlebars-template" id="add-user-tpl">
+    <form id="addUserForm">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="khdm">客户代码:</label>
+                <div class="col-sm-8">
+                    <input id="khdm" class="easyui-textbox form-control" style="width: 250px" type="text" name="khdm" data-options="required:true'"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="companyName">客户名称:</label>
+                <div class="col-sm-8">
+                    <input id="companyName" class="easyui-textbox form-control" style="width: 250px" type="text" name="companyName" data-options="required:true"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</script>
+</html>

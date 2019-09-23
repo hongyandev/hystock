@@ -32,8 +32,13 @@ $(function () {
         textField: 'name',
         parentField: 'pid',
         panelWidth: '200',
-        loadFilter: function (data) {
-            return data.data
+        loadFilter: function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         formatter: function (node) {
             return node.name;
@@ -75,8 +80,13 @@ $(function () {
         rownumbers: true,
         singleSelect: true,
         height: 400,
-        loadFilter: function (data) {
-            return data.data
+        loadFilter: function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams: {
             query: $("#searTxt").val(),
@@ -150,7 +160,12 @@ $(function () {
             return node.name;
         },
         loadFilter: function (res) {
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onClick: function (node) {
             $("#goods").datagrid('load', {
@@ -201,8 +216,13 @@ function queryGoods(query, categoryId) {
         pagination: true,
         height: 300,
         singleSelect: true,
-        loadFilter: function (data) {
-            return data.data;
+        loadFilter: function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams: {
             query: query,
@@ -268,8 +288,13 @@ function clickSearch() {
         rownumbers: true,
         fitColumns: false,
         singleSelect: true,
-        loadFilter: function (data) {
-            return data.data.rows
+        loadFilter: function (res) {
+            if(res.code == 200) {
+                return res.data.rows
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams: {
             beginDate: $("#startDate").val(),

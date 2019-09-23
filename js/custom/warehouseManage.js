@@ -14,8 +14,13 @@ $(function () {//ready()文档加载后
         rownumbers:true,
         singleSelect:true,
         fit:true,
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         columns:[[
             { field:'id',title:'仓库id',width:20},

@@ -27,8 +27,13 @@ $(function () {
         textField:'name',
         parentField:'pid',
         panelWidth:'200',
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         formatter:function(node){
             return node.name;
@@ -58,8 +63,13 @@ $(function () {
         pagination:true,
         rownumbers:true,
         singleSelect:true,
-        loadFilter:function (data) {
-            return data.data
+        loadFilter:function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams:{
             query:$("#searTxt").val(),
@@ -490,8 +500,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false, //只读
         loadFilter:function (res) {
-            var data = res.data;
-            return data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onSelect:function(record){
             if(record.cidx){
@@ -512,7 +526,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false,
         loadFilter:function (res) {
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onSelect:function(record){
             $('#district').combobox('clear');
@@ -534,7 +553,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false,
         loadFilter:function (res) {
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onLoadSuccess: function () {
             if(ids && ids[2]){

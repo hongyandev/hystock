@@ -36,8 +36,13 @@ $(function () {
         rownumbers: true,
         fitColumns: false,
         showFooter: true,
-        loadFilter: function (data) {
-            return data.data
+        loadFilter: function (res) {
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         queryParams: {
             query: $("#searTxt").val(),

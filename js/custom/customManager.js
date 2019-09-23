@@ -35,7 +35,12 @@ $(function () {
         parentField:'pid',
         panelWidth:'200',
         loadFilter:function (data) {
-            return data.data;
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         formatter:function(node){
             return node.name;
@@ -64,7 +69,12 @@ $(function () {
         rownumbers:true,
         singleSelect:true,
         loadFilter:function (data) {
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         queryParams:{
             query:$("#searTxt").val(),
@@ -180,13 +190,18 @@ function customDialog() {
         editable: false,
         panelHeight:'200',
         loadFilter:function (res) {
-            //return res.data;
-            var menu = [{uid:'addUser',realName:'＋ 新增职员'}];
-            var obj = eval(res.data);
-            $.each(obj, function (i,val) {
-                menu.push(val);
-            });
-            return menu;
+            if(res.code == 200) {
+                var menu = [{uid:'addUser',realName:'＋ 新增职员'}];
+                var obj = eval(res.data);
+                $.each(obj, function (i,val) {
+                    menu.push(val);
+                });
+                return menu;
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
+
         },
         formatter: function(row){
 
@@ -595,8 +610,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false, //只读
         loadFilter:function (res) {
-            var data = res.data;
-            return data
+            if(res.code == 200) {
+                return data.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onSelect:function(record){
             if(record.cidx){
@@ -617,7 +636,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false,
         loadFilter:function (res) {
-            return res.data
+            if(res.code == 200) {
+                return data.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onSelect:function(record){
             $('#district').combobox('clear');
@@ -639,7 +663,12 @@ function openSelectAddress(value){ //打开地址
         cache: false,
         editable: false,
         loadFilter:function (res) {
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onLoadSuccess: function () {
             if(ids && ids[2]){

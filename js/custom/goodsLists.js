@@ -23,7 +23,12 @@ $(function () {
             return node.name;
         },
         loadFilter: function(res){
-            return res.data
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         onClick : function(node) {
             $("#goodsLists").datagrid('load',{
@@ -85,8 +90,13 @@ function getGoodsData(query,chk,category) {
             status:chk,
             category:""
         },
-        loadFilter: function(data){
-           return data.data
+        loadFilter: function(res){
+            if(res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+                return [];
+            }
         },
         columns : [[
             {
@@ -277,8 +287,13 @@ function getGoodsData(query,chk,category) {
                     queryParams:{
                         typeNum:3
                     },
-                    loadFilter:function (data) {
-                        return data.data
+                    loadFilter:function (res) {
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     formatter:function(node){
                         return node.name;
@@ -296,8 +311,13 @@ function getGoodsData(query,chk,category) {
                     cache: false,
                     editable: false,
                     panelHeight:'200',
-                    loadFilter:function (data) {
-                        return data.data
+                    loadFilter:function (res) {
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     onSelect:function (record) {
                         storageId = record.id;
@@ -350,8 +370,13 @@ function getGoodsData(query,chk,category) {
                     queryParams:{
                         goodsId:$("#id").val() || 0
                     },
-                    loadFilter: function(data){
-                        return data.data
+                    loadFilter: function(res){
+                        if(res.code == 200) {
+                            return res.data
+                        } else {
+                            layer.msg(res.message);
+                            return [];
+                        }
                     },
                     columns:[[
                         { field:'storageName',

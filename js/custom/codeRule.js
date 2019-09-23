@@ -20,7 +20,12 @@ $(function () {
         queryParams:{
         },
         loadFilter: function(data){
-            return data.data
+            if(data.code == 200) {
+                return data.data
+            } else {
+                layer.msg(data.message);
+                return [];
+            }
         },
         columns : [[
             {
