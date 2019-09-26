@@ -1,4 +1,7 @@
 $(function () {
+    $.cookie('jwt', null);
+    $.cookie('realName', null);
+    $.cookie('uid', null);
     if (navigator.appName == "Microsoft Internet Explorer" &&
         (navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE6.0" ||
             navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE7.0" ||
@@ -30,7 +33,6 @@ $(function () {
                 khdm : $('#khdm').val(),
                 username: $('#username').val(),
                 password: $('#password').val()
-
             };
             $.ajax({
                 type: 'POST',

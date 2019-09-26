@@ -83,7 +83,6 @@ function addTab(subtitle, url, icon) {
     tabCloseEven();
 }
 
-
 function tabCloseMenu() {
     /*双击关闭TAB选项卡*/
     $(".tabs-inner").dblclick(function () {
@@ -186,7 +185,7 @@ function tabCloseEven() {
 
 $(function () {
     var jwt = $.cookie('jwt');
-    if (jwt === undefined || jwt === null) {
+    if (jwt === undefined || jwt === null || jwt === '') {
         window.location.href = './login.html' + location.search;
     } else {
         $.ajaxSetup({

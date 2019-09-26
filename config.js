@@ -39,15 +39,17 @@ $.fn.serializeObject = function () {
     });
     return o;
 };
-try {
-    moment.locale('zh-cn');
-    $.ajaxSetup({
-        headers: {
-            uid: $.cookie('uid'),
-            token: $.cookie('jwt')
-        }
-    });
-}catch(err){}
+$(function () {
+    try {
+        moment.locale('zh-cn');
+        $.ajaxSetup({
+            headers: {
+                uid: $.cookie('uid'),
+                token: $.cookie('jwt')
+            }
+        });
+    }catch(err){}
+})
 
 
 
