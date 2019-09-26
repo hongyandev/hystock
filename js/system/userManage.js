@@ -4,7 +4,7 @@ const addUser = function () {
         type: 1,
         title:"新增",
         skin: 'layui-layer-molv', //加上边框
-        area: ['400px', '400px'], //宽高
+        area: ['400px', '200px'], //宽高
         content: tpl(),
         btn: ['确定', '取消'],
         yes: function(index, layero){
@@ -96,6 +96,7 @@ $(function () {
         prompt: '输入客户代码或名称'
     });
     var dg = $("#dataTable").datagrid({
+        url: genAPI('settings/user/page'),
         pagination: true,
         rownumbers: true,
         fitColumns: false,
@@ -159,7 +160,6 @@ $(function () {
     });
     $("#searchBtn").bind('click', function () {
         var data = $("#searchFrom").serializeObject();
-        dg.datagrid('options').url = genAPI('settings/user/page');
         dg.datagrid('load', data);
     });
 });
