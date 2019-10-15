@@ -159,7 +159,14 @@ $(function () {
     zero = $(".chk-ischecked").find('checkbox').prop('checked')== true ? '1' : '0';
 //业务类别
     $("#transType").combobox({
-        url:'../../temp/transType.json',
+        data:[
+            {
+                "id": 9,
+                "name": "其他出库"
+            },{
+                "id": 11,
+                "name": "盘亏"
+            }],
         valueField: 'id',
         textField: 'name',
         cache: false,

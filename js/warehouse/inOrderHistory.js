@@ -2,6 +2,7 @@ var rec;
 var storageId;
 var query;
 var zero;
+var transType;
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -22,7 +23,25 @@ $(function () {
     date.setDate(1);
     var dateStart = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     $("#startDate").datebox("setValue", dateStart);
-
+//业务类别
+    $("#transType").combobox({
+        data:[
+            {
+                "id": 8,
+                "name": "其他入库"
+            },{
+                "id": 10,
+                "name": "盘盈"
+            }],
+        valueField: 'id',
+        textField: 'name',
+        cache: false,
+        editable: false,
+        panelHeight:'200',
+        onSelect:function (record) {
+            transType = record.id;
+        }
+    });
 //其他入库单记录
     $("#inOrderRecords").datagrid({
         url: genAPI('invOi/queryInvOiPage'),
@@ -49,7 +68,7 @@ $(function () {
             status: $("#status").val(),
             startDate:$("#startDate").datebox("getValue"),
             endDate: $("#endDate").val(),
-            transType:'8'
+            transType: transType
         },
         columns: [[
             {

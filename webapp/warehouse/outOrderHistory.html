@@ -89,15 +89,10 @@
                 -
                 <input id="endDate" name="endDate" class="easyui-datebox" required labelPosition="top" value="myformatter(date)" validType="equaldDate['#startDate']" data-options="prompt:'请选择结束日期',editable:false"/>
             </div>
-            <!--<div class="form-group">
-                <label>付款状态:</label>
-                <select id="hxState" name="hxState" data-options="editable:true,width:200" style="width:160px;height:30px"></select>
-                　　 <div id="sp">
-                        <input type="checkbox" name="hxState" value="1"><span>未付款</span><br/>
-                        <input type="checkbox" name="hxState" value="2"><span>部分付款</span><br/>
-                        <input type="checkbox" name="hxState" value="3"><span>全部付款</span>
-                    </div>
-            </div>-->
+            <div class="form-group">
+                <label>业务类别：</label>
+                <input id="transType" class="easyui-combobox form-control" style="width:178px;">
+            </div>
             <div class="form-group">
                 <label>审核状态:</label>
                 <select id="status" class="easyui-combobox" name="status" style="width:160px;">
