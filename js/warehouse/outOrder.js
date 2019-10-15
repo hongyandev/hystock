@@ -455,7 +455,7 @@ $(function () {
             },
             {
                 field:"price",
-                title:"入库单价",
+                title:"出库单价",
                 width:150,
                 hidden:false,
                 formatter:function (value,record,index) {
@@ -469,7 +469,7 @@ $(function () {
             },
             {
                 field:"totalPrice",
-                title:"入库金额",//单价*数量
+                title:"出库金额",//单价*数量
                 width:150,
                 hidden:false,
                 formatter:function (value,record,index) {
