@@ -27,7 +27,7 @@ $(function () {
     $("#transType").combobox({
         data:[
             {
-                "id": 8,
+                "id": 9,
                 "name": "其他入库"
             },{
                 "id": 10,
