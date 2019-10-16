@@ -176,7 +176,7 @@ $(function () {
                 status: $("#status").val(),
                 startDate:$("#startDate").datebox("getValue"),
                 endDate: $("#endDate").datebox("getValue"),
-                transType:'8'
+                transType:'9'
             }
         }).datagrid("reload",genAPI('invOi/queryInvOiPage'));
     })
