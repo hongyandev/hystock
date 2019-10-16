@@ -326,10 +326,10 @@ $(function () {
                 width : 160,
                 hidden:false,
                 formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageId || !rowData.storageName){
+                    //if(rowData.storageid || !rowData.storageName){
                         rowData.storageId = storageid;
                         rowData.storageName = storageName;
-                    }
+                    //}
                     return rowData.storageName || "";
                 },
                 editor : {
@@ -1245,14 +1245,14 @@ function bathStorage() {
         $(".dropdownBg").show();
         var row = $("#outOrderList").datagrid("getRows");
         $('.dropdownBg').find('li').click(function () {
-            var storageName = $(this).text();
-            var storageid = $(this).find("a").attr("storgeid");
+            var stname = $(this).text();
+            var stid = $(this).find("a").attr("storgeid");
             for(var i=0;i<row.length;i++){
                 $("#outOrderList").datagrid("updateRow",{
                     index: i,
                     row: {
-                        storageName : storageName,
-                        storageId : storageid
+                        storageName : stname,
+                        storageId : stid
                     }
                 })
             }

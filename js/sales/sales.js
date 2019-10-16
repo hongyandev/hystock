@@ -1434,13 +1434,13 @@ function bathStorage() {
         $(".dropdownBg").show();
         var row = $("#salesList").datagrid("getRows");
         $('.dropdownBg').find('li').click(function () {
-            var storageName = $(this).text();
+            var storagename = $(this).text();
             var storageid = $(this).find("a").attr("storgeid");
             for(var i=0;i<row.length;i++){
                 $("#salesList").datagrid("updateRow",{
-                    index: i,
+                    index: i-1,
                     row: {
-                        storageName : storageName,
+                        storageName : storagename,
                         storageId : storageid
                     }
                 })
