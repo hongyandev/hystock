@@ -9,82 +9,85 @@ $(function () {
     });
 
 //回显商品详情
+     if($.cookie('id')){
                 $.ajax({
-                     type:"post",
-                     url:genAPI('goods/getGoodsInfo'),
-                     cache:false,
-                     dataType:"json",
-                     data:{
-                         id:$.cookie('id')
-                     },
-                     success:function (res) {
-                         if(res.code==200){
+                    type:"post",
+                    url:genAPI('goods/getGoodsInfo'),
+                    cache:false,
+                    dataType:"json",
+                    data:{
+                        id:$.cookie('id')
+                    },
+                    success:function (res) {
+                        if(res.code==200){
                             console.info(res);
                             var data = res.data;
-                             $("#id").val(data.goods.id);
-                             $("#code").val(data.goods.code);
-                             $("#cpdm").val(data.goods.cpdm);
-                             $("#name").val(data.goods.name);
-                             $("#barCode").val(data.goods.barCode);
-                             $("#specs").val(data.goods.specs);
-                             $('#category').combotree('setValue',data.goods.category);
-                             $("#storage").combobox('setValue',data.goods.storage);
-                             $("#unitSingle").combobox('setValue',data.goods.unit);
-                             if(data.goods.isUnitGroup == '1'){
-                                 // $("#moreUnitBtn").click();
-                                 $("#moreUnitBtn").attr("checked","");
-                                 $(".unitGroupBox").show();
-                                 $("#unitGroup").combobox('setValue',data.goods.unit);
-                                 $(".unitSingle").hide();
-                             }else{
-                                 $("#moreUnitBtn").removeAttr("checked");
-                                 $(".unitGroupBox").hide();
-                                 $('#unitSingle').combobox('setValue',data.goods.unit);
-                                 $(".unitSingle").show();
-                             }
-                             if(data.goods.inventoryWarn == '1'){
-                                 //$(".kcyj").click();
-                                 $(".kcyj").find("input").attr("checked",'');
-                                 $(".kcyjCon").show();
-                             }else{
-                                 $(".kcyj").find("input").removeAttr("checked");
-                                 $(".kcyjCon").hide();
-                             }
-                             if(data.goods.storageWarn == '1'){
-                                 $("#warning").find("input").attr("checked","");
-                                 $('.divEditTabKc').show();
-                                 $("#editTabKc").datagrid("resize");
-                                 $(".inputKc").css('display','none');
-                             }else{
-                                 $("#warning").find("input").removeAttr("checked");
-                                 $('.divEditTabKc').hide();
-                                 $(".inputKc").css('display','block');
-                             }
-                             $("#firstSaleUnit").val(data.goods.firstSaleUnit);
-                             $("#firstPurUnit").val(data.goods.firstPurUnit);
-                             $("#minInventory").val(data.goods.minInventory);
-                             $("#maxInventory").val(data.goods.maxInventory);
-                             $("#note").val(data.goods.note);
-                             $('#editTabGoodsPrice').datagrid('reload',{goodsId:$("#id").val(), unit:$("#unitGroup").val()});
-                             $('#editTabPrice').datagrid('reload',{goodsId:$("#id").val()});
-                             $('#editTabKc').datagrid('reload',{goodsId:$("#id").val()});
-                             $('#goodsInventory').datagrid('reload',{goodsId:$("#id").val()});
-                             if(data.earlyStage.rows.length>0){
-                                 $(".earlyStage").find("input").prop("checked",true);
-                                 $('#divEditTab').show();
-                                 $('#goodsInventory').datagrid('resize');
-                             }else{
-                                 $(".earlyStage").find("input").prop("checked",false);
-                                 $('#divEditTab').hide();
-                             }
-                             $.cookie('id',null);
-                         }else{
-                             layer.msg(res.message)
-                         }
-                     },error:function (res) {
-                         layer.msg(res.message)
-                     }
-                 });
+                            $("#id").val(data.goods.id);
+                            $("#code").val(data.goods.code);
+                            $("#cpdm").val(data.goods.cpdm);
+                            $("#name").val(data.goods.name);
+                            $("#barCode").val(data.goods.barCode);
+                            $("#specs").val(data.goods.specs);
+                            $('#category').combotree('setValue',data.goods.category);
+                            $("#storage").combobox('setValue',data.goods.storage);
+                            $("#unitSingle").combobox('setValue',data.goods.unit);
+                            if(data.goods.isUnitGroup == '1'){
+                                // $("#moreUnitBtn").click();
+                                $("#moreUnitBtn").attr("checked","");
+                                $(".unitGroupBox").show();
+                                $("#unitGroup").combobox('setValue',data.goods.unit);
+                                $(".unitSingle").hide();
+                            }else{
+                                $("#moreUnitBtn").removeAttr("checked");
+                                $(".unitGroupBox").hide();
+                                $('#unitSingle').combobox('setValue',data.goods.unit);
+                                $(".unitSingle").show();
+                            }
+                            if(data.goods.inventoryWarn == '1'){
+                                //$(".kcyj").click();
+                                $(".kcyj").find("input").attr("checked",'');
+                                $(".kcyjCon").show();
+                            }else{
+                                $(".kcyj").find("input").removeAttr("checked");
+                                $(".kcyjCon").hide();
+                            }
+                            if(data.goods.storageWarn == '1'){
+                                $("#warning").find("input").attr("checked","");
+                                $('.divEditTabKc').show();
+                                $("#editTabKc").datagrid("resize");
+                                $(".inputKc").css('display','none');
+                            }else{
+                                $("#warning").find("input").removeAttr("checked");
+                                $('.divEditTabKc').hide();
+                                $(".inputKc").css('display','block');
+                            }
+                            $("#firstSaleUnit").val(data.goods.firstSaleUnit);
+                            $("#firstPurUnit").val(data.goods.firstPurUnit);
+                            $("#minInventory").val(data.goods.minInventory);
+                            $("#maxInventory").val(data.goods.maxInventory);
+                            $("#note").val(data.goods.note);
+                            $('#editTabGoodsPrice').datagrid('reload',{goodsId:$("#id").val(), unit:$("#unitGroup").val()});
+                            $('#editTabPrice').datagrid('reload',{goodsId:$("#id").val()});
+                            $('#editTabKc').datagrid('reload',{goodsId:$("#id").val()});
+                            $('#goodsInventory').datagrid('reload',{goodsId:$("#id").val()});
+                            if(data.earlyStage.rows.length>0){
+                                $(".earlyStage").find("input").prop("checked",true);
+                                $('#divEditTab').show();
+                                $('#goodsInventory').datagrid('resize');
+                            }else{
+                                $(".earlyStage").find("input").prop("checked",false);
+                                $('#divEditTab').hide();
+                            }
+                            $.cookie('id',null);
+                        }else{
+                            layer.msg(res.message)
+                        }
+                    },error:function (res) {
+                        layer.msg(res.message)
+                    }
+                });
+            }
+
 //获取仓库
     $("#storage").combobox({
         url:genAPI('settings/storageList'),
