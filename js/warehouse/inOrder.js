@@ -67,6 +67,7 @@ $(function () {
         }
 
     });
+    var khlayer;
 //供应商列表
     $("#vendorList").datagrid({
         url:genAPI('settings/vendorList'),
@@ -106,6 +107,25 @@ $(function () {
                     }
                 }}
         ]],
+        onDblClickRow:function (rowIndex,rowData) {
+            $("#vendorClass").val(rowData.code+rowData.name);
+            $("#vendorClass").attr("vid",rowData.id);
+            $(".taxRate").val(rowData.taxRate);
+            var opt = $("#inOrderList").datagrid('options');
+            var dg = $("#inOrderList");
+            dg.datagrid('refreshRow', opt.editIndex);
+            var rowsData = dg.datagrid('getRows');
+            if(rowsData){
+                for(var i=0;i<rowsData.length-1;i++){
+                    rowsData[i].taxRate = rowSelect.taxRate;
+                    rowsData[i].purPrice = rowsData[i].purPrice ? rowsData[i].purPrice : 0;
+                    dg.datagrid('refreshRow', i);
+                }
+                dg.datagrid('statistics', ["qty","totalPrice"]);
+
+            }
+            layer.close(khlayer);
+        }
     });
 //供应商浮层
     $("#vendorClass").on('click',function () {
@@ -115,7 +135,7 @@ $(function () {
         }else{
             $("#vendorInfo").hide();
         }
-        layer.open({
+        khlayer = layer.open({
             type: 1,
             title:"选择商品",
             skin: 'layui-layer-molv', //加上边框
@@ -327,19 +347,12 @@ $(function () {
                 '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
                 width : 160,
                 hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageId || !rowData.storageName){
-                        rowData.storageId = storageid;
-                        rowData.storageName = storageName;
-                    }
-                    return rowData.storageName || "";
-                },
                 editor : {
                     type : "combobox",
                     options:{
                         buttonIcon:'fa fa-search fa-lg',
                         buttonAlign:'left',
-                        valueField:'id',
+                        valueField:'name',
                         textField:'name',
                         url:genAPI('settings/storageList'),
                         method:'post',
@@ -352,8 +365,11 @@ $(function () {
                             }
                         },
                         onSelect:function (record) {
-                            storageName = record.name;
-                            storageid = record.id;
+                            var rows = $("#inOrderList").datagrid('getData').rows;
+                            var index = $("#inOrderList").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageId = record.id
+                            }
 
                         },
                         onClickButton:function () {

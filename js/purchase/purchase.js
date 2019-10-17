@@ -76,6 +76,7 @@ $(function () {
         }
 
     });
+    var gyslayer;
 //供应商列表
     $("#vendorList").datagrid({
         url:genAPI('settings/vendorList'),
@@ -115,6 +116,29 @@ $(function () {
                     }
                 }}
         ]],
+        onDblClickRow:function (rowIndex,rowData) {
+            $("#vendorClass").val(rowData.code+rowData.name);
+            $("#vendorClass").attr("vid",rowData.id);
+            $(".taxRate").val(rowData.taxRate);
+            var opt = $("#purchaseList").datagrid('options');
+            var dg = $("#purchaseList");
+            dg.datagrid('refreshRow', opt.editIndex);
+            var rowsData = dg.datagrid('getRows');
+            if(rowsData){
+                for(var i=0;i<rowsData.length-1;i++){
+                    rowsData[i].taxRate = rowSelect.taxRate;
+                    rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
+                    rowsData[i].SalePrice = rowsData[i].SalePrice ? rowsData[i].SalePrice : 0;
+                    rowsData[i].tax = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
+                    rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
+                    dg.datagrid('refreshRow', i);
+                }
+                dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
+
+            }
+            discountData();
+            layer.close(gyslayer);
+        }
     });
 //供应商浮层
     $("#vendorClass").on('click',function () {
@@ -124,7 +148,7 @@ $(function () {
         }else{
             $("#vendorInfo").hide();
         }
-        layer.open({
+       gyslayer = layer.open({
             type: 1,
             title:"选择供应商",
             skin: 'layui-layer-molv', //加上边框
@@ -230,8 +254,6 @@ $(function () {
 //采购录入表格
     var goodsid;
     var storageId;
-    var storageName;
-    //var goodsId;
     $("#purchaseList").datagrid({
         rownumbers : true,
         singleSelect:true,
@@ -376,19 +398,12 @@ $(function () {
                 '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
                 width : 160,
                 hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    //if(!rowData.storageId || !rowData.storageName){
-                        rowData.storageId = storageId;
-                        rowData.storageName = storageName;
-                    //}
-                    return rowData.storageName || "";
-                },
                 editor : {
                     type : "combobox",
                     options:{
                         buttonIcon:'fa fa-search fa-lg',
                         buttonAlign:'left',
-                        valueField:'id',
+                        valueField:'name',
                         textField:'name',
                         url:genAPI('settings/storageList'),
                         method:'post',
@@ -401,12 +416,11 @@ $(function () {
                             }
                         },
                         onSelect:function (record) {
-                             storageName = record.name;
-                             storageId = record.id;
-
-                        },
-                        onUnselect:function () {
-                          //alert('111')
+                            var rows = $("#purchaseList").datagrid('getData').rows;
+                            var index = $("#purchaseList").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageId = record.id
+                            }
                         },
                         onClickButton:function () {
                             var rowData = $("#purchaseList").datagrid("getSelected");
@@ -1537,28 +1551,7 @@ function addPurchase() {
 }
 //审核
 function auditPurchase() {
-   /* var purDet = $("#purchaseList").datagrid('getRows');
-    var customer = $("#vendorClass").attr("vid");
-    if(purDet.length == 0){
-        layer.msg("请选择商品！");
-        return false;
-    }else{
-        for(var i=0;i<purDet.length;i++){
-            if(!purDet[i].id){
-                purDet.splice(i,1)
-            }
-        }
-        for(var i=0;i<purDet.length-1;i++){
-            if(purDet[i].storageId == ""){
-                layer.msg("请选择仓库！");
-                return false;
-            }
-        }
-    }
-    if(!customer){
-        layer.msg("请选择供应商！");
-        return false;
-    }*/
+
     $("#purchaseList").datagrid('endEditing');
     var dg = $("#purchaseList");
     var purDet = dg.datagrid('getRows');
@@ -1641,10 +1634,7 @@ function reAuditPurchase() {
         }
     })
 }
-//复制
-function copyPurchase() {
 
-}
 //历史单据
 function historyReceipts() {
     var tabTitle = '采购单记录';

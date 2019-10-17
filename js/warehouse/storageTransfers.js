@@ -190,10 +190,6 @@ $(function () {
     //入库单录入表格
     var goodsId;
     var storageId;
-    var storageidIn;
-    var storageidOut;
-    var storagenameOut;
-    var storagenameIn;
     $("#stoTransferList").datagrid({
         rownumbers : true,
         singleSelect:true,
@@ -330,6 +326,144 @@ $(function () {
                 }
             },
             {
+                field:'storageIdOut',
+                hidden:true
+            },
+            {   field:'storageNameOut',
+                title:'调出仓库 &nbsp' +
+                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage1()">批量</button>',
+                width : 160,
+                hidden:false,
+                editor : {
+                    type : "combobox",
+                    options:{
+                        buttonIcon:'fa fa-search fa-lg',
+                        buttonAlign:'left',
+                        valueField:'name',
+                        textField:'name',
+                        url:genAPI('settings/storageList'),
+                        method:'post',
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
+                        },
+                        onSelect:function (record) {
+                            var rows = $("#stoTransferList").datagrid('getData').rows;
+                            var index = $("#stoTransferList").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageIdOut = record.id
+                            }
+
+                        },
+                        onClickButton:function () {
+                            var rowData = $("#stoTransferList").datagrid("getSelected");
+                            goodsInventoryList(rowData.goodsId);
+                            var dd = $(this);
+                            var st =  layer.open({
+                                type: 1,
+                                title:"仓库库存查询",
+                                skin: 'layui-layer-molv', //加上边框
+                                area: ['600px', '388px'], //宽高
+                                content: $('#goodsInventory')
+                                ,btn: ['确认', '关闭']
+                                ,yes: function(st, layero){
+                                    layer.close(st);
+                                    var dg = $('#stoTransferList');
+                                    var opt = dg.datagrid('options');
+                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
+                                    $("#stoTransferList").datagrid("updateRow",{
+                                        index: opt.editIndex,
+                                        row: {
+                                            storageNameOut : stor.storageName,
+                                            storageId : stor.storageId
+                                        }
+                                    });
+                                    $("#goodsInventoryList").datagrid("clearSelections");
+                                }
+                                ,btn2: function(st, layero){
+                                    layer.close(st);
+                                }
+                            });
+
+
+                        }
+                    }
+                }
+            },
+            {
+                field:'storageIdIn',
+                hidden:true
+            },
+            {   field:'storageNameIn',
+                title:'调入仓库 &nbsp' +
+                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage2()">批量</button>',
+                width : 160,
+                hidden:false,
+                editor : {
+                    type : "combobox",
+                    options:{
+                        buttonIcon:'fa fa-search fa-lg',
+                        buttonAlign:'left',
+                        valueField:'name',
+                        textField:'name',
+                        url:genAPI('settings/storageList'),
+                        method:'post',
+                        loadFilter:function (res) {
+                            if(res.code == 200) {
+                                return res.data
+                            } else {
+                                layer.msg(res.message);
+                                return [];
+                            }
+                        },
+                        onSelect:function (record) {
+                            var rows = $("#stoTransferList").datagrid('getData').rows;
+                            var index = $("#stoTransferList").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageIdIn = record.id
+                            }
+
+                        },
+                        onClickButton:function () {
+                            var rowData = $("#stoTransferList").datagrid("getSelected");
+                            goodsInventoryList(rowData.goodsId);
+                            var dd = $(this);
+                            var st =  layer.open({
+                                type: 1,
+                                title:"仓库库存查询",
+                                skin: 'layui-layer-molv', //加上边框
+                                area: ['600px', '388px'], //宽高
+                                content: $('#goodsInventory')
+                                ,btn: ['确认', '关闭']
+                                ,yes: function(st, layero){
+                                    layer.close(st);
+                                    var dg = $('#stoTransferList');
+                                    var opt = dg.datagrid('options');
+                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
+                                    $("#stoTransferList").datagrid("updateRow",{
+                                        index: opt.editIndex,
+                                        row: {
+                                            storageNameIn : stor.storageName,
+                                            storageId : stor.storageId
+                                        }
+                                    });
+                                    $("#goodsInventoryList").datagrid("clearSelections");
+                                }
+                                ,btn2: function(st, layero){
+                                    layer.close(st);
+                                }
+                            });
+
+
+                        }
+                    }
+                }
+            },
+            {
                 field:'storageId',
                 hidden:true
             },
@@ -396,152 +530,6 @@ $(function () {
                 title:"采购单价",
                 width:150,
                 hidden:true
-            },
-            {
-                field:'storageIdOut',
-                hidden:true
-            },
-            {   field:'storageNameOut',
-                title:'调出仓库 &nbsp' +
-                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
-                width : 160,
-                hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageIdOut || !rowData.storageNameOut){
-                        rowData.storageIdOut  = storageidOut ;
-                        rowData.storageNameOut = storagenameOut ;
-                    }
-                    return rowData.storageNameOut || "";
-                },
-                editor : {
-                    type : "combobox",
-                    options:{
-                        buttonIcon:'fa fa-search fa-lg',
-                        buttonAlign:'left',
-                        valueField:'id',
-                        textField:'name',
-                        url:genAPI('settings/storageList'),
-                        method:'post',
-                        loadFilter:function (res) {
-                            if(res.code == 200) {
-                                return res.data
-                            } else {
-                                layer.msg(res.message);
-                                return [];
-                            }
-                        },
-                        onSelect:function (record) {
-                            storagenameOut = record.name;
-                            storageidOut = record.id;
-
-                        },
-                        onClickButton:function () {
-                            var rowData = $("#stoTransferList").datagrid("getSelected");
-                            goodsInventoryList(rowData.goodsId);
-                            var dd = $(this);
-                            var st =  layer.open({
-                                type: 1,
-                                title:"仓库库存查询",
-                                skin: 'layui-layer-molv', //加上边框
-                                area: ['600px', '388px'], //宽高
-                                content: $('#goodsInventory')
-                                ,btn: ['确认', '关闭']
-                                ,yes: function(st, layero){
-                                    layer.close(st);
-                                    var dg = $('#stoTransferList');
-                                    var opt = dg.datagrid('options');
-                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
-                                    $("#stoTransferList").datagrid("updateRow",{
-                                        index: opt.editIndex,
-                                        row: {
-                                            storageNameOut : stor.storageName,
-                                            storageId : stor.storageId
-                                        }
-                                    });
-                                    $("#goodsInventoryList").datagrid("clearSelections");
-                                }
-                                ,btn2: function(st, layero){
-                                    layer.close(st);
-                                }
-                            });
-
-
-                        }
-                    }
-                }
-            },
-            {
-                field:'storageIdIn',
-                hidden:true
-            },
-            {   field:'storageNameIn',
-                title:'调入仓库 &nbsp' +
-                '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
-                width : 160,
-                hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    if(!rowData.storageIdIn || !rowData.storageNameIn){
-                        rowData.storageIdIn = storageidIn;
-                        rowData.storageNameIn = storagenameIn;
-                    }
-                    return rowData.storageNameIn || "";
-                },
-                editor : {
-                    type : "combobox",
-                    options:{
-                        buttonIcon:'fa fa-search fa-lg',
-                        buttonAlign:'left',
-                        valueField:'id',
-                        textField:'name',
-                        url:genAPI('settings/storageList'),
-                        method:'post',
-                        loadFilter:function (res) {
-                            if(res.code == 200) {
-                                return res.data
-                            } else {
-                                layer.msg(res.message);
-                                return [];
-                            }
-                        },
-                        onSelect:function (record) {
-                            storagenameIn = record.name;
-                            storageidIn = record.id;
-
-                        },
-                        onClickButton:function () {
-                            var rowData = $("#stoTransferList").datagrid("getSelected");
-                            goodsInventoryList(rowData.goodsId);
-                            var dd = $(this);
-                            var st =  layer.open({
-                                type: 1,
-                                title:"仓库库存查询",
-                                skin: 'layui-layer-molv', //加上边框
-                                area: ['600px', '388px'], //宽高
-                                content: $('#goodsInventory')
-                                ,btn: ['确认', '关闭']
-                                ,yes: function(st, layero){
-                                    layer.close(st);
-                                    var dg = $('#stoTransferList');
-                                    var opt = dg.datagrid('options');
-                                    var stor = $("#goodsInventoryList").datagrid("getSelected");
-                                    $("#stoTransferList").datagrid("updateRow",{
-                                        index: opt.editIndex,
-                                        row: {
-                                            storageNameIn : stor.storageName,
-                                            storageId : stor.storageId
-                                        }
-                                    });
-                                    $("#goodsInventoryList").datagrid("clearSelections");
-                                }
-                                ,btn2: function(st, layero){
-                                    layer.close(st);
-                                }
-                            });
-
-
-                        }
-                    }
-                }
             },
             {   field:"note",
                 title:"备注",
@@ -1268,9 +1256,31 @@ function checkNum(checkbox){
     $("#stoTransferList").datagrid('cancelEdit',opts.editIndex);
 }
 //批量仓库
-function bathStorage() {
-    if($('.dropdownBg').is(':hidden')){
-        $(".dropdownBg").show();
+function bathStorage1() {
+    if($('.dropdownBg1').is(':hidden')){
+        $(".dropdownBg1").show();
+        var row = $("#stoTransferList").datagrid("getRows");
+        $('.dropdownBg1').find('li').click(function () {
+            var storageName = $(this).text();
+            var storageid = $(this).find("a").attr("storgeid");
+            for(var i=0;i<row.length;i++){
+                $("#stoTransferList").datagrid("updateRow",{
+                    index: i,
+                    row: {
+                        storageNameOut : storageName,
+                        storageIdOut : storageid
+                    }
+                })
+            }
+            $('.dropdownBg1').hide();
+        });
+    }else{//否则
+        $('.dropdownBg1').hide();
+    }
+}
+function bathStorage2() {
+    if($('.dropdownBg2').is(':hidden')){
+        $(".dropdownBg2").show();
         var row = $("#stoTransferList").datagrid("getRows");
         $('.dropdownBg').find('li').click(function () {
             var storageName = $(this).text();
@@ -1279,15 +1289,15 @@ function bathStorage() {
                 $("#stoTransferList").datagrid("updateRow",{
                     index: i,
                     row: {
-                        storageName : storageName,
-                        storageId : storageid
+                        storageNameIn : storageName,
+                        storageIdIn : storageid
                     }
                 })
             }
-            $('.dropdownBg').hide();
+            $('.dropdownBg2').hide();
         });
     }else{//否则
-        $('.dropdownBg').hide();
+        $('.dropdownBg2').hide();
     }
 }
 //新增

@@ -22,7 +22,34 @@
     <script src="../../js/common/ztree-object.js"></script>
     <script src="../../js/commons.js"></script>
     <script src="../../config.js"></script>
-    <script src="../../js/warehouse/storageTransfers.js"></script>
+    <script src="../../js/warehouse/storageTransfers.js?v=i.0.0"></script>
+    <style>
+        .dropdownBg1{
+            position:absolute;
+            top:108px;
+            left:365px;
+            padding:10px 15px;
+            border-radius:5px;
+            background: #fff;
+            border:1px solid #ccc;
+        }
+        .dropdownBg2{
+            position:absolute;
+            top:108px;
+            left:565px;
+            padding:10px 15px;
+            border-radius:5px;
+            background: #fff;
+            border:1px solid #ccc;
+        }
+        .dropdownBg ul{
+            padding:0;
+            margin:0;
+        }
+        .dropdownBg ul li{
+            padding:5px 0;
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -40,7 +67,11 @@
         </div>
         <div class="divDropdown">
             <table class="easyui-datagrid" id="stoTransferList"></table>
-            <div class="dropdownBg" style="display: none">
+            <div class="dropdownBg dropdownBg1" style="display: none">
+                <ul class="dropdownUl">
+                </ul>
+            </div>
+            <div class="dropdownBg dropdownBg2" style="display: none">
                 <ul class="dropdownUl">
                 </ul>
             </div>

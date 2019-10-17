@@ -79,6 +79,7 @@ $(function () {
         }
 
     });
+    var khlayer;
 //客户列表
     $("#vendorList").datagrid({
         url:genAPI('settings/customerList'),
@@ -118,6 +119,29 @@ $(function () {
                     }
                 }}
         ]],
+        onDblClickRow:function (rowIndex,rowData) {
+            $("#vendorClass").val(rowData.code+rowData.name);
+            $("#vendorClass").attr("vid",rowData.id);
+            $(".taxRate").val(rowData.taxRate);
+            var opt = $("#salesList").datagrid('options');
+            var dg = $("#salesList");
+            dg.datagrid('refreshRow', opt.editIndex);
+            var rowsData = dg.datagrid('getRows');
+            if(rowsData){
+                for(var i=0;i<rowsData.length-1;i++){
+                    rowsData[i].taxRate = rowSelect.taxRate;
+                    rowsData[i].discountRate = rowsData[i].discountRate ? rowsData[i].discountRate : 0;
+                    rowsData[i].SalePrice = rowsData[i].SalePrice ? rowsData[i].SalePrice : 0;
+                    rowsData[i].tax = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accDiv(rowsData[i].taxRate,100));
+                    rowsData[i].totalLevied = accMul(accSub(accMul(rowsData[i].SalePrice,rowsData[i].qty),accMul(rowsData[i].qty,accMul(rowsData[i].SalePrice,accDiv(rowsData[i].discountRate,100)))),accAdd(1,accDiv(rowsData[i].taxRate,100)));
+                    dg.datagrid('refreshRow', i);
+                }
+                dg.datagrid('statistics', ["qty","discountPrise","totalPrice","tax","totalLevied"]);
+
+            }
+            discountData();
+            layer.close(khlayer);
+        }
     });
 //客户浮层
     $("#vendorClass").on('click',function () {
@@ -127,7 +151,7 @@ $(function () {
         }else{
             $("#vendorInfo").hide();
         }
-        layer.open({
+       khlayer = layer.open({
             type: 1,
             title:"选择客户",
             skin: 'layui-layer-molv', //加上边框
@@ -233,8 +257,6 @@ $(function () {
 //销售录入表格
     var goodsid;
     var storageId;
-    var storageName;
-    //var goodsId;
     $("#salesList").datagrid({
         rownumbers : true,
         singleSelect:true,
@@ -379,19 +401,12 @@ $(function () {
                 '<button class="btn btn-default btn-xs" type="button" onclick="bathStorage()">批量</button>',
                 width : 160,
                 hidden:false,
-                formatter:function (value,rowData,rowIndex) {
-                    // if(!rowData.storageId || !rowData.storageName){
-                        rowData.storageId = storageId;
-                        rowData.storageName = storageName;
-                    // }
-                    return rowData.storageName || "";
-                },
                 editor : {
                     type : "combobox",
                     options:{
                         buttonIcon:'fa fa-search fa-lg',
                         buttonAlign:'left',
-                        valueField:'id',
+                        valueField:'name',
                         textField:'name',
                         url:genAPI('settings/storageList'),
                         method:'post',
@@ -404,9 +419,11 @@ $(function () {
                             }
                         },
                         onSelect:function (record) {
-                            storageName = record.name;
-                            storageId = record.id;
-
+                            var rows = $("#salesList").datagrid('getData').rows;
+                            var index = $("#salesList").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageId = record.id
+                            }
                         },
                         onClickButton:function () {
                             var rowData = $("#salesList").datagrid("getSelected");
@@ -1438,7 +1455,7 @@ function bathStorage() {
             var storageid = $(this).find("a").attr("storgeid");
             for(var i=0;i<row.length;i++){
                 $("#salesList").datagrid("updateRow",{
-                    index: i-1,
+                    index: i,
                     row: {
                         storageName : storagename,
                         storageId : storageid
@@ -1511,7 +1528,7 @@ function saveSale() {
 }
 //保存并新增
 function addSale() {
-    var tabTitle = '采购单';
+    var tabTitle = '销售单';
     var dg="#tabs";
     var url = "webapp/sales/sale.html";
     addTopTab(dg,tabTitle,url)
@@ -1601,10 +1618,7 @@ function reAuditSale() {
         }
     })
 }
-//复制
-function copySale() {
 
-}
 //历史单据
 function historyReceipts() {
     var tabTitle = '销售单记录';
