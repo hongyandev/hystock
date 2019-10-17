@@ -23,13 +23,32 @@
     <script src="../../config.js"></script>
     <script src="../../js/purchase/purchaseDet.js"></script>
     <script src="https://cdn.bootcss.com/moment.js/2.24.0/moment.min.js"></script>
+    <style>
+        .control-label{
+            width:100px;
+        }
+        .form-group{
+        }
+    </style>
 </head>
 <body>
 <div class="clearfix pdb30">
-    <div class="clearfix">
+    <div class="clearfix form-horizontal">
+        <div class="form-inline col-sm-12" style="z-index:99999;margin-bottom: 5px">
+
+        </div>
         <div class="form-inline col-sm-12" style="z-index:99999;margin-bottom: 5px">
             <div class="form-group">
-                <label>单据日期：</label>
+                <label class="control-label">供应商：</label>
+                <input id="vendorClass" placeholder="请选择供应商" class="form-control" style="width:200px;">
+                <input type="hidden" class="taxRate"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">商品：</label>
+                <input id="goodl" class="form-control" placeholder="请选择商品"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">单据日期：</label>
                 <input id="startDate" name="startDate" class="easyui-datebox textbox-f"
                        data-options="prompt:'请选择开始日期',editable:false,required:'true'"/>
                 -
@@ -37,33 +56,26 @@
                        value="1" validType="equaldDate['#startDate']"
                        data-options="prompt:'请选择结束日期',editable:false"/>
             </div>
+
+        </div>
+        <div class="form-inline col-sm-12" style="z-index:99999;margin-bottom: 5px">
             <div class="form-group">
-                <label>供应商：</label>
-                <input id="vendorClass" placeholder="请选择供应商" class="form-control" style="width:200px;">
-                <input type="hidden" class="taxRate"/>
+                <label class="control-label">供应商类别：</label>
+                <input id="pids" placeholder="请选择供应商类别" class="easyui-combotree form-control" style="width:200px;">
             </div>
             <div class="form-group">
-                <label>商品：</label>
-                <input id="goodl" class="form-control" placeholder="请选择商品"/>
-            </div>
-            <div class="form-group">
-                <label>单据编号：</label>
-                <input id="number" class="form-control" placeholder="请输入单据号"/>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-12" style="padding-right:0;padding-left:6px;">
-                    <label>供应商类别：</label>
-                    <input id="pids" placeholder="请选择供应商类别" class="easyui-combotree form-control" style="width:200px;">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>仓库ID：</label>
+                <label class="control-label">仓库ID：</label>
                 <input id="storageId" class="form-control" placeholder="请输入仓库ID"/>
             </div>
             <div class="form-group">
+                <label class="control-label">单据编号：</label>
+                <input id="number" class="form-control" placeholder="请输入单据号"/>
+            </div>
+            <div class="form-group" style="margin-left:50px;">
                 <button onclick="clickSearch()" class="btn btn-success">查询</button>
             </div>
         </div>
+
         <table class="easyui-datagrid" id="purchaseRes">
             <thead>
             <tr>
