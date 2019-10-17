@@ -38,32 +38,32 @@
         </div>
         <div class="clearfix">
             <div class="col-sm-12 form-inline">
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">商品编号</label>
                     <div class="col-sm-8">
                         <input class="form-control" id="code" name="customNum" type="text" placeholder="必填项"/>
                     </div>
                 </div>
-                <div class="form-group col-sm-3">
-                    <label class="col-sm-4 control-label">鸿雁产品代码</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" id="cpdm" name="cpdm" type="text"/>
-                    </div>
-                </div>
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">商品名称</label>
                     <div class="col-sm-8">
                         <input class="form-control" id="name" name="customNum" type="text" placeholder="必填项"/>
                     </div>
                 </div>
                 <div class="form-group col-sm-4">
+                    <label class="col-sm-5 control-label">鸿雁产品代码</label>
+                    <div class="col-sm-7">
+                        <input class="form-control" id="cpdm" name="cpdm" type="text"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 form-inline">
+                <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">商品条码</label>
                     <div class="col-sm-8">
                         <input class="form-control" id="barCode" name="customNum" type="text" placeholder="必填项"/>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 form-inline">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">规格型号</label>
                     <div class="col-sm-8">
@@ -71,25 +71,27 @@
                     </div>
                 </div>
                 <div class="form-group col-sm-4">
-                    <label class="col-sm-4 control-label">商品类别</label>
-                    <div class="col-sm-8">
+                    <label class="col-sm-5 control-label">商品类别</label>
+                    <div class="col-sm-7">
                         <input id="category" class="easyui-combotree form-control" style="width:178px;">
                     </div>
                 </div>
+            </div>
+            <div class="col-sm-12 form-inline">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">首选仓库</label>
                     <div class="col-sm-8">
                         <input id="storage" class="easyui-combobox form-control" style="width:178px;">
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 form-inline ">
                 <div class="form-group col-sm-4 unitSingle">
                     <label class="col-sm-4 control-label">计量单位</label>
                     <div class="col-sm-8">
                         <input id="unitSingle" type="text" class="easyui-combobox form-control" style="width:178px"/>
                     </div>
                 </div>
+            </div>
+            <div class="col-sm-12 form-inline">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-4 control-label">
                         <input type="checkbox"  id="moreUnitBtn" style="margin:0 2px 0 0;">多单位
@@ -105,22 +107,25 @@
                     </div>
                 </div>
                 <div class="form-group col-sm-4 srk" style="display:none">
-                    <label class="col-sm-4 control-label">首选入库单位</label>
-                    <div class="col-sm-8">
+                    <label class="col-sm-5 control-label">首选入库单位</label>
+                    <div class="col-sm-7">
                         <input type="text" id="firstPurUnit" class="easyui-combobox form-control" style="width:178px"/>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="pd10"></div>
         <div class="col-sm-12">
             <div class="editTabUnit" >
-                <table id="editTabGoodsPrice" class="easyui-datagrid" border="1" style="height: 100px;"></table>
+                <table id="editTabGoodsPrice" class="easyui-datagrid" border="1" style="min-height: 200px;"></table>
             </div>
         </div>
         <div class="col-sm-12">
-            <h3>价格策略</h3>
+            <h3 class="col-sm-8">价格策略</h3>
+       </div>
+        <div class="col-sm-12">
             <div class="divEditTabPrice">
-                <table id="editTabPrice" class="easyui-datagrid" border="1" style="height: 100px;"></table>
+                <table id="editTabPrice" class="easyui-datagrid" border="1" style="height: 200px;"></table>
             </div>
         </div>
         <div class="col-sm-12">
