@@ -66,9 +66,8 @@ $(function () {
         }
 
     });
-
-
-
+    var goodslayer;
+    var gyslayer;
     //供应商列表（浮层）
     $("#vendorList").datagrid({
         url: genAPI('settings/vendorList'),
@@ -110,6 +109,11 @@ $(function () {
                 }
             }
         ]],
+        onDblClickRow:function (rowIndex,rowData) {
+            $("#vendorClass").val(rowData.code);
+            $("#vendorClass").attr("vid", rowData.id);
+            layer.close(gyslayer);
+        }
     });
     //供应商浮层
     $("#pidss").combotree();
@@ -120,7 +124,7 @@ $(function () {
         } else {
             $("#vendorInfo").hide();
         }
-        layer.open({
+        gyslayer = layer.open({
             type: 1,
             title: "选择供应商",
             skin: 'layui-layer-molv', //加上边框
@@ -177,7 +181,7 @@ $(function () {
 
     //商品浮层
     $("#goodl").on('click', function () {
-        layer.open({
+        goodslayer = layer.open({
             type: 1,
             title: "选择商品",
             skin: 'layui-layer-molv', //加上边框
@@ -198,13 +202,13 @@ $(function () {
                 function (sec, layero) {
                     layer.close(sec);
                 }
-        })
-        queryGoods(query, categoryId);
+        });
+        queryGoods(query, categoryId ,goodslayer);
     });
 });
 
 //查询商品列表（浮层）
-function queryGoods(query, categoryId) {
+function queryGoods(query, categoryId ,layname) {
     $("#goods").datagrid({
         url: genAPI('query/queryGoodsPage'),
         method: 'post',
@@ -268,6 +272,11 @@ function queryGoods(query, categoryId) {
         ]],
         onClickRow: function (rowIndex, rowData) {
             $(this).datagrid('selectRow', rowIndex);
+        },
+        onDblClickRow:function (rowIndex,rowData) {
+            $("#goodl").val(rowData.code);
+            $("#goodl").attr("vid", rowData.id);
+            layer.close(layname);
         }
     })
 }
