@@ -1232,18 +1232,12 @@ function end() {
                 }
             }
         },
-        {
-            field:"discountRate",
-            title:"折扣率",
+        {   field:"note",
+            title:"备注",
             width:150,
             hidden:false,
             editor:{
-                type : "numberbox",
-                options:{
-                    value:0,
-                    precision:2
-                }
-
+                type : "validatebox"
             }
         }
     ])

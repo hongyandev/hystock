@@ -1225,6 +1225,14 @@ function end() {
                 }
             }
         },
+        {   field:"note",
+            title:"备注",
+            width:150,
+            hidden:false,
+            editor:{
+                type : "validatebox"
+            }
+        }
     ])
 
 }

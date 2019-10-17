@@ -351,7 +351,7 @@ $(function () {
                                 type: 1,
                                 title:"选择商品",
                                 skin: 'layui-layer-molv', //加上边框
-                                area: ['88%', '98%'], //宽高
+                                area: ['88%', '90%'], //宽高
                                 content: $('#goodsList'),
                                 btn: ['选中并关闭', '取消'],
                                 yes: function(sec, layero){
