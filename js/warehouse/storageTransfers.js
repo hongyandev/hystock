@@ -1282,7 +1282,7 @@ function bathStorage2() {
     if($('.dropdownBg2').is(':hidden')){
         $(".dropdownBg2").show();
         var row = $("#stoTransferList").datagrid("getRows");
-        $('.dropdownBg').find('li').click(function () {
+        $('.dropdownBg2').find('li').click(function () {
             var storageName = $(this).text();
             var storageid = $(this).find("a").attr("storgeid");
             for(var i=0;i<row.length;i++){
