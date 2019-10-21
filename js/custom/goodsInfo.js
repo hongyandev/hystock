@@ -621,7 +621,8 @@ $(function () {
         },'-', {
             text: '删除',
             id:'removeEdit',
-            iconCls: 'fa fa-remove fa-lg', handler: function () {
+            iconCls: 'fa fa-remove fa-lg',
+            handler: function () {
                 var row = $("#goodsInventory").datagrid('getSelections');
                 if(!row){
                     layer.msg('请选中一行进行操作！');
@@ -661,9 +662,11 @@ $(function () {
 //保存
 function saveAddGoods() {
     //var actionType=$("#action_type").val();
-   var actionType = parent.$("#action_type").val();
-   //console.info(actionType);
-
+   //var actionType = parent.$("#action_type").val();
+    //var actionType = parent.action_type;
+    var actionType = getRequest().at;
+   console.info(actionType);
+    return;
     $("#editTabGoodsPrice,#editTabPrice,#editTabKc,#goodsInventory").datagrid('endEditing');
     if($("#code").val()==""){
         layer.msg("请填写商品编码！");

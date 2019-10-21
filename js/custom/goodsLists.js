@@ -10,7 +10,7 @@ $(function () {
         height : height
     });
     var query = $("#searTxt").val();
-    var chk = $(".chk-ischecked").find('checkbox').prop('checked')== true ? '9' : '1';
+    var chk = $(".chk-ischecked").find('checkbox').prop('checked')== true ? '1' : '';
 
     $('#cateTree').tree({
         lines:true,
@@ -53,9 +53,7 @@ $(function () {
 
 });
 //查询商品
-function seachForm() {
-    var query = $("#searTxt").val();
-    var chk = $(".chk-ischecked").find('checkbox').prop('checked')== true ? '9' : '1';
+function seachForm(query,chk) {
     var category = $('#cateTree').tree('getSelected');
     if(category){
         $("#goodsLists").datagrid('load',{
@@ -202,72 +200,37 @@ function getGoodsData(query,chk,category) {
             text:'新增',
             iconCls:'fa fa-plus fa-lg',
             handler:function(){
-                $("#action_type").val("add");
+                //var action_type = $("#action_type").val("add");
+                var action_type = 'add';
                 var tabTitle = '新增商品';
                 var dg="#tabs";
-                var url = "webapp/custom/goodInfo.html";
+                var url = "webapp/custom/goodInfo.html?at="+action_type;
                 addTopTab(dg,tabTitle,url);
-               /* var index = layer.open({
-                    title:'新增商品',
-                    type:2,
-                    content: 'http://localhost:63342/github/easyuiAdmin/webapp/custom/goodInfo.html',
-                    btn: ['保存', '取消'],
-                    yes: function(index, layero){
-                        //addGroupSave();
-                        layer.close(index);
-                    },
-                    btn2:function (index, layero) {
-                        layer.close(index);
-                    },
-                    end:function () {
-                        $("#action_type").val("add");
-                        $('#goodsLists').datagrid('reload');
-                    }
-                });
-                layer.full(index);*/
-
             }
         },'-',{
             text:'编辑',
             iconCls:'fa fa-pencil-square-o fa-lg',
             handler:function(){
-                $("#action_type").val("edit");
+               //var action_type = $("#action_type").val("edit");
+               var action_type = 'edit';
                 var rowSelect=$("#goodsLists").datagrid("getSelected");
                 //console.info(rowSelect);
-                var tabTitle = '修改商品';
-                var dg="#tabs";
-                var url = "webapp/custom/goodInfo.html?"+rowSelect.id;
-                addTopTab(dg,tabTitle,url);
-                $.cookie('id',rowSelect.id);
-                $("#goodsLists").datagrid("clearSelections");
-                /*var index = layer.open({
-                    title:'编辑商品',
-                    type:2,
-                    content: 'http://localhost:63342/github/easyuiAdmin/webapp/custom/goodInfo.html',
-                    btn: ['保存', '取消'],
-                    success:function (layero,index) {
-                        $("#action_type").val("edit");
-                        var body = layer.getChildFrame('body',index);
-                        var iframeWin = window[layero.find('iframe')[0]['name']];
-                        iframeWin.inputDataHandle(rowData)
-                    },
-                    yes: function(index, layero){
+                if(!rowSelect){
+                    layer.msg('请选中一行进行操作！');
+                }else{
+                    var tabTitle = '修改商品';
+                    var dg="#tabs";
+                    var url = "webapp/custom/goodInfo.html?"+rowSelect.id+"&at="+action_type;
+                    addTopTab(dg,tabTitle,url);
+                    $.cookie('id',rowSelect.id);
+                    $("#goodsLists").datagrid("clearSelections");
+                }
 
-                        layer.close(index);
-                    },
-                    btn2:function (index, layero) {
-                        layer.close(index);
-                    },
-                    end:function () {
-                        $("#action_type").val("edit");
-                        $('#goodsLists').datagrid('reload');
-                    }
-                });
-                layer.full(index);*/
+
             }
         },'-',{
             text:'批量设置',
-            iconCls:'fa fa-pencil-square-o fa-lg',
+            iconCls:'fa fa-cog fa-lg',
             handler:function(){
                 var row = $('#goodsLists').datagrid('getSelections');
                 for(var i=0;i<row.length;i++){
@@ -440,19 +403,78 @@ function getGoodsData(query,chk,category) {
             text:'启用',
             iconCls:'fa fa-refresh fa-lg',
             handler:function(){
+                var row = $("#goodsLists").datagrid('getSelections');
+                if(row.length <= 0){
+                    layer.msg('请选中一行进行操作！');
+                }else if(row.length>1){
+                    layer.msg('请选中一行进行操作！');
+                }else{
+                    var url = genAPI('goods/unfreezeGoods');
+                   // goodsGetfree(url,row[0].id,row[0].name)
+                    $.ajax({
+                        type:"post",
+                        url:url,
+                        cache:false,
+                        dataType:"json",
+                        data:{
+                            goodsId:row[0].id
+                        },
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.msg(row[0].name+"启用成功");
+                                $("#goodsLists").datagrid('reload');
+                            }else{
+                                layer.msg(res.message)
+                            }
+                        },error:function (res) {
+                            layer.msg(res.message)
+                        }
+                    })
+                }
 
             }
         },'-',{
             text:'禁用',
             iconCls:'fa fa-warning fa-lg',
             handler:function(){
+                var row = $("#goodsLists").datagrid('getSelections');
+                if(row.length <= 0){
+                    layer.msg('请选中一行进行操作！');
+                }else if(row.length>1){
+                    layer.msg('请选中一行进行操作！');
+                }else{
+                    var url = genAPI('goods/freezeGoods');
+                    //goodsGetfree(url,row[0].id,row[0].name)
+                    $.ajax({
+                        type:"post",
+                        url:url,
+                        cache:false,
+                        dataType:"json",
+                        data:{
+                            goodsId:row[0].id
+                        },
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.msg(row[0].name+"禁用成功");
+                                $("#goodsLists").datagrid('reload');
+                            }else{
+                                layer.msg(res.message)
+                            }
+                        },error:function (res) {
+                            layer.msg(res.message)
+                        }
+                    })
+                }
 
             }
         },'-',{
-            text:'删除',
-            iconCls:'fa fa-remove fa-lg',
+            text:'导入',
+            iconCls:'fa fa-upload fa-lg',
             handler:function(){
-
+                var tabTitle = '导入商品';
+                var dg="#tabs";
+                var url = "webapp/custom/importGoods.html";
+                addTopTab(dg,tabTitle,url);
             }
         }],
         onLoadSuccess:function(data){
@@ -460,6 +482,29 @@ function getGoodsData(query,chk,category) {
         }
     });
 }
+//启用-禁用
+/*function goodsGetfree(url,id,name) {
+    $.ajax({
+        type:"post",
+        url:url,
+        cache:false,
+        dataType:"json",
+        data:{
+            goodsId:id
+        },
+        contentType : "application/json;charset=UTF-8",
+        success:function (res) {
+            if(res.code==200){
+                layer.msg(name+"操作成功");
+                $("#goodsLists").datagrid('reload');
+            }else{
+                layer.msg(res.message)
+            }
+        },error:function (res) {
+            layer.msg(res.message)
+        }
+    })
+}*/
 //保存仓库
 function storageSave() {
     $.ajax({
