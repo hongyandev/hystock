@@ -107,7 +107,7 @@ $(function () {
         ]],
         toolbar:[{
             text:'导出',
-            iconCls:'fa fa-download fa-lg',
+            iconCls:'fa fa-upload fa-lg',
             handler:function(){
                 dg.datagrid('toExcel',"未导入成功的商品列表");
             }

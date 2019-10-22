@@ -469,7 +469,7 @@ function getGoodsData(query,chk,category) {
             }
         },'-',{
             text:'导入',
-            iconCls:'fa fa-upload fa-lg',
+            iconCls:'fa fa-download fa-lg',
             handler:function(){
                 var tabTitle = '导入商品';
                 var dg="#tabs";
