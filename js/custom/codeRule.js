@@ -34,11 +34,12 @@ $(function () {
                 align : 'center',
                 width:100,
                 formatter:function (value,rowData,rowIndex) {
-                    if (value=="1"){
-                        return "商品编码";
-                    } else if(value =="2") {
-                        return "客户编码";
-                    } else if(value == "3"){
+                    // if (value=="1"){
+                    //     return "商品编码";
+                    // } else if(value =="2") {
+                    //     return "客户编码";
+                    // } else
+                    if(value == "3"){
                         return "销售单"
                     } else if(value == "4"){
                         return "销售退货单"
@@ -52,9 +53,10 @@ $(function () {
                         return "其他入库单,盘盈"
                     } else if(value == "9"){
                         return "其他出库单,盘亏"
-                    } else{
-                        return "成本调整单"
                     }
+                    /*else{
+                        return "成本调整单"
+                    }*/
                 }
             },
             {
