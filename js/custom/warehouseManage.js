@@ -47,6 +47,7 @@ $(function () {//ready()文档加载后
                     btn: ['保存', '取消'],
                     yes: function(index, layero){
                         //提交保存
+                        debugger
                         addWareHSave();
                         layer.close(index);
                     }
@@ -84,6 +85,7 @@ $(function () {//ready()文档加载后
                         },
                         end:function () {
                             $("#name").val("");//?
+                            $("#code").val("");
                         }
                     });
 
