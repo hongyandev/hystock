@@ -46,7 +46,10 @@
 					<label class="col-sm-3 control-label" for="username">用户名:</label>
 					<div class="col-sm-9">
 						<input type="hidden" value="add" id="action_type" />
-						<input id="username" class="easyui-validatebox form-control" type="text" name="username" required="true"/>
+						<input id="username" class="easyui-validatebox form-control"
+							   onpaste="return false" ondragenter="return false"
+							   onkeyup="this.value=check(this.value)"
+							   type="text" name="username" placeholder="禁止输入中文和特殊字符" required="true"/>
 					</div>
 				</div>
 				<div class="form-group hidden-class">
