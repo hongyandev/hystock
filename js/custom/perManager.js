@@ -71,8 +71,8 @@ $(function () {
                     btn: ['保存', '取消'],
                     yes: function(index, layero){
                         //提交保存
-                        sumbit();
-                        layer.close(index);
+                        sumbit(index);
+
                     }
                     ,btn2: function(index, layero){
                         layer.close(index);
@@ -130,8 +130,7 @@ $(function () {
                        btn: ['保存', '取消'],
                        yes: function(index, layero){
                            //提交保存
-                           sumbit();
-                           layer.close(index);
+                           sumbit(index);
                        }
                        ,btn2: function(index, layero){
                            layer.close(index);
@@ -329,18 +328,18 @@ $(function () {
 });
 
 //提交添加修改表单
-function sumbit() {
+function sumbit(index) {
     if($("#username").val()==""){
-        layer.alert('请输入用户名',{skin:'layui-layer-molv'});
-        return false;
+        layer.msg('请输入用户名');
+        return;
     }
     if($("#name").val()==""){
-        layer.alert("请输入姓名",{skin:'layui-layer-molv'});
-        return false;
+        layer.msg("请输入姓名");
+        return;
     }
     if($("#sex").val()==""){
-        layer.alert('请输入性别',{skin:'layui-layer-molv'});
-        return false;
+        layer.msg('请输入性别');
+        return;
     }
     var actionType=$("#action_type").val();
 
@@ -380,6 +379,7 @@ function sumbit() {
            // console.info(res);
             //$("#addRegister").dialog('close');
             if(res.code==200){
+                layer.close(index);
                 $('#perList').datagrid('reload');
             }else{
                 layer.msg(res.message)
