@@ -54,6 +54,7 @@ $(function () {
             text:'添加',
             iconCls:'fa fa-plus fa-lg',
             handler:function(){
+
                 $("#action_type").val("add");
                 $("#username").val("");
                 $("#password").val("");
@@ -427,4 +428,16 @@ function treeGroupSave() {
         }
     })
 }
-
+//判断不能为中文和特殊符号
+function check(str){
+    var temp="";
+    var pattern = new RegExp("[%--`~!\#@$^&*()\\s\=|{}':;',\\[\\].<>/?~！@￥……&*（）——|{}【】‘；：”“'。，、？\"]");
+    if (str.match(pattern) != null) {
+        $(this).val(str.substring(0,str.length-1));
+        return temp;
+    };
+    for(var i=0;i<str.length;i++)
+        if(str.charCodeAt(i)>0&&str.charCodeAt(i)<255)
+            temp+=str.charAt(i)
+    return temp
+} 
