@@ -423,7 +423,6 @@ $(function () {
             return  $(this).val("");
         }
     });
-
     $("#editTabKc").datagrid({
         url : genAPI('goods/getGoodsStoWarnList'),
         method:'post',
@@ -484,7 +483,6 @@ $(function () {
         }
     }).datagrid('enableCellEditing');
 // 期初设置
-
      $('.earlyStage').on("click",function () {
          if($(this).find("input").prop("checked") == true){
              $('#divEditTab').show();
@@ -495,8 +493,6 @@ $(function () {
 
      });
     //
-    var storageId;
-    var storageName;
     $('#goodsInventory').datagrid({
         url:genAPI('goods/getGoodsEarlyStageInventoryList'),
         method:'post',
@@ -521,24 +517,17 @@ $(function () {
             { field:'storageId',
                 title:'仓库号',
                 width : 100,
-                hidden:false,
-                formatter:function(value , record , index){
-                    return record.storageId = storageId
-                }
+                hidden:false
             },
             { field:'storageName',
-                title:'仓库号',
+                title:'仓库名',
                 width : 100,
                 hidden:false,
-                formatter:function(value , record , index){
-
-                    return record.storageCode = storageName
-                },
                 editor : {
                     type : "combobox",
                     options:{
                         url:genAPI('settings/storageList'),
-                        valueField: 'id',
+                        valueField: 'name',
                         textField: 'name',
                         cache: false,
                         editable: false,
@@ -553,8 +542,11 @@ $(function () {
                         },
                         onSelect:function (record) {
                             console.info(record);
-                            storageId = record.id;
-                            storageName = record.name
+                            var rows = $("#goodsInventory").datagrid('getData').rows;
+                            var index = $("#goodsInventory").datagrid('options').editIndex;
+                            if (rows.length > 0) {
+                                rows[index].storageId = record.id
+                            }
                         }
                     }
                 }
@@ -575,7 +567,7 @@ $(function () {
                     type : "validatebox"
                 }
             },
-            { field:'total',
+            { field:'earlyTotal',
                 title:'期初总价',
                 width : 200,
                 hidden:false
@@ -647,14 +639,16 @@ $(function () {
         },
         onLoadSuccess: function (data) {
            // $('#editTab1').datagrid('statistics',"quantity");
+            console.info(data);
+
         },
         onAfterEdit:function (rowIndex, rowData, changes) {
             if(changes["quantity"] || changes["unitCost"]){
                 var dg = $('#goodsInventory');
                 var total = accMul(rowData["quantity"]||0, rowData["unitCost"]||0);
-                rowData["total"] = Number(String(total).replace(/^(.*\..{4}).*$/,"$1"));
+                rowData["earlyTotal"] = Number(String(total).replace(/^(.*\..{4}).*$/,"$1"));
                 dg.datagrid("refreshRow", rowIndex);
-                dg.datagrid('statistics', ["quantity","total"]);
+                dg.datagrid('statistics', ["quantity","earlyTotal"]);
             }
         }
     }).datagrid('enableCellEditing');
@@ -666,7 +660,6 @@ function saveAddGoods() {
     //var actionType = parent.action_type;
     var actionType = getRequest().at;
    console.info(actionType);
-    return;
     $("#editTabGoodsPrice,#editTabPrice,#editTabKc,#goodsInventory").datagrid('endEditing');
     if($("#code").val()==""){
         layer.msg("请填写商品编码！");
@@ -675,6 +668,18 @@ function saveAddGoods() {
     if($("#name").val()==""){
         layer.msg("请填写商品名称！");
         return false;
+    }
+    if($("#unitGroup").val()){
+        console.info($("#firstSaleUnit").val());
+        console.info($("#firstPurUnit").val());
+        if($("#firstSaleUnit").val()==''){
+            layer.msg("请选择首选出库单位！");
+            return false;
+        }
+        if($("#firstPurUnit").val()==''){
+            layer.msg("请选择首选入库单位！");
+            return false;
+        }
     }
     var goodsPrice = $('#editTabGoodsPrice').datagrid('getRows');
     var goodsDiscount = $("#editTabPrice").datagrid('getRows');
