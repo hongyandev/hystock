@@ -74,7 +74,7 @@ $(function () {
                 hidden: true
             },
             {
-                field: "totalAmount",
+                field: "amount",
                 title: "购货金额",
                 width: 120,
                 hidden: false

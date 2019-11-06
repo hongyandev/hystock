@@ -754,7 +754,7 @@ $(function () {
     });
 //计算本次欠款
     $("#income").on('input propertychange', function() {
-        $("#arrears").val(accSub($("#discount").val() || 0,$("#income").val() || 0))
+        $("#arrears").val(accSub($("#amount").val() || 0,$("#income").val() || 0))
     })
 //回显需要修改的商品
     if($.cookie('id')){
@@ -778,9 +778,10 @@ $(function () {
                         $("#initDate").datebox("setValue",res.data.saleDate);
                         $("#salesList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
-                        $("#deduction").val(res.data.deduction);
+                        $("#disAmount").val(res.data.disAmount);
                         $("#income").val(res.data.income);
-                        $("#discount").val(res.data.totalAmount);
+                        $("#amount").val(res.data.amount);
+                        $("#totalAmount").val(res.data.totalAmount);
                         $("#note").val(res.data.note);
                         totalMoney();
                         // discountData();
@@ -1041,9 +1042,11 @@ function discountData() {
     var footerData = $("#salesList").datagrid("getFooterRows");
     var discountRateData =accDiv($("#discountRate").val() || 0,100) ;
     //付款优惠
-    $("#deduction").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
+    $("#disAmount").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
+    //销售金额
+    $("#totalAmount").val(intToFloat(footerData[0].totalLevied));
     //优惠后的金额
-    $("#discount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
+    $("#amount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
     //本次到款
     $("#income").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
     //本次欠款
@@ -1504,9 +1507,9 @@ function saveSale() {
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
+        deduction:$("#disAmount").val(),
         income:$("#income").val(),
-        totalAmount:$("#discount").val(),
+        totalAmount:$("#totalAmount").val(),
         note:$("#note").val(),
         detail:detail
     };
@@ -1570,9 +1573,9 @@ function auditSale() {
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
+        deduction:$("#disAmount").val(),
         income:$("#income").val(),
-        totalAmount:$("#discount").val(),
+        totalAmount:$("#totalAmount").val(),
         note:$("#note").val(),
         detail:detail
     };

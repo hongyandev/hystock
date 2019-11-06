@@ -80,7 +80,7 @@ $(function () {
                 width:100
             },
             {
-                field: "totalAmount",
+                field: "amount",
                 title: "退货金额",
                 width: 120,
                 hidden: false

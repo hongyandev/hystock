@@ -768,7 +768,7 @@ $(function () {
     });
 //计算本次欠款
     $("#payment").on('input propertychange', function() {
-       $("#arrears").val(accSub($("#discount").val() || 0,$("#payment").val() || 0))
+       $("#arrears").val(accSub($("#amount").val() || 0,$("#payment").val() || 0))
     })
 //回显需要修改的商品
     if($.cookie('id')){
@@ -792,9 +792,10 @@ $(function () {
                         $("#initDate").datebox("setValue",res.data.purDate);
                         $("#purchaseList").datagrid({data:res.data.purDet});
                         $("#discountRate").val(res.data.discountRate);
-                        $("#deduction").val(res.data.deduction);
+                        $("#disAmount").val(res.data.disAmount);
                         $("#payment").val(res.data.payment);
-                        $("#discount").val(res.data.totalAmount);
+                        $("#amount").val(res.data.amount);
+                        $("#totalAmount").val(res.data.totalAmount);
                         $("#note").val(res.data.note);
                         totalMoney();
                        // discountData();
@@ -1057,9 +1058,11 @@ function discountData() {
     //var paymentData = $("#payment").val() || 0;
     var discountRateData =accDiv($("#discountRate").val() || 0,100) ;
         //付款优惠
-        $("#deduction").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
+        $("#totalAmount").val(intToFloat(footerData[0].totalLevied));
+        //付款优惠
+        $("#disAmount").val(intToFloat(accMul(footerData[0].totalLevied,discountRateData)));
         //优惠后的金额
-        $("#discount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
+        $("#amount").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
         //本次付款
         $("#payment").val(intToFloat(accSub(footerData[0].totalLevied,accMul(footerData[0].totalLevied,discountRateData))));
         //本次欠款
@@ -1520,9 +1523,10 @@ function savePurchase() {
         customer:customer,
         purDate:purDate,
         discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
+        disAmount:$("#disAmount").val(),
         payment:$("#payment").val(),
-        totalAmount:$("#discount").val(),
+        totalAmount:$("#totalAmount").val(),
+        amount:$('#amount'),
         note:$("#note").val(),
         purDet:purDet
     };
@@ -1586,9 +1590,10 @@ function auditPurchase() {
         customer:customer,
         purDate:purDate,
         discountRate:$("#discountRate").val(),
-        deduction:$("#deduction").val(),
+        disAmount:$("#disAmount").val(),
         payment:$("#payment").val(),
-        totalAmount:$("#discount").val(),
+        amount:$("#amount").val(),
+        totalAmount:$("#totalAmount").val(),
         note:$("#note").val(),
         purDet:purDet
     };
