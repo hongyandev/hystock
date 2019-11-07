@@ -113,6 +113,11 @@
                 },
                 success: function(layero, index){
                     datagrid.datagrid('resize',{height:($(layero).find('.layui-layer-content').height()-50)});
+                    datagrid.datagrid({
+                        onDblClickRow: function (rowIndex, rowData) {
+                            $(layero).find('.layui-layer-btn0').click();
+                        }
+                    })
                 }
             })
 
