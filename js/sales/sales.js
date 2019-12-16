@@ -14,6 +14,22 @@ $(function () {
         }
 
     });
+    $("#operator").combobox({
+        url: genAPI('user/comboList'),
+        valueField: 'uid',
+        textField: 'realName',
+        cache: false,
+        editable: false,
+        panelHeight: 'auto',
+        required: true,
+        loadFilter: function (res) {
+            if (res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+            }
+        }
+    });
 //获取单据编号
     $.ajax({
         type:"POST",
@@ -775,6 +791,7 @@ $(function () {
                         $("#vendorClass").val(res.data.vendorName);
                         $("#vendorClass").attr("vid",res.data.customer);
                         $("#number").html(res.data.number);
+                        $('#operator').combobox('setValue', res.data.operator);
                         $("#initDate").datebox("setValue",res.data.saleDate);
                         $("#salesList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
@@ -1504,6 +1521,7 @@ function saveSale() {
         id:$("#salesId").val() ? $("#salesId").val() : 0,
         transType:'3',
         number:$("#number").html(),
+        operator:$("#operator").val(),
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
@@ -1570,6 +1588,7 @@ function auditSale() {
         id:$("#salesId").val() ? $("#salesId").val() : 0,
         transType:'3',
         number:$("#number").html(),
+        operator:$("#operator").val(),
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),

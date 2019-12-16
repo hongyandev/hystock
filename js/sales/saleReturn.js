@@ -14,6 +14,22 @@ $(function () {
         }
 
     });
+    $("#operator").combobox({
+        url: genAPI('user/comboList'),
+        valueField: 'uid',
+        textField: 'realName',
+        cache: false,
+        editable: false,
+        panelHeight: 'auto',
+        required: true,
+        loadFilter: function (res) {
+            if (res.code == 200) {
+                return res.data
+            } else {
+                layer.msg(res.message);
+            }
+        }
+    });
 //获取编剧单号
     $.ajax({
         type:"POST",
@@ -48,6 +64,7 @@ $(function () {
                         $("#vendorClass").val(res.data.vendorName);
                         $("#vendorClass").attr("vid",res.data.customer);
                         $("#number").html(res.data.number);
+                        $('#operator').combobox('setValue', res.data.operator);
                         $("#saleRList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
                         $("#disAmount").val(res.data.disAmount);
@@ -830,6 +847,7 @@ $(function () {
                         $("#vendorClass").val(res.data.vendorName);
                         $("#vendorClass").attr("vid",res.data.customer);
                         $("#number").html(res.data.number);
+                        $('#operator').combobox('setValue', res.data.operator);
                         $("#initDate").datebox("setValue",res.data.saleDate);
                         $("#saleRList").datagrid({data:res.data.detail});
                         $("#discountRate").val(res.data.discountRate);
@@ -1561,6 +1579,7 @@ function saveRsale() {
         id:$("#salerId").val() ? $("#salerId").val() : 0,
         transType:'4',
         number:$("#number").html(),
+        operator:$("#operator").val(),
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
@@ -1627,6 +1646,7 @@ function auditRsale() {
         id:$("#salerId").val() ? $("#salerId").val() : 0,
         transType:'4',
         number:$("#number").html(),
+        operator:$("#operator").val(),
         customer:customer,
         saleDate:saleDate,
         discountRate:$("#discountRate").val(),
