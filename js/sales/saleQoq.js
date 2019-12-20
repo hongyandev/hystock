@@ -1,26 +1,99 @@
 function changeColumns(params) {
-    let columns;
-    switch (params.qoqType) {
-        case 'day':
-            break;
-        case 'week':
-            break;
-        case 'month':
-            break;
-        case 'year':
-            break;
-        default:
-            columns = [
-                {
-                    field: 'num',
-                    title: "序号",
-                    align: 'center',
-                    width: 80
+    let arr = [{
+        field: 'code',
+        title: '商品编号',
+        width: 100
+    },{
+        field: 'goodsName',
+        title: '商品名称',
+        width: 100
+    },{
+        field: 'specs',
+        title: '规格',
+        width: 100
+    }, {
+        field: 'unitName',
+        title: '单位',
+        width: 80
+    }, {
+        field: 'total',
+        title: '时段总金额',
+        width: 80
+    }];
+    let obj = {
+        align: 'center',
+        width: 100
+    };
+    let upType = params.qoqType;
+    let beginDate = params.beginDate;
+    let endDate = params.endDate || new Date();
+    if (upType && beginDate && endDate) {
+        let begin = moment(beginDate);
+        let end = moment(endDate);
+        switch (upType) {
+            case 'day':
+                while (begin.isBefore(end)) {
+                    let day = _.clone(obj);
+                    _.extend(day, {
+                        field: begin.format('YYYY-MM-DD'),
+                        title: begin.format('YYYY年MM月DD日')
+                    })
+                    arr.push(day)
+                    begin = begin.add(1, 'd');
                 }
-            ];
-            break;
+                let _day = _.clone(obj);
+                _.extend(_day, {
+                    field: end.format('YYYY-MM-DD'),
+                    title: end.format('YYYY年MM月DD日')
+                });
+                arr.push(_day);
+                break;
+            case 'week':
+                let a = begin.startOf('month');
+                let b = moment(beginDate).endOf('month');
+                let i = 1;
+                while (a.isBefore(b)) {
+                    let week = _.clone(obj);
+                    _.extend(week, {
+                        field: a.format('YYYY-MM-')+i,
+                        title: a.format('YYYY年MM月')+'<br/>第'+i+'周'
+                    });
+                    arr.push(week);
+                    a = a.add(1, 'w');
+                    i++;
+                }
+                break;
+            case 'month':
+                let c = begin.startOf('month');
+                let d = end.endOf('month');
+                while (c.isBefore(d)) {
+                    let month = _.clone(obj);
+                    _.extend(month, {
+                        field: c.format('YYYY-MM'),
+                        title: c.format('YYYY年MM月')
+                    });
+                    arr.push(month);
+                    c = c.add(1, 'M');
+                }
+                break;
+            case 'year':
+                let e = begin.startOf('year');
+                let f = end.endOf('year');
+                while (e.isBefore(f)) {
+                    let year = _.clone(obj);
+                    _.extend(year, {
+                        field: e.format('YYYY'),
+                        title: e.format('YYYY年')
+                    });
+                    arr.push(year);
+                    e = e.add(1, 'y');
+                }
+                break;
+            default:
+                break;
+        }
     }
-    return columns;
+    return arr;
 }
 $(function () {
     $("#beginDate").datebox({
@@ -55,9 +128,14 @@ $(function () {
         }, {
             key: 'year',
             value: '按年统计'
-        }]
+        }],
+        onSelect: function (record) {
+            $("#beginDate").datebox('reset');
+            $("#endDate").datebox('reset').datebox(record.key === 'week' ? 'disable' : 'enable')
+        }
     }).combobox('setValue', 'day');
     var dg = $("#dataTable").datagrid({
+        rownumbers: true,
         fitColumns: false,
         loadMsg: '正在查询，请稍后...',
         method: 'post',
@@ -81,9 +159,9 @@ $(function () {
     $("#searchBtn").bind('click', function () {
         var data = $("#searchFrom").serializeObject();
         dg.datagrid({
-            url: genAPI('report/saleQoq'),
+            // url: genAPI('report/saleQoq'),
             queryParams: data,
-            columns: changeColumns(data)
+            columns: [changeColumns(data)]
         });
     });
 });
