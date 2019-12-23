@@ -120,9 +120,6 @@ $(function () {
             key: 'day',
             value: '按日统计'
         }, {
-            key: 'week',
-            value: '按周统计'
-        }, {
             key: 'month',
             value: '按月统计'
         }, {
@@ -137,31 +134,68 @@ $(function () {
     var dg = $("#dataTable").datagrid({
         rownumbers: true,
         fitColumns: false,
-        loadMsg: '正在查询，请稍后...',
-        method: 'post',
         fit: true,
-        loadFilter: function (data) {
-            if (data.code == 200) {
-                return data.data
-            } else {
-                layer.msg(data.message);
-            }
-        },
-        columns: [[
-            {
-                field: 'num',
-                title: "序号",
-                align: 'center',
-                width: 80
-            }
-        ]]
+        frozenColumns: [[{
+            field: 'code',
+            title: '商品编号',
+            halign: 'center',
+            width: 100
+        },{
+            field: 'name',
+            title: '商品名称',
+            halign: 'center',
+            width: 100
+        },{
+            field: 'specs',
+            title: '规格',
+            halign: 'center',
+            width: 100
+        }, {
+            field: 'unitName',
+            title: '单位',
+            align: 'center',
+            width: 80
+        }, {
+            field: 'total',
+            title: '时段总金额',
+            halign: 'center',
+            align: 'right',
+            width: 80
+        }]]
     });
     $("#searchBtn").bind('click', function () {
         var data = $("#searchFrom").serializeObject();
-        dg.datagrid({
-            // url: genAPI('report/saleQoq'),
-            queryParams: data,
-            columns: [changeColumns(data)]
+        var loading = layer.load();
+        $.ajax({
+            type: "post",
+            url: genAPI('report/saleQoq'),
+            cache: false,
+            dataType: "json",
+            data: data,
+            success: function (res) {
+                layer.close(loading);
+                if(res.code==200){
+                    let columns = [];
+                    _.forEach(res.data.columns, function(value, key) {
+                        columns.push({
+                            field: key,
+                            title: value,
+                            halign: 'center',
+                            align: 'right',
+                            width: 100
+                        })
+                    });
+                    dg.datagrid({
+                        columns: [columns],
+                        data: res.data.rows
+                    });
+                } else {
+                    layer.msg(res.message)
+                }
+            },
+            error: function (res) {
+                layer.close(loading);
+            }
         });
     });
 });
