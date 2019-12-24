@@ -193,7 +193,7 @@ $(function () {
                     layer.msg(res.message)
                 }
             },
-            error: function (res) {
+            error: function (err) {
                 layer.close(loading);
             }
         });
