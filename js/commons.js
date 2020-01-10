@@ -216,13 +216,37 @@ function addTopTab(dg,tabTitle,url,params) {
 //结束日期不能早于开始日期
 $.extend($.fn.validatebox.defaults.rules, {
     equaldDate: {
-        validator: function (value, param) {
+        validator: function (validator, param) {
             var d1 = $(param[0]).datetimebox('getValue');  //获取开始时间
             return value >= d1;  //有效范围为大于开始时间的日期
         },
         message: '结束日期不能早于开始日期!'
+    },
+    gt: {
+        validator: function (value, param) {
+            return value > $(param[0]).val();
+        },
+        message: '不能小于等于最小值'
+    },
+    lt: {
+        validator: function (value, param) {
+            return value < $(param[0]).val();
+        },
+        message: '不能大于等于最大值'
+    },
+    gtEq: {
+        validator: function (value, param) {
+            return value >= $(param[0]).val();
+        },
+        message: '不能小于最小值'
+    },
+    ltEq: {
+        validator: function (value, param) {
+            return value <= $(param[0]).val();
+        },
+        message: '不能大于最大值'
     }
-})
+});
 
 var getRequest = function () {
     var url = location.search; //获取url中"?"符后的字串

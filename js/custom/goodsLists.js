@@ -228,6 +228,26 @@ function getGoodsData(query,chk,category) {
 
 
             }
+        },{
+            text:'编辑2',
+            iconCls:'fa fa-pencil-square-o fa-lg',
+            handler:function(){
+                //var action_type = $("#action_type").val("edit");
+                var action_type = 'edit';
+                var rowSelect=$("#goodsLists").datagrid("getSelected");
+                //console.info(rowSelect);
+                if(!rowSelect){
+                    layer.msg('请选中一行进行操作！');
+                }else{
+                    var tabTitle = '修改商品2';
+                    var dg="#tabs";
+                    var url = "webapp/custom/goodsDetail.html?id="+rowSelect.id+"&at="+action_type;
+                    addTopTab(dg,tabTitle,url);
+                    $("#goodsLists").datagrid("clearSelections");
+                }
+
+
+            }
         },'-',{
             text:'批量设置',
             iconCls:'fa fa-cog fa-lg',

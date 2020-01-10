@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>goods detail</title>
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="../../js/umeditor/utf8-jsp/themes/default/css/umeditor.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="../../js/common/lodash.min.js"></script>
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/easyui/datagrid-cellediting.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/plugins/layer/layer.js"></script>
+    <script src="../../js/umeditor/utf8-jsp/umeditor.config.js"></script>
+    <script src="../../js/umeditor/utf8-jsp/umeditor.min.js"></script>
+    <script src="../../js/umeditor/utf8-jsp/lang/zh-cn/zh-cn.js"></script>
+    <script src="../../js/commons.js"></script>
+    <script src="../../config.js"></script>
+    <style>
+        .unit-group,.inventory-warning,.inventory-warning-store,.inventory-warning-goods,.goods-inventory {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="position: fixed; top: 0; width: 100%; z-index: 2020">
+    <div class="row">
+        <div class="col-md-12 text-right button-bar">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+        </div>
+    </div>
+</div>
+<form id="goodsFrom">
+    <input type="hidden" id="id" name="id" />
+    <input type="hidden" id="unit" name="unit" />
+    <div class="container-fluid" style="margin-top: 42px">
+        <h4>基础资料</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <input name="code" class="easyui-textbox" data-options="label:'商品代码',width:300" />
+            </div>
+            <div class="col-md-4">
+                <input name="name" class="easyui-textbox" data-options="label:'商品名称',width:300" />
+            </div>
+            <div class="col-md-4">
+                <input id="cpdm" name="cpdm" class="easyui-textbox" data-options="label:'鸿雁产品代码',width:300" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <input name="barCode" class="easyui-textbox" data-options="label:'条形码',width:300" />
+            </div>
+            <div class="col-md-4">
+                <input name="specs" class="easyui-textbox" data-options="label:'型号规格',width:300" />
+            </div>
+            <div class="col-md-4">
+                <input id="category" name="category" class="easyui-combotree" data-options="label:'商品类别',width:250" />
+                <small><a href="javascript:void(0)">设置类别</a></small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <input id="storage" name="storage" class="easyui-combobox" data-options="label:'首选仓库',width:250" />
+                <small><a href="javascript:void(0)">设置仓库</a></small>
+            </div>
+            <div class="col-md-4 unit-one">
+                <input id="unitSingle" name="unitSingle" class="easyui-combobox" data-options="label:'计量单位',width:250" />
+                <small><a href="javascript:void(0)">设置单位</a></small>
+            </div>
+            <div class="col-md-4">
+                <input id="sell" name="sell" class="easyui-combobox" data-options="label:'销售状态',width:300" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="textbox-label textbox-label-before" style="text-align: right; width: 100px; height: 30px; line-height: 30px;">
+                    <input type="checkbox" id="moreUnitBtn"> 多单位
+                </label>
+                <span class="formfield unit-group">
+                    <input id="unitGroup" name="unitGroup" class="easyui-combobox" data-options="width:198"/>
+                </span>
+            </div>
+            <div class="col-md-4 unit-group">
+                <input id="firstSaleUnit" name="firstSaleUnit" class="easyui-combobox" data-options="label:'首选出库单位',width:300" />
+            </div>
+            <div class="col-md-4 unit-group">
+                <input id="firstPurUnit" name="firstPurUnit" class="easyui-combobox" data-options="label:'首选入库单位',width:300" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>商品价格</h4>
+                <table id="goodsPrice" class="easyui-datagrid" style="min-height: 200px;"></table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>价格策略 <small><a href="javascript:void(0)">设置客户等级</a></small></h4>
+                <table id="tabPrice" class="easyui-datagrid" style="min-height: 200px;"></table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>商品图片</h4>
+                <div id="toolbar">
+                    <input class="easyui-filebox" name="file1" data-options="prompt:'请选择图片文件',accept:'image/*',buttonText:'选择'">
+                    <a id="uploadBtn" href="javascript:void(0)" class="easyui-linkbutton">上传</a>
+                    <a id="deleteBtn" href="javascript:void(0)" class="easyui-linkbutton">删除</a>
+                    <a id="setThumbBtn" href="javascript:void(0)" class="easyui-linkbutton">设为主图</a>
+                    <span style="color: #9d9d9d">建议使用正方形图片，幅面大小为800×800像素</span>
+                </div>
+                <table id="goodsImage" class="easyui-datagrid" data-options="toolbar:'#toolbar'" style="min-height: 200px;"></table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>商品详情 <small>用于分销移动端商品展示</small></h4>
+                <div type="text/plain" id="myEditor" style="width:100%;height:240px;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <input name="note" class="easyui-textbox" data-options="multiline:true,prompt:'添加备注'" style="width:100%;min-height:100px">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4><input type="checkbox" id="seting-inventory-warning"> 库存预警</h4>
+                <label class="textbox-label textbox-label-before inventory-warning" style="width: 200px; height: 30px; line-height: 30px;">
+                    <input type="checkbox" id="set-inventory-warning-store"> <span class="text-danger">启用分仓预警</span>
+                </label>
+                <div class="inventory-warning-store">
+                    <table id="inventoryWarning" class="easyui-datagrid" style="min-height: 200px;"></table>
+                </div>
+                <div class="row inventory-warning-goods">
+                    <div class="col-md-4">
+                        <input id="minInventory" name="minInventory" />
+                    </div>
+                    <div class="col-md-4">
+                        <input id="maxInventory" name="maxInventory" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4><input type="checkbox" id="seting-goods-inventory"> 库存设置</h4>
+                <div id="goods-inventory-toolbar">
+                    <a id="addBtn" href="javascript:void(0)" class="easyui-linkbutton">添加</a>
+                </div>
+                <div class="goods-inventory">
+                    <table id="goodsInventory" class="easyui-datagrid" style="min-height: 200px;"></table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</form>
+<script src="../../js/custom/goodsDetail.js"></script>
+</body>
+</html>
