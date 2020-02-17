@@ -212,6 +212,9 @@ $(function () {
             receiptDetail.datagrid('statistics', ["payment"]);
             statistics();
         },
+        onBeforeCellEdit: function (index,field) {
+            return $('#status').val() == '1';
+        },
         columns: [[
             {
                 field: 'action',
@@ -352,6 +355,9 @@ $(function () {
         onLoadSuccess: function (data) {
             receiptBills.datagrid('statistics', ["billPrice","hasCheck","notCheck","nowCheck"]);
             statistics();
+        },
+        onBeforeCellEdit: function (index,field) {
+            return $('#status').val() == '1';
         },
         columns: [[
             {
@@ -600,9 +606,7 @@ $(function () {
                     $("#number_span").html(res.data.number);
                     if(res.data.status == '2'){
                         $("#mark").addClass("has-audit");
-                        receiptDetail.datagrid('disableCellEditing');
                         receiptDetail.datagrid('getPanel').find("div.datagrid-toolbar a").eq(0).hide();
-                        receiptBills.datagrid('disableCellEditing');
                         receiptBills.datagrid('getPanel').find("div.datagrid-toolbar a").eq(0).hide();
                     }
                     receiptDetail.datagrid('loadData',res.data.detail).datagrid('statistics', ["payment"]);

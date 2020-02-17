@@ -9,18 +9,20 @@
     <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
     <link rel="stylesheet" href="../../css/icon.css" />
     <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
-    <link rel="stylesheet" href="../../js/umeditor/utf8-jsp/themes/default/css/umeditor.min.css">
+    <link rel="stylesheet" href="../../js/umeditor/utf8-jsp-2/themes/default/css/umeditor.min.css">
     <link rel="stylesheet" href="../../css/style.css">
     <script src="../../js/common/lodash.min.js"></script>
     <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
     <script src="../../js/jquery.easyui.min.js"></script>
     <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
     <script src="../../js/easyui/datagrid-cellediting.js"></script>
-    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/easyui/datagrid-detailview.js"></script>
     <script src="../../js/plugins/layer/layer.js"></script>
-    <script src="../../js/umeditor/utf8-jsp/umeditor.config.js"></script>
-    <script src="../../js/umeditor/utf8-jsp/umeditor.min.js"></script>
-    <script src="../../js/umeditor/utf8-jsp/lang/zh-cn/zh-cn.js"></script>
+    <script src="../../js/umeditor/utf8-jsp-2/third-party/template.min.js"></script>
+    <script src="../../js/umeditor/utf8-jsp-2/umeditor.config.js"></script>
+    <script src="../../js/umeditor/utf8-jsp-2/umeditor.min.js"></script>
+    <script src="../../js/umeditor/utf8-jsp-2/lang/zh-cn/zh-cn.js"></script>
     <script src="../../js/commons.js"></script>
     <script src="../../config.js"></script>
     <style>
@@ -33,21 +35,21 @@
 <div class="container-fluid" style="position: fixed; top: 0; width: 100%; z-index: 2020">
     <div class="row">
         <div class="col-md-12 text-right button-bar">
-            <a href="#" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+            <a id="saveBtn" href="#" class="easyui-linkbutton" iconCls="icon-save">保存</a>
         </div>
     </div>
 </div>
 <form id="goodsFrom">
-    <input type="hidden" id="id" name="id" />
-    <input type="hidden" id="unit" name="unit" />
+    <input type="hidden" id="id" name="id" value="0"/>
+    <input type="hidden" id="unit" name="unit" value="0" />
     <div class="container-fluid" style="margin-top: 42px">
         <h4>基础资料</h4>
         <div class="row">
             <div class="col-md-4">
-                <input name="code" class="easyui-textbox" data-options="label:'商品代码',width:300" />
+                <input name="code" class="easyui-textbox" data-options="label:'商品代码',width:300,required:true" />
             </div>
             <div class="col-md-4">
-                <input name="name" class="easyui-textbox" data-options="label:'商品名称',width:300" />
+                <input name="name" class="easyui-textbox" data-options="label:'商品名称',width:300,required:true" />
             </div>
             <div class="col-md-4">
                 <input id="cpdm" name="cpdm" class="easyui-textbox" data-options="label:'鸿雁产品代码',width:300" />
@@ -58,16 +60,16 @@
                 <input name="barCode" class="easyui-textbox" data-options="label:'条形码',width:300" />
             </div>
             <div class="col-md-4">
-                <input name="specs" class="easyui-textbox" data-options="label:'型号规格',width:300" />
+                <input name="specs" class="easyui-textbox" data-options="label:'型号规格',width:300,required:true" />
             </div>
             <div class="col-md-4">
-                <input id="category" name="category" class="easyui-combotree" data-options="label:'商品类别',width:250" />
+                <input id="category" name="category" class="easyui-combotree" data-options="label:'商品类别',width:250,required:true" />
                 <small><a href="javascript:void(0)">设置类别</a></small>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <input id="storage" name="storage" class="easyui-combobox" data-options="label:'首选仓库',width:250" />
+                <input id="storage" name="storage" class="easyui-combobox" data-options="label:'首选仓库',width:250,required:true" />
                 <small><a href="javascript:void(0)">设置仓库</a></small>
             </div>
             <div class="col-md-4 unit-one">
@@ -75,7 +77,7 @@
                 <small><a href="javascript:void(0)">设置单位</a></small>
             </div>
             <div class="col-md-4">
-                <input id="sell" name="sell" class="easyui-combobox" data-options="label:'销售状态',width:300" />
+                <input id="status" name="status" class="easyui-combobox" data-options="label:'商品状态',width:300,required:true" />
             </div>
         </div>
         <div class="row">
@@ -110,10 +112,10 @@
             <div class="col-md-8">
                 <h4>商品图片</h4>
                 <div id="toolbar">
-                    <input class="easyui-filebox" name="file1" data-options="prompt:'请选择图片文件',accept:'image/*',buttonText:'选择'">
-                    <a id="uploadBtn" href="javascript:void(0)" class="easyui-linkbutton">上传</a>
-                    <a id="deleteBtn" href="javascript:void(0)" class="easyui-linkbutton">删除</a>
-                    <a id="setThumbBtn" href="javascript:void(0)" class="easyui-linkbutton">设为主图</a>
+                    <input class="easyui-filebox" id="imagefile" data-options="prompt:'请选择图片文件',accept:'image/gif,image/jpeg,image/png,image/jpg,image/bmp',buttonText:'选择'">
+                    <a id="uploadImageBtn" href="javascript:void(0)" class="easyui-linkbutton">上传</a>
+                    <a id="deleteImageBtn" href="javascript:void(0)" class="easyui-linkbutton">删除</a>
+                    <a id="setMainImageBtn" href="javascript:void(0)" class="easyui-linkbutton">设为主图</a>
                     <span style="color: #9d9d9d">建议使用正方形图片，幅面大小为800×800像素</span>
                 </div>
                 <table id="goodsImage" class="easyui-datagrid" data-options="toolbar:'#toolbar'" style="min-height: 200px;"></table>
@@ -122,7 +124,7 @@
         <div class="row">
             <div class="col-md-8">
                 <h4>商品详情 <small>用于分销移动端商品展示</small></h4>
-                <div type="text/plain" id="myEditor" style="width:100%;height:240px;"></div>
+                <div type="text/plain" id="myEditor" style="height:250px;"></div>
             </div>
         </div>
         <div class="row">
@@ -132,9 +134,11 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <h4><input type="checkbox" id="seting-inventory-warning"> 库存预警</h4>
+                <h4><input type="checkbox" value="1" id="seting-inventory-warning"> 库存预警</h4>
+                <input type="hidden" id="inventoryWarn" name="inventoryWarn" />
                 <label class="textbox-label textbox-label-before inventory-warning" style="width: 200px; height: 30px; line-height: 30px;">
-                    <input type="checkbox" id="set-inventory-warning-store"> <span class="text-danger">启用分仓预警</span>
+                    <input type="checkbox" value="1" id="set-inventory-warning-store"> <span class="text-danger">启用分仓预警</span>
+                    <input type="hidden" id="storageWarn" name="storageWarn" />
                 </label>
                 <div class="inventory-warning-store">
                     <table id="inventoryWarning" class="easyui-datagrid" style="min-height: 200px;"></table>
@@ -151,9 +155,11 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <h4><input type="checkbox" id="seting-goods-inventory"> 库存设置</h4>
+                <h4><input type="checkbox" id="seting-goods-inventory" name="setGoodsInventory" value="1"> 库存设置</h4>
                 <div id="goods-inventory-toolbar">
-                    <a id="addBtn" href="javascript:void(0)" class="easyui-linkbutton">添加</a>
+                    <a id="addInvBtn" href="javascript:void(0)" onclick="addInventoryRow()" class="easyui-linkbutton">添加</a>
+                    <a id="deleteInvBtn" href="javascript:void(0)" onclick="deleteInventoryRow()" class="easyui-linkbutton">删除</a>
+                    <span style="color: #9d9d9d">如设置了多计量单位，请按基本计量单位设置库存和单位成本。</span>
                 </div>
                 <div class="goods-inventory">
                     <table id="goodsInventory" class="easyui-datagrid" style="min-height: 200px;"></table>

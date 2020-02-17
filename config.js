@@ -1,5 +1,6 @@
 
-var ENV = 'LOCAL'; // TEST 测试  PROD 正式
+var ENV = 'TEST'; // TEST 测试  PROD 正式
+var imagePath = 'https://honyar.oss-cn-hangzhou.aliyuncs.com/';
 
 // 系统配置
 var config = (function(){

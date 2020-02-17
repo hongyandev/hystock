@@ -3,34 +3,45 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>商品管理</title>
+    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
-    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
-    <link rel="stylesheet" href="../../css/bootstrap/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../css/icon.css" />
+    <link rel="stylesheet" href="../../js/plugins/layer/theme/default/layer.css">
     <link rel="stylesheet" href="../../css/font-awesome/font-awesome.css">
     <link rel="stylesheet" href="../../css/ztree/zTreeStyle.css">
-    <link rel="stylesheet" href="../../css/default.css">
-    <script src="../../js/common/jquery-1.8.0.min.js"></script>
-    <script src="../../js/jquery.easyui.min.js"></script>
-    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
-    <script src="../../js/easyui/datagrid-cellediting-old.js"></script>
-    <script src="../../js/common/jquery.cookie.js"></script>
-    <script src="../../js/common/ajax-object.js"></script>
-    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
-    <script src="../../js/plugins/layer/layer.js"></script>
-    <script src="../../js/common/ztree-object.js"></script>
+    <!--<link rel="stylesheet" href="../../css/default.css">-->
     <script src="../../js/common/lodash.min.js"></script>
+    <script src="../../js/common/jquery-1.8.0.min.js"></script>
+    <script src="../../js/common/handlebars.min.js"></script>
+    <script src="../../js/jquery.easyui.min.js"></script>
+    <script src="../../js/common/jquery.cookie.js"></script>
+    <script src="../../js/plugins/jquery.ztree.all.min.js"></script>
+    <script src="../../js/common/ztree-object.js"></script>
+    <script src="../../js/easyui/1.6.7/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/easyui/datagrid-cellediting.js"></script>
+    <script src="../../js/plugins/layer/layer.js"></script>
     <script src="../../js/commons.js"></script>
     <script src="../../config.js"></script>
     <script src="../../js/custom/goodsLists.js"></script>
     <style>
-        input[type="checkbox"]{margin:0;}
         .bathSave{color:#fff;}
+        .l-btn-plain {
+            padding: 0px;
+            border: 1px solid #bbb;
+            background: -webkit-linear-gradient(top,#ffffff 0,#e6e6e6 100%);
+            background: -moz-linear-gradient(top,#ffffff 0,#e6e6e6 100%);
+            background: -o-linear-gradient(top,#ffffff 0,#e6e6e6 100%);
+            background: linear-gradient(to bottom,#ffffff 0,#e6e6e6 100%);
+            background-repeat: repeat-x;
+        }
+        .inventory-warning-store {
+            display: none;
+        }
     </style>
 </head>
-<body>
-<div class="form-inline search-head">
+<body class="easyui-layout">
+<!--<div class="form-inline search-head">
     <div class="form-group">
         <div class="col-xs-12">
              <input type="text" id="searTxt" class="form-control" placeholder="按商品编号，商品名称，规格型号等查询"/>
@@ -45,107 +56,95 @@
     <div class="form-group">
         <button class="btn btn-success btn-search" onclick="seachForm()">查询</button>
     </div>
-</div>
-
-<div class="clearfix">
-    <div class="pull-left col-sm-2 goodsTree">
-        <ul id="cateTree" class="easyui-tree" fit="true"></ul>
-    </div>
-    <div class="pull-left col-sm-10">
-        <input type="hidden" value="" id="action_type"/>
-        <table id="goodsLists"></table>
-    </div>
-</div>
-<div id="manageWrapper" class="clearfix" style="display: none">
-    <div class="left-conten pull-left">
-        <div class="title">选择修改的项目</div>
-        <div class="batchList">
-            <ul id="checkType">
-                <li id="storageBtn">
-                  <span class="chk_blue radioSpan unchecked checked">
-                    <input type="radio" id="storageSetting" name="checkType">设置首选仓库
-                  </span>
-                </li>
-                <li id="warningBtn">
-                  <span class="chk_blue radioSpan unchecked">
-                    <input type="radio" id="warningSetting" name="checkType">设置库存预警
-                  </span>
-                </li>
-                <li id="catBtn">
-                  <span class="chk_blue radioSpan unchecked">
-                    <input type="radio" id="catType" name="checkType">设置商品类别
-                  </span>
-                </li>
-            </ul>
+</div>-->
+<div class="container-fluid" style="position: fixed; top: 0; width: 100%; z-index: 2020">
+    <div class="row">
+        <div class="col-md-12 text-right button-bar">
+            <input id="searTxt" name="code" class="easyui-textbox" data-options="width:200,prompt:'商品编号、名称及规格型号等'" />
+            <label class="textbox-label textbox-label-before chk-ischecked" style="text-align: left; width: 120px; height: 30px; line-height: 30px;">
+                <input type="checkbox"> 显示禁用商品
+            </label>
+            <a id="saveBtn" href="javascript:seachForm()" class="easyui-linkbutton" iconCls="icon-search">查询</a>
         </div>
     </div>
-    <div class="right-conten pull-left">
-        <div class="title">录入设置内容</div>
-        <div class="batchList">
-            <ul class="content">
-                <li>
-                    <!-- 设置首选仓库 -->
-                    <div class="storageList contentList">
-                        <div class="form-group col-sm-12 clearfix">
-                            <label class="col-sm-3 control-label">首选仓库</label>
-                            <div class="col-sm-9">
-                                <input id="storage" class="easyui-combobox form-control" style="width:178px;">
+</div>
+<div data-options="region:'west',title:'商品类别'" style="width:200px;">
+    <ul id="cateTree" class="easyui-tree" fit="true"></ul>
+</div>
+<div data-options="region:'center',title:'商品列表'" style="padding:5px;background:#eee;">
+    <table id="goodsLists"></table>
+</div>
+<div id="toolbar">
+    <a id="addGoodsBtn" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add">新增</a>
+    <a id="editorGoodsBtn" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit">编辑</a>
+    <a id="batchSettingBtn" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-more">批量设置</a>
+    <a id="statusChangeBtn" href="javascript:void(0)" class="easyui-splitbutton" data-options="menu:'#status-menu'">设置状态</a>
+    <a id="importGoodsBtn" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-redo">导入商品</a>
+</div>
+<div id="status-menu">
+    <div onclick="setStatus('1')">启用</div>
+    <div onclick="setStatus('2')">销售</div>
+    <div onclick="setStatus('3')">停销</div>
+    <div onclick="setStatus('9')">禁用</div>
+</div>
+<div id="batch-setting-panel" class="easyui-window" title="批量设置" data-options="modal:true,closed:true,collapsible:false,minimizable:false,maximizable:false,iconCls:'icon-more'" style="width:80%;height:80%;">
+    <div class="easyui-tabs">
+        <div title="首选仓库" style="padding:10px">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input id="storage" class="easyui-combobox">
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 5px">
+                    <div class="col-md-12 button-bar">
+                        <a id="StoreSaveBtn" href="javascript:void(0)" onclick="batchSetting('storage')" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div title="库存预警" style="padding:10px">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label class="textbox-label textbox-label-before" style="width: 200px; height: 30px; line-height: 30px;">
+                            <input type="checkbox" value="1" id="set-inventory-warning-store"> <span class="text-danger">启用分仓预警</span>
+                            <input type="hidden" id="storageWarn" value="0"/>
+                        </label>
+                        <div class="inventory-warning-store">
+                            <table id="inventoryWarning" class="easyui-datagrid" style="min-height: 200px"></table>
+                        </div>
+                        <div class="row inventory-warning-goods">
+                            <div class="col-md-4">
+                                <input id="minInventory" class="easyui-numberbox" value="0" />
+                            </div>
+                            <div class="col-md-4">
+                                <input id="maxInventory" class="easyui-numberbox" value="0" />
                             </div>
                         </div>
                     </div>
-                    <div class="bathBtn">
-                        <button class="btn btn-success" onclick="storageSave()">保存</button>
+                </div>
+                <div class="row" style="margin-top: 5px">
+                    <div class="col-md-12 button-bar">
+                        <a id="StoreWarnSaveBtn" href="javascript:void(0)" onclick="batchSetting('warning')" class="easyui-linkbutton" iconCls="icon-ok">启用预警</a>
+                        <a id="StoreWarnStopBtn" href="javascript:void(0)" onclick="batchSetting('stopwarning')" class="easyui-linkbutton" iconCls="icon-ok">关闭预警</a>
                     </div>
-                </li>
-                <li style="display: none">
-                    <!-- 设置库存预警 -->
-                    <div class="warningList contentList col-sm-12">
-                        <div class="checkbox">
-                            <label id="warning" style="line-height:12px;">
-                                <input type="checkbox"> <span class="text-danger">启用分仓预警</span>
-                            </label>
-                        </div>
-                        <!--库存预警表格-->
-                        <div class="divEditTabKc" style="display: none">
-                            <table id="editTabKc" class="easyui-datagrid" border="1" style="height: 220px;width:100%"></table>
-                            <div class="dropdown" style="display: none">
-                                <input type="text" style="width:80px"/> <a href="#none" class="btn btn-success bathSave">确定</a>
-                            </div>
-                        </div>
-                        <div class="form-inline inputKc">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">最低库存</label>
-                                <div class="col-sm-8">
-                                    <input class="form-control" id="minInventory" name="customNum" type="text" placeholder="必填项"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">最高库存</label>
-                                <div class="col-sm-8">
-                                    <input class="form-control" id="maxInventory" name="customNum" type="text" placeholder="必填项"/>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+        <div title="商品类别" style="padding:10px">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input id="category" class="easyui-combotree">
                     </div>
-                    <div class="bathBtn">
-                        <button class="btn btn-success" onclick="stoWarnSave()">保存</button>
+                </div>
+                <div class="row" style="margin-top: 5px">
+                    <div class="col-md-12 button-bar">
+                        <a id="CategorySaveBtn" href="javascript:void(0)" onclick="batchSetting('category')" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
                     </div>
-                </li>
-                <li style="display: none">
-                    <!-- 设置商品类别 -->
-                    <div class="categoryType contentList row-item">
-                        <div class="form-group col-sm-12 clearfix">
-                            <label class="col-sm-3 control-label">商品类别</label>
-                            <div class="col-sm-9">
-                                <input id="category" class="easyui-combotree form-control" style="width:178px;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bathBtn">
-                        <button class="btn btn-success" onclick="categorySave()">保存</button>
-                    </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

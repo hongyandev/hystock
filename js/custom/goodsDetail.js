@@ -1,4 +1,4 @@
-var tips;
+var tips, lastIndex = -1;
 
 function bathSet(ele) {
     closeTips();
@@ -8,7 +8,7 @@ function bathSet(ele) {
         '      <span class="input-group-btn">' +
         '        <button class="btn btn-default" type="button" onclick="bathSetVal(\'' + col + '\')">确定</button>' +
         '        <button class="btn btn-default" type="button" onclick="closeTips()">取消</button>' +
-        '      </span>\n' +
+        '      </span>' +
         '    </div>',
         ele, {
             tips: [3, '#FAFAFA'],
@@ -38,8 +38,45 @@ function bathSetVal(expr) {
 function closeTips() {
     if (tips) {
         layer.close(tips);
-        tips = undefined;
+        tips = null;
     }
+}
+
+function addInventoryRow() {
+    var goodsInventory = $("#goodsInventory");
+    goodsInventory.datagrid('acceptChanges')
+        .datagrid('appendRow', {
+            storageId: 0,
+            storageName: '',
+            quantity: 0,
+            unitCost: 0,
+            earlyTotal: 0
+        })
+        .datagrid('acceptChanges')
+        .datagrid('editCell', {
+            index: goodsInventory.datagrid('getRows').length - 1,
+            field: 'storageName'
+        });
+}
+
+function deleteInventoryRow() {
+    if (lastIndex > -1) {
+        var index = layer.confirm('确定删除所选行？', {
+            btn: ['确定', '取消']
+        }, function (target) {
+            if (target) {
+                $("#goodsInventory").datagrid('deleteRow', lastIndex).datagrid('statistics', ["earlyTotal"]);
+                layer.close(index);
+            }
+            lastIndex = -1;
+        }, function (index) {
+            layer.close(index);
+            lastIndex = -1;
+        });
+    } else {
+        layer.msg('请选择一行进行操作。');
+    }
+
 }
 
 $(function () {
@@ -169,8 +206,8 @@ $(function () {
             return row[opts.textField]
         }
     });
-    // 销售状态
-    $("#sell").combobox({
+    // 商品状态
+    $("#status").combobox({
         valueField: 'key',
         textField: 'value',
         loadFilter: function (data) {
@@ -178,11 +215,59 @@ $(function () {
         },
         data: [{
             key: '1',
+            value: '启用'
+        }, {
+            key: '2',
             value: '销售'
         }, {
-            key: '0',
+            key: '3',
             value: '停销'
-        }]
+        }, {
+            key: '9',
+            value: '禁用'
+        }],
+        onSelect: function (record) {
+            var combo = this;
+            layer.confirm('是否将此商品设为' + record.value + '状态？', {
+                btn: ['是','否']
+            }, function(){
+                var url;
+                switch (record.key) {
+                    case '1':
+                        url = genAPI('goods/unfreezeGoods');
+                        break;
+                    case '2':
+                        url = genAPI('goods/onSell');
+                        break;
+                    case '3':
+                        url = genAPI('goods/offSell');
+                        break;
+                    case '9':
+                        url = genAPI('goods/freezeGoods');
+                        break;
+                }
+                if (typeof url != 'undefined') {
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        cache: false,
+                        dataType: "json",
+                        data: {
+                            goodsIds: $('#id').val()
+                        },
+                        success: function (res) {
+                            layer.msg(res.message)
+                        },
+                        error:function (err) {
+                            layer.close(index);
+                            layer.msg(err)
+                        }
+                    });
+                }
+            }, function(){
+                console.log(combo);
+            });
+        }
     });
     $("#moreUnitBtn").on("click", function () {
         if ($(this).attr("checked")) {
@@ -202,16 +287,20 @@ $(function () {
     var goodsPrice = $("#goodsPrice");
     goodsPrice.datagrid({
         url: genAPI('goods/getGoodsPriceList'),
-        queryParams: {
-            goodsId: 0,
-            unit: 0
-        },
         striped: true,
         nowrap: true,
         rownumbers: true,
         singleSelect: true,
         loadFilter: function (res) {
             return res.code == 200 ? res.data : [];
+        },
+        onBeforeLoad: function (param) {
+            var firstLoad = $(this).attr("firstLoad");
+            if (firstLoad == "false" || typeof (firstLoad) == "undefined") {
+                $(this).attr("firstLoad", "true");
+                return false;
+            }
+            return true;
         },
         columns: [[
             {
@@ -259,6 +348,7 @@ $(function () {
         .datagrid('enableCellEditing');
     var tabPrice = $("#tabPrice");
     tabPrice.datagrid({
+        url: genAPI('goods/getGoodsDiscountList'),
         striped: true,
         nowrap: true,
         rownumbers: true,
@@ -266,10 +356,20 @@ $(function () {
         loadFilter: function (res) {
             return res.code == 200 ? res.data : [];
         },
+        onBeforeLoad: function (param) {
+            var firstLoad = $(this).attr("firstLoad");
+            if (firstLoad == "false" || typeof (firstLoad) == "undefined") {
+                $(this).attr("firstLoad", "true");
+                return false;
+            }
+            return true;
+        },
         toolbar: [{
             iconCls: 'glyphicon glyphicon-refresh',
             handler: function(){
-
+                tabPrice.datagrid('load', {
+                    goodsId: $('#id').val()
+                })
             }
         }],
         columns: [[
@@ -293,21 +393,26 @@ $(function () {
     goodsImage.datagrid({
         striped: true,
         nowrap: true,
-        rownumbers: true,
         singleSelect: true,
-        loadFilter: function (res) {
-            return res.code == 200 ? res.data : [];
-        },
+        idField: 'url',
         columns: [[
+            {
+                field: 'ck',
+                checkbox: true
+            },
             {
                 field: 'url',
                 title: '图片',
-                width: 200,
+                formatter: function (value, row, index) {
+                  return '<div><img class="img-rounded" src="' + imagePath + row.url +'" style="width: 140px; height: 140px" />' +
+                      (row.thumb == "1" ? '<span class="badge">主图</span>':'') +
+                      '</div>';
+                },
+                width: 200
             },
             {
                 field: 'thumb',
-                title: '是否主图',
-                width: 100
+                hidden: true
             },
             {
                 field: 'sort',
@@ -320,8 +425,107 @@ $(function () {
         ]]
     })
         .datagrid('enableCellEditing');
+    $('#uploadImageBtn').on('click', function(){
+        var files = $('#imagefile').filebox('files');
+        if (files.length == 0) {
+            layer.msg("请选择图片文件。");
+            return;
+        }
+        var index = layer.load(0, {
+            shade: [0.1, '#000'] //0.1透明度的白色背景
+        });
+        var f = files[0];
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", genAPI('uploader/imageUp') + "?type=ajax", true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("token", $.cookie('jwt'));
+        xhr.setRequestHeader("uid", $.cookie('uid'));
+        var fd = new FormData();
+        fd.append('upfile', f);
+        xhr.send(fd);
+        xhr.addEventListener('load', function (e) {
+            layer.close(index);
+            var r = e.target.response;
+            var json = eval('('+r+')');
+            if (json.state === 'SUCCESS') {
+                var row = {
+                    url: json.url,
+                    thumb: "0",
+                    sort: goodsImage.datagrid('getRows').length + 1
+                };
+                goodsImage.datagrid('appendRow', row)
+                    .datagrid('acceptChanges');
+                $('#imagefile').filebox('clear');
+            } else {
+                layer.msg(json.state);
+            }
+        });
+    });
+    $('#deleteImageBtn').on('click', function () {
+        var rows = goodsImage.datagrid('getChecked');
+        if (rows.length == 0) {
+            layer.msg('请勾选要删除的图片。');
+            return;
+        }
+        var index = layer.load(0, {
+            shade: [0.1, '#000'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            type: "post",
+            url: genAPI('goods/deleteGoodsImage'),
+            cache: false,
+            dataType: "json",
+            data: JSON.stringify({
+                goodsId: $('#id').val(),
+                rows: rows
+            }),
+            contentType: "application/json;charset=UTF-8",
+            success: function (res) {
+                layer.close(index);
+                if(res.code == 200){
+                    goodsImage.datagrid('uncheckAll');
+                    _.forEach(rows, function (row, index) {
+                        goodsImage.datagrid('deleteRow', goodsImage.datagrid('getRowIndex', row['url']));
+                    });
+                } else {
+                    layer.msg(res.message)
+                }
+            },
+            error:function (err) {
+                layer.close(index);
+                layer.msg(err)
+            }
+        });
+    });
+    $('#setMainImageBtn').on('click', function () {
+        var checkRows = goodsImage.datagrid('getChecked');
+        if (checkRows.length == 0) {
+            layer.msg('请勾选要设置的图片。');
+            return;
+        }
+        if (checkRows.length > 1) {
+            layer.msg('只能将一张图片设为主图。');
+            return;
+        }
+        var rows = goodsImage.datagrid('getRows');
+        var checkIndex = goodsImage.datagrid('getRowIndex', checkRows[0]['url']);
+        _.forEach(rows, function (item, index) {
+            item['thumb'] = checkIndex === index ? '1' : '0';
+            goodsImage.datagrid('refreshRow', index);
+        });
+        goodsImage.datagrid('uncheckAll');
+    });
     //实例化编辑器
     var um = UM.getEditor('myEditor', {
+        imageUrl: genAPI('uploader/imageUp'),
+        imagePath: imagePath,
+        dropFileEnabled: false,
+        pasteImageEnabled: false,
+        textarea: 'goodsDetail',
+        headers: {
+            uid: $.cookie('uid'),
+            token: $.cookie('jwt')
+        },
         toolbar: [
             'undo redo | bold italic underline strikethrough forecolor | removeformat ',
             'selectall cleardoc paragraph | fontfamily fontsize',
@@ -330,13 +534,15 @@ $(function () {
     });
     $("#seting-inventory-warning").bind('click', function () {
         closeTips();
-        $(this).toggleClass('checked')
+        $(this).toggleClass('checked');
         if ($(this).is('.checked')) {
+            $('#inventoryWarn').val(1);
             $('.inventory-warning').show();
             $('#set-inventory-warning-store').bind('click', function () {
                 closeTips();
                 $('#set-inventory-warning-store').toggleClass('checked');
                 if ($('#set-inventory-warning-store').is('.checked')) {
+                    $('#storageWarn').val(1);
                     $('.inventory-warning-store').show();
                     inventoryWarning
                         .datagrid("resize");
@@ -345,18 +551,22 @@ $(function () {
                         });
                     $('.inventory-warning-goods').hide();
                 } else {
+                    $('#storageWarn').val(0);
                     $('.inventory-warning-store').hide();
                     $('.inventory-warning-goods').show();
                 }
             });
             if ($('#set-inventory-warning-store').is('.checked')) {
+                $('#storageWarn').val(1);
                 $('.inventory-warning-store').show();
                 $('.inventory-warning-goods').hide();
             } else {
+                $('#storageWarn').val(0);
                 $('.inventory-warning-store').hide();
                 $('.inventory-warning-goods').show();
             }
         } else {
+            $('#inventoryWarn').val(0);
             $('.inventory-warning').hide();
             $('.inventory-warning-store').hide();
             $('.inventory-warning-goods').hide();
@@ -378,15 +588,20 @@ $(function () {
     var inventoryWarning = $("#inventoryWarning");
     inventoryWarning.datagrid({
         url: genAPI('goods/getGoodsStoWarnList'),
-        queryParams: {
-            goodsId: 0
-        },
         striped: true,
         nowrap: true,
         rownumbers: true,
         singleSelect: true,
         loadFilter: function (res) {
             return res.code == 200 ? res.data : [];
+        },
+        onBeforeLoad: function (param) {
+            var firstLoad = $(this).attr("firstLoad");
+            if (firstLoad == "false" || typeof (firstLoad) == "undefined") {
+                $(this).attr("firstLoad","true");
+                return false;
+            }
+            return true;
         },
         columns: [[
             {
@@ -404,7 +619,7 @@ $(function () {
             },
             {
                 field: 'maxInventory',
-                title: '最大库存 <button class="btn btn-default btn-xs" type="button" onclick="bathSet(this)">批量</button>',
+                title: '最大库存 <button class="btn btn-default btn-xs bathMax" type="button" onclick="bathSet(this)">批量</button>',
                 width: 200,
                 editor: {
                     type: "numberbox"
@@ -476,7 +691,17 @@ $(function () {
             }
 
         ]],
-        toolbar: '#goods-inventory-toolbar'
+        toolbar: '#goods-inventory-toolbar',
+        onAfterEdit: function (rowIndex, rowData, changes) {
+            if (changes["quantity"] || changes["unitCost"]) {
+                var total = _.multiply(rowData["quantity"] || 0, rowData["unitCost"] || 0);
+                rowData["earlyTotal"] = total;
+                goodsInventory.datagrid("refreshRow", rowIndex).datagrid('statistics', ["earlyTotal"]);
+            }
+        },
+        onClickRow: function (rowIndex, rowData) {
+            lastIndex = rowIndex;
+        }
     })
         .datagrid('enableCellEditing')
         .datagrid('loadData', {
@@ -502,7 +727,6 @@ $(function () {
     });
     var requestParams = getRequest();
     var goodsId = requestParams.id;
-    var action = requestParams.action;
     if (goodsId) {
         $.ajax({
             type: "post",
@@ -523,28 +747,35 @@ $(function () {
                     }
                     $('#goodsFrom').form('load', goods);
                     $('#category').combotree('setValue', goods.category);
+                    um.setContent(goods.detail || '');
                     if (goods.inventoryWarn == '1') {
                         $('#seting-inventory-warning').click();
                         if (goods.storageWarn == '1') {
                             $('#set-inventory-warning-store').click();
                         }
                     }
+                    /*
                     var inventory = res.data.earlyStage;
                     if (inventory && inventory.rows.length > 0) {
                         $("#seting-goods-inventory").click();
                         goodsInventory.datagrid('loadData', {
                             code: 200,
                             data: inventory
-                        });
+                        })
+                            .datagrid('statistics', ["earlyTotal"]);
                     }
+                    */
+                    /*
                     goodsPrice.datagrid('loadData', {
                         code: 200,
                         data: res.data.price
                     });
+                    */
                     tabPrice.datagrid('loadData', {
                         code: 200,
                         data: res.data.discount
                     });
+                    goodsImage.datagrid('loadData', res.data.goodsImage)
                 } else {
                     layer.msg(res.message)
                 }
@@ -554,4 +785,65 @@ $(function () {
             }
         })
     }
+    $("#saveBtn").bind('click', function () {
+        if($('#goodsFrom').form('validate')){
+            var data = $('#goodsFrom').serializeObject();
+            if (data.unit == 0) {
+                layer.msg("计量单位未填写。");
+                return;
+            }
+            if (data.unitGroup && (!data.firstSaleUnit || !data.firstPurUnit)) {
+                layer.msg("首选出入库单位未填写。");
+                return;
+            }
+            if (data.inventoryWarn == "1") {
+                if (data.storageWarn == "1") {
+                    $.extend(data, {
+                        goodsStoWarn: inventoryWarning.datagrid('acceptChanges').datagrid('getRows')
+                    })
+                } else {
+                    if (data.minInventory == "" || data.maxInventory == "") {
+                        layer.msg("库存预警数量未填写。");
+                        return;
+                    }
+                    $.extend(data, {
+                        goodsStoWarn: []
+                    });
+                }
+            }
+            $.extend(data, {
+                goodsImage: goodsImage.datagrid('acceptChanges').datagrid('getRows'),
+                goodsPrice: goodsPrice.datagrid('acceptChanges').datagrid('getRows'),
+                goodsDiscount: tabPrice.datagrid('acceptChanges').datagrid('getRows'),
+                goodsInventory: data.setGoodsInventory ? goodsInventory.datagrid('acceptChanges').datagrid('getRows') : []
+            });
+            var url = data.id ? genAPI('goods/editGoods') : genAPI('goods/addGoods');
+            console.log(url, data);
+            var index = layer.load(0, {
+                shade: [0.1, '#000'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                type: "post",
+                url: url,
+                cache: false,
+                dataType: "json",
+                data: JSON.stringify(data),
+                contentType: "application/json;charset=UTF-8",
+                success: function (res) {
+                    layer.close(index);
+                    if (res.code == 200) {
+                        layer.msg("保存成功");
+                    } else {
+                        layer.msg(res.message)
+                    }
+                },
+                error: function (err) {
+                    layer.close(index);
+                    layer.msg(JSON.stringify(err))
+                }
+            });
+        } else {
+            layer.msg("商品信息不完整");
+        }
+    })
 });
